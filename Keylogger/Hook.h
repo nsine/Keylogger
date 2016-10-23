@@ -7,7 +7,8 @@
 
 class Hook {
 public:
-	void SetHook(std::function<void(wchar_t[])> keyboardCallback);
+	void setHook(std::function<void(wchar_t[])> keyboardCallback);
+	void unsetHook();
 private:
 	HHOOK hHook;
 

