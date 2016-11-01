@@ -1,6 +1,12 @@
 #pragma once
 
-#include <Windows.h>
+#ifndef _WINSOCKAPI_
+#define _WINSOCKAPI_
+#endif // !_WINSOCKAPI_
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif // !WIN32_LEAN_AND_MEAN
+#include <windows.h>
 #include <iostream>
 #include <functional>
 
