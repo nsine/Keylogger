@@ -99,7 +99,7 @@ void mailerThreadProc() {
 		if (currentTime - prevEmailReportTime > SECONDS_IN_DAY) {
 			// Send email in setted up interval of time
 			std::cout << "hello" << std::endl;
-			bool result = logger->sendEmailReport(true);
+			bool result = logger->sendEmailReport("", true);
 			if (result) {
 				prevEmailReportTime = currentTime;
 				std::cout << "ok";

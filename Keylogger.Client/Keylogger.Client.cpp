@@ -13,7 +13,7 @@
 
 #pragma comment(lib, "Ws2_32.lib")
 
-#define BUFFER_SIZE 1024
+#define BUFFER_SIZE 100000
 
 struct connectionParams {
 	std::string address;

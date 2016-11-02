@@ -11,7 +11,7 @@ std::string CommandParser::act(std::string commandString) {
 	auto tokens = StringUtilities::splitString(commandString, " ");
 	auto commandName = tokens.size() > 0 ? tokens[0] : "";
 	auto command = commands.find(commandName);
-	if (command != commands.end()) {
+	if (command == commands.end()) {
 		return "Command not found";
 	}
 	

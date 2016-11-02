@@ -21,6 +21,7 @@ std::vector<std::string> StringUtilities::splitString(std::string str, std::stri
 }
 
 std::string StringUtilities::trim(std::string str) {
+	return str;
 	size_t first = str.find_first_not_of(' ');
 	size_t last = str.find_last_not_of(' ');
 	return str.substr(first, (last - first + 1));
