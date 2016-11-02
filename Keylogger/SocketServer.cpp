@@ -168,5 +168,3 @@ std::string SocketServer::getResponse(std::string request) {
 std::string SocketServer::getHostName() {
 	return this->hostName;
 }
-
-SocketServer::~SocketServer() {}

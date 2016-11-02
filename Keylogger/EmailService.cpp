@@ -38,5 +38,3 @@ bool EmailService::sendEmail(std::string subject, std::string body, std::string 
 	int result = this->mailIt(emailTo.c_str(), subject.c_str(), body.c_str());
 	return result == 0;
 }
-
-EmailService::~EmailService() {}

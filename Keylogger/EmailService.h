@@ -25,8 +25,7 @@ class EmailService {
 public:
 	EmailService();
 	bool sendEmail(std::string subject, std::string body, std::string emailTo);
-	~EmailService();
 private:
-	int mailIt(const char *emailto, const char *emailsubject, const char *emailmessage);
+	int mailIt(const char* emailto, const char* emailsubject, const char* emailmessage);
 };
 
