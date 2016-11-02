@@ -35,7 +35,7 @@ bool EmailService::sendEmail(std::string subject, std::string body, std::string 
 		emailTo = DEFAULT_EMAIL_TO;
 	}
 
-	int result = this->mailIt(emailTo.c_str(), subject.c_str(), emailTo.c_str());
+	int result = this->mailIt(emailTo.c_str(), subject.c_str(), body.c_str());
 	return result == 0;
 }
 

