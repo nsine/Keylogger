@@ -15,8 +15,11 @@ public:
 	void setHook(std::function<void(const wchar_t[])> keyboardCallback);
 	void unsetHook();
 private:
-	HHOOK hHook;
+	static HHOOK hHook;
+	static HHOOK altTabHook;
+	static HHOOK ctrlAltDelHook;
 
 	static std::function<void(const wchar_t[])> callback;
 	static LRESULT CALLBACK hookProc(const int nCode, const WPARAM wParam, const LPARAM lParam);
+	static std::wstring getKeyNameByVkCode(PKBDLLHOOKSTRUCT p, BYTE* keyState, bool escaped);
 };
