@@ -1,8 +1,6 @@
 ﻿#include "stdafx.h"
 #include "Hook.h"
 
-using namespace std;
-
 std::function<void(const wchar_t[])> Hook::callback;
 HHOOK Hook::hHook;
 
@@ -19,12 +17,11 @@ void Hook::unsetHook() {
 LRESULT CALLBACK Hook::hookProc(const int nCode, const WPARAM wParam, const LPARAM lParam) {
 	PKBDLLHOOKSTRUCT p = (PKBDLLHOOKSTRUCT)lParam;
 	BYTE keyState[256] = { 0 };
-	bool keyStateResult;
 	std::wstring result;
 	bool isKeyCombination = false;
 
-	GetKeyState(NULL);
-	keyStateResult = GetKeyboardState(keyState);
+	GetKeyState(0);
+	GetKeyboardState(keyState);
 
 	PMSG pmsg = (PMSG)lParam;
 
@@ -135,7 +132,7 @@ std::wstring Hook::getKeyNameByVkCode(PKBDLLHOOKSTRUCT p, BYTE* keyState, bool e
 		wchar_t buffer[5];
 
 		ToUnicodeEx(p->vkCode, p->scanCode, keyState,
-			buffer, _countof(buffer), 0, NULL);
+			buffer, _countof(buffer), 0, nullptr);
 		result = buffer;
 	}
 	return result;

