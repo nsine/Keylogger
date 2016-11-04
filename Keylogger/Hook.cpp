@@ -7,14 +7,20 @@ HHOOK Hook::hHook;
 void Hook::setHook(std::function<void(const wchar_t[])> keyboardCallback) {
 	callback = keyboardCallback;
 	std::cout << "set hook" << std::endl;
-	hHook = SetWindowsHookEx(WH_KEYBOARD_LL, hookProc, NULL, 0);
+	hHook = SetWindowsHookEx(WH_KEYBOARD_LL, this->hookProc, nullptr, 0);
 }
 
 void Hook::unsetHook() {
+	std::cout << "unset" << std::endl;
 	UnhookWindowsHookEx(hHook);
 }
 
+void Hook::blockKey(std::string keyName) {}
+
+void Hook::unblockKey(std::string keyName) {}
+
 LRESULT CALLBACK Hook::hookProc(const int nCode, const WPARAM wParam, const LPARAM lParam) {
+	std::cout << "hook" << std::endl;
 	PKBDLLHOOKSTRUCT p = (PKBDLLHOOKSTRUCT)lParam;
 	BYTE keyState[256] = { 0 };
 	std::wstring result;
@@ -24,10 +30,6 @@ LRESULT CALLBACK Hook::hookProc(const int nCode, const WPARAM wParam, const LPAR
 	GetKeyboardState(keyState);
 
 	PMSG pmsg = (PMSG)lParam;
-
-	if (pmsg->message == WM_CHAR || wParam == WM_CHAR) {
-		std::cout << "laalal " << pmsg->wParam << std::endl;
-	}
 
 	// Check alt combinations
 	if (p->flags == 32 && p->vkCode == VK_TAB) {
@@ -136,4 +138,8 @@ std::wstring Hook::getKeyNameByVkCode(PKBDLLHOOKSTRUCT p, BYTE* keyState, bool e
 		result = buffer;
 	}
 	return result;
+}
+
+bool Hook::isBlocked(int keyCode) {
+	return false;
 }
