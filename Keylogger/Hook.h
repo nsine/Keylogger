@@ -10,6 +10,10 @@
 #include <iostream>
 #include <functional>
 #include <vector>
+#include <map>
+#include <string>
+
+#include "KeyboardHelper.h"
 
 class Hook {
 public:

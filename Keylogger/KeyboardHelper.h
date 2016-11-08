@@ -3,12 +3,18 @@
 #include <string>
 #include <map>
 #include <windows.h>
+#include <algorithm>
+
 
 class KeyboardHelper {
 private:
-	static std::map<int, std::string> keys;
+	static KeyboardHelper* instance;
+	KeyboardHelper();
+	std::map<int, std::wstring> keys;
 public:
-	static std::string getKeyByCode(int keyCode);
-	static int getCodeByName(std::string keyName);
-};
+	static KeyboardHelper* getInstance();
 
+	std::wstring getKeyByCode(int keyCode);
+	std::wstring getNameOrUnicode(int vkCode, int scanCode, const BYTE* keyState);
+	int getCodeByName(std::wstring keyName);
+};	

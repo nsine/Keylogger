@@ -11,7 +11,7 @@
 #include "stdafx.h"
 #include <string>
 #include <cstdlib>
-#include <memory>		
+#include <memory>
 #include <io.h>
 #include <fcntl.h>
 #include <thread>
