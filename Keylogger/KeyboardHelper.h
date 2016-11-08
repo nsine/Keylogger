@@ -4,6 +4,8 @@
 #include <map>
 #include <windows.h>
 #include <algorithm>
+#include <string>
+#include "StringUtilities.h"
 
 
 class KeyboardHelper {

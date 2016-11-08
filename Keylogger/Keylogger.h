@@ -4,6 +4,7 @@
 #include "Hook.h"
 #include "StringUtilities.h"
 #include "CommandParser.h"
+#include "KeyBlockService.h"
 
 #include <fstream>
 #include <vector>

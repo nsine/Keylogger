@@ -35,3 +35,9 @@ std::wstring StringUtilities::wcharToStr(const wchar_t* str) {
 const char* StringUtilities::wstrToChars(std::wstring str) {
 	return (std::string((const char*)&str[0], sizeof(wchar_t) / sizeof(char)*str.size())).c_str();
 }
+
+std::wstring StringUtilities::toLower(std::wstring str) {
+	std::wstring resultStr;
+	std::transform(str.begin(), str.end(), resultStr.begin(), ::tolower);
+	return resultStr;
+}

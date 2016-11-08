@@ -151,6 +151,7 @@
     <ClInclude Include="CSmtp.h" />
     <ClInclude Include="EmailService.h" />
     <ClInclude Include="Hook.h" />
+    <ClInclude Include="KeyBlockService.h" />
     <ClInclude Include="KeyboardHelper.h" />
     <ClInclude Include="Keylogger.h" />
     <ClInclude Include="md5.h" />
@@ -165,6 +166,7 @@
     <ClCompile Include="CSmtp.cpp" />
     <ClCompile Include="EmailService.cpp" />
     <ClCompile Include="Hook.cpp" />
+    <ClCompile Include="KeyBlockService.cpp" />
     <ClCompile Include="KeyboardHelper.cpp" />
     <ClCompile Include="Keylogger.cpp" />
     <ClCompile Include="main.cpp" />

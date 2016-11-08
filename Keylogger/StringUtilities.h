@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <algorithm>
 #include <windows.h>
 
 
@@ -13,5 +14,6 @@ public:
 	static std::wstring trim(std::wstring str);
 	static std::wstring wcharToStr(const wchar_t* str);
 	static const char* wstrToChars(std::wstring str);
+	static std::wstring toLower(std::wstring str);
 };
 

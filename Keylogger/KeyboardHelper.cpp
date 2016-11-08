@@ -64,8 +64,9 @@ std::wstring KeyboardHelper::getNameOrUnicode(int vkCode, int scanCode, const BY
 }
 
 int KeyboardHelper::getCodeByName(std::wstring keyName) {
-	auto result = std::find_if(this->keys.begin(), this->keys.end(), [keyName](std::pair<int, std::wstring> it) -> bool {
-		return it.second.compare(keyName) == 0;
+	std::wstring name = StringUtilities::toLower(keyName);
+	auto result = std::find_if(this->keys.begin(), this->keys.end(), [name](std::pair<int, std::wstring> it) -> bool {
+		return it.second.compare(name) == 0;
 	});
 
 	if (result == this->keys.end()) {
