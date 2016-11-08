@@ -30,11 +30,12 @@ int EmailService::mailIt(const char *emailto, const char *emailsubject, const ch
 EmailService::EmailService() {
 }
 
-bool EmailService::sendEmail(std::string subject, std::string body, std::string emailTo) {
-	if (emailTo == "") {
+bool EmailService::sendEmail(std::wstring subject, std::wstring body, std::wstring emailTo) {
+	if (emailTo.compare(L"") == 0) {
 		emailTo = DEFAULT_EMAIL_TO;
 	}
 
-	int result = this->mailIt(emailTo.c_str(), subject.c_str(), body.c_str());
+	int result = this->mailIt(StringUtilities::wstrToChars(emailTo),
+		StringUtilities::wstrToChars(subject), StringUtilities::wstrToChars(body));
 	return result == 0;
 }

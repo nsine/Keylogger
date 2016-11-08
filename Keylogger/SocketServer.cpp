@@ -21,7 +21,7 @@ void SocketServer::initHostInfo() {
 		struct in_addr addr;
 		memcpy(&addr, phe->h_addr_list[i], sizeof(struct in_addr));
 
-		std::string possibleIp = inet_ntoa(addr);
+		std:string possibleIp = inet_ntoa(addr);
 		if (possibleIp.find('.') == 2 && possibleIp.at(0) == '1' || ip == "") {
 			ip = possibleIp;
 		}
@@ -85,7 +85,7 @@ void SocketServer::start() {
 		return;
 	}
 
-	char requestBuffer[SOCKET_BUFFER_SIZE];
+	wchar_t requestBuffer[SOCKET_BUFFER_SIZE];
 	int clientSocket = INVALID_SOCKET;
 
 	while (true) {
@@ -100,10 +100,10 @@ void SocketServer::start() {
 		}
 
 		while (true) {
-			int receivedSize = recv(clientSocket, requestBuffer, SOCKET_BUFFER_SIZE, 0);
+			int receivedSize = recv(clientSocket, (char*)requestBuffer, sizeof(wchar_t) * SOCKET_BUFFER_SIZE, 0);
 			
 			
-			std::string response;
+			std::wstring response;
 
 			if (receivedSize == SOCKET_ERROR) {
 				cerr << "recv failed: " << receivedSize << std::endl;
@@ -112,15 +112,15 @@ void SocketServer::start() {
 				cerr << "connection closed..." << std::endl;
 			} else if (receivedSize > 0) {
 				requestBuffer[receivedSize] = '\0';
-				std::string request = std::string(requestBuffer);
-				std::cout << "received: " << request << std::endl;
+				std::wstring request = std::wstring(requestBuffer);
+				std::wcout << L"received: " << request << std::endl;
 
 				response = this->getResponse(request);
 
-				int sendResult = send(clientSocket, response.c_str(),
-					response.size(), 0);
+				int sendResult = send(clientSocket, (char*) * response.c_str(),
+					sizeof(wchar_t) * response.size(), 0);
 
-				if (request.compare("exit") == 0) {
+				if (request.compare(L"exit") == 0) {
 					break;
 				}
 
@@ -135,7 +135,7 @@ void SocketServer::start() {
 
 }
 
-std::string SocketServer::getResponse(std::string request) {
+std::wstring SocketServer::getResponse(std::wstring request) {
 	return CommandParser::act(request);
 }
 

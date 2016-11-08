@@ -15,9 +15,9 @@ void Hook::unsetHook() {
 	UnhookWindowsHookEx(hHook);
 }
 
-void Hook::blockKey(std::string keyName) {}
+void Hook::blockKey(std::wstring keyName) {}
 
-void Hook::unblockKey(std::string keyName) {}
+void Hook::unblockKey(std::wstring keyName) {}
 
 LRESULT CALLBACK Hook::hookProc(const int nCode, const WPARAM wParam, const LPARAM lParam) {
 	PKBDLLHOOKSTRUCT p = (PKBDLLHOOKSTRUCT)lParam;

@@ -7,12 +7,12 @@
 
 char StringUtilities::charBuffer[1024];
 
-std::vector<std::string> StringUtilities::splitString(std::string str, std::string sep) {
-	std::vector<std::string> tokens;
-	std::regex separator(sep);
+std::vector<std::wstring> StringUtilities::splitString(std::wstring str, std::wstring sep) {
+	std::vector<std::wstring> tokens;
+	std::wregex separator(sep);
 
 	//start/end points of tokens in str
-	std::sregex_token_iterator
+	std::wsregex_token_iterator
 		begin(str.begin(), str.end(), separator, -1),
 		end;
 
@@ -20,14 +20,18 @@ std::vector<std::string> StringUtilities::splitString(std::string str, std::stri
 	return tokens;
 }
 
-std::string StringUtilities::trim(std::string str) {
+std::wstring StringUtilities::trim(std::wstring str) {
 	return str;
 	size_t first = str.find_first_not_of(' ');
 	size_t last = str.find_last_not_of(' ');
 	return str.substr(first, (last - first + 1));
 }
 
-std::string StringUtilities::wcharToStr(const wchar_t* str) {
-	CharToOemW(str, charBuffer);
-	return std::string(charBuffer);
+std::wstring StringUtilities::wcharToStr(const wchar_t* str) {
+	//CharToOemW(str, charBuffer);
+	return std::wstring(str);
+}
+
+const char* StringUtilities::wstrToChars(std::wstring str) {
+	return (std::string((const char*)&str[0], sizeof(wchar_t) / sizeof(char)*str.size())).c_str();
 }

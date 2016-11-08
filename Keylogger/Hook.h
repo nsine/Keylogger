@@ -20,8 +20,8 @@ public:
 	void setHook(std::function<void(const wchar_t[])> keyboardCallback);
 	void unsetHook();
 
-	void blockKey(std::string keyName);
-	void unblockKey(std::string keyName);
+	void blockKey(std::wstring keyName);
+	void unblockKey(std::wstring keyName);
 private:
 	static HHOOK hHook;
 	static std::vector<int> blockedKeys;

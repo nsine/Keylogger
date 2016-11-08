@@ -1,18 +1,18 @@
 #include "stdafx.h"
 #include "CommandParser.h"
 
-std::map<std::string, std::function<std::string(std::string)>> CommandParser::commands;
+std::map<std::wstring, std::function<std::wstring(std::wstring)>> CommandParser::commands;
 
-void CommandParser::addCommand(std::string name, std::function<std::string(std::string)> handler) {
-	commands.insert(std::pair<std::string, std::function<std::string(std::string)>>(name, handler));
+void CommandParser::addCommand(std::wstring name, std::function<std::wstring(std::wstring)> handler) {
+	commands.insert(std::pair<std::wstring, std::function<std::wstring(std::wstring)>>(name, handler));
 }
 
-std::string CommandParser::act(std::string commandString) {
-	auto tokens = StringUtilities::splitString(commandString, " ");
-	auto commandName = tokens.size() > 0 ? tokens[0] : "";
+std::wstring CommandParser::act(std::wstring commandString) {
+	auto tokens = StringUtilities::splitString(commandString, L" ");
+	auto commandName = tokens.size() > 0 ? tokens[0] : L"";
 	auto command = commands.find(commandName);
 	if (command == commands.end()) {
-		return "Command not found";
+		return L"Command not found";
 	}
 	
 	auto argumentsLine = StringUtilities::trim(commandString.substr(commandName.size(),

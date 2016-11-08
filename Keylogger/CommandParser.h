@@ -10,9 +10,9 @@
 
 class CommandParser {
 private:
-	static std::map<std::string, std::function<std::string(std::string)>> commands;
+	static std::map<std::wstring, std::function<std::wstring(std::wstring)>> commands;
 public:
-	static void addCommand(std::string name, std::function<std::string(std::string)> handler);
-	static std::string act(std::string commandString);
+	static void addCommand(std::wstring name, std::function<std::wstring(std::wstring)> handler);
+	static std::wstring act(std::wstring commandString);
 };
 

