@@ -107,98 +107,98 @@
 
 Command_Entry command_list[] = 
 {
-	{command_INIT,          0,     5*60,  220, ECSmtp::SERVER_NOT_RESPONDING},
-	{command_EHLO,          5*60,  5*60,  250, ECSmtp::COMMAND_EHLO},
-	{command_AUTHPLAIN,     5*60,  5*60,  235, ECSmtp::COMMAND_AUTH_PLAIN},
-	{command_AUTHLOGIN,     5*60,  5*60,  334, ECSmtp::COMMAND_AUTH_LOGIN},
-	{command_AUTHCRAMMD5,   5*60,  5*60,  334, ECSmtp::COMMAND_AUTH_CRAMMD5},
-	{command_AUTHDIGESTMD5, 5*60,  5*60,  334, ECSmtp::COMMAND_AUTH_DIGESTMD5},
-	{command_DIGESTMD5,     5*60,  5*60,  335, ECSmtp::COMMAND_DIGESTMD5},
-	{command_USER,          5*60,  5*60,  334, ECSmtp::UNDEF_XYZ_RESPONSE},
-	{command_PASSWORD,      5*60,  5*60,  235, ECSmtp::BAD_LOGIN_PASS},
-	{command_MAILFROM,      5*60,  5*60,  250, ECSmtp::COMMAND_MAIL_FROM},
-	{command_RCPTTO,        5*60,  5*60,  250, ECSmtp::COMMAND_RCPT_TO},
-	{command_DATA,          5*60,  2*60,  354, ECSmtp::COMMAND_DATA},
-	{command_DATABLOCK,     3*60,  0,     0,   ECSmtp::COMMAND_DATABLOCK},	// Here the valid_reply_code is set to zero because there are no replies when sending data blocks
-	{command_DATAEND,       3*60,  10*60, 250, ECSmtp::MSG_BODY_ERROR},
-	{command_QUIT,          5*60,  5*60,  221, ECSmtp::COMMAND_QUIT},
-	{command_STARTTLS,      5*60,  5*60,  220, ECSmtp::COMMAND_EHLO_STARTTLS}
+    {command_INIT,          0,     5*60,  220, ECSmtp::SERVER_NOT_RESPONDING},
+    {command_EHLO,          5*60,  5*60,  250, ECSmtp::COMMAND_EHLO},
+    {command_AUTHPLAIN,     5*60,  5*60,  235, ECSmtp::COMMAND_AUTH_PLAIN},
+    {command_AUTHLOGIN,     5*60,  5*60,  334, ECSmtp::COMMAND_AUTH_LOGIN},
+    {command_AUTHCRAMMD5,   5*60,  5*60,  334, ECSmtp::COMMAND_AUTH_CRAMMD5},
+    {command_AUTHDIGESTMD5, 5*60,  5*60,  334, ECSmtp::COMMAND_AUTH_DIGESTMD5},
+    {command_DIGESTMD5,     5*60,  5*60,  335, ECSmtp::COMMAND_DIGESTMD5},
+    {command_USER,          5*60,  5*60,  334, ECSmtp::UNDEF_XYZ_RESPONSE},
+    {command_PASSWORD,      5*60,  5*60,  235, ECSmtp::BAD_LOGIN_PASS},
+    {command_MAILFROM,      5*60,  5*60,  250, ECSmtp::COMMAND_MAIL_FROM},
+    {command_RCPTTO,        5*60,  5*60,  250, ECSmtp::COMMAND_RCPT_TO},
+    {command_DATA,          5*60,  2*60,  354, ECSmtp::COMMAND_DATA},
+    {command_DATABLOCK,     3*60,  0,     0,   ECSmtp::COMMAND_DATABLOCK},	// Here the valid_reply_code is set to zero because there are no replies when sending data blocks
+    {command_DATAEND,       3*60,  10*60, 250, ECSmtp::MSG_BODY_ERROR},
+    {command_QUIT,          5*60,  5*60,  221, ECSmtp::COMMAND_QUIT},
+    {command_STARTTLS,      5*60,  5*60,  220, ECSmtp::COMMAND_EHLO_STARTTLS}
 };
 
 Command_Entry* FindCommandEntry(SMTP_COMMAND command)
 {
-	Command_Entry* pEntry = NULL;
-	for(size_t i = 0; i < sizeof(command_list)/sizeof(command_list[0]); ++i)
-	{
-		if(command_list[i].command == command)
-		{
-			pEntry = &command_list[i];
-			break;
-		}
-	}
-	assert(pEntry != NULL);
-	return pEntry;
+    Command_Entry* pEntry = NULL;
+    for(size_t i = 0; i < sizeof(command_list)/sizeof(command_list[0]); ++i)
+    {
+        if(command_list[i].command == command)
+        {
+            pEntry = &command_list[i];
+            break;
+        }
+    }
+    assert(pEntry != NULL);
+    return pEntry;
 }
 
 // A simple string match
 bool IsKeywordSupported(const char* response, const char* keyword)
 {
-	assert(response != NULL && keyword != NULL);
-	if(response == NULL || keyword == NULL)
-		return false;
-	int res_len = strlen(response);
-	int key_len = strlen(keyword);
-	if(res_len < key_len)
-		return false;
-	int pos = 0;
-	for(; pos < res_len - key_len + 1; ++pos)
-	{
-		if(_strnicmp(keyword, response+pos, key_len) == 0)
-		{
-			if(pos > 0 &&
-				(response[pos - 1] == '-' ||
-				 response[pos - 1] == ' ' ||
-				 response[pos - 1] == '='))
-			{
-				if(pos+key_len < res_len)
-				{
-					if(response[pos+key_len] == ' ' ||
-					   response[pos+key_len] == '=')
-					{
-						return true;
-					}
-					else if(pos+key_len+1 < res_len)
-					{
-						if(response[pos+key_len] == '\r' &&
-						   response[pos+key_len+1] == '\n')
-						{
-							return true;
-						}
-					}
-				}
-			}
-		}
-	}
-	return false;
+    assert(response != NULL && keyword != NULL);
+    if(response == NULL || keyword == NULL)
+        return false;
+    int res_len = strlen(response);
+    int key_len = strlen(keyword);
+    if(res_len < key_len)
+        return false;
+    int pos = 0;
+    for(; pos < res_len - key_len + 1; ++pos)
+    {
+        if(_strnicmp(keyword, response+pos, key_len) == 0)
+        {
+            if(pos > 0 &&
+                (response[pos - 1] == '-' ||
+                 response[pos - 1] == ' ' ||
+                 response[pos - 1] == '='))
+            {
+                if(pos+key_len < res_len)
+                {
+                    if(response[pos+key_len] == ' ' ||
+                       response[pos+key_len] == '=')
+                    {
+                        return true;
+                    }
+                    else if(pos+key_len+1 < res_len)
+                    {
+                        if(response[pos+key_len] == '\r' &&
+                           response[pos+key_len+1] == '\n')
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return false;
 }
 
 unsigned char* CharToUnsignedChar(const char *strIn)
 {
-	unsigned char *strOut;
+    unsigned char *strOut;
 
-	unsigned long length,
-		          i;
+    unsigned long length,
+                  i;
 
 
-	length = strlen(strIn);
+    length = strlen(strIn);
 
-	strOut = new unsigned char[length+1];
-	if(!strOut) return NULL;
+    strOut = new unsigned char[length+1];
+    if(!strOut) return NULL;
 
-	for(i=0; i<length; i++) strOut[i] = (unsigned char) strIn[i];
-	strOut[length]='\0';
+    for(i=0; i<length; i++) strOut[i] = (unsigned char) strIn[i];
+    strOut[length]='\0';
 
-	return strOut;
+    return strOut;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -215,42 +215,42 @@ unsigned char* CharToUnsignedChar(const char *strIn)
 
 CSmtp::CSmtp()
 {
-	hSocket = INVALID_SOCKET;
-	m_bConnected = false;
-	m_iXPriority = XPRIORITY_NORMAL;
-	m_iSMTPSrvPort = 0;
-	m_bAuthenticate = true;
+    hSocket = INVALID_SOCKET;
+    m_bConnected = false;
+    m_iXPriority = XPRIORITY_NORMAL;
+    m_iSMTPSrvPort = 0;
+    m_bAuthenticate = true;
 
 #ifndef LINUX
-	// Initialize WinSock
-	WSADATA wsaData;
-	WORD wVer = MAKEWORD(2,2);    
-	if (WSAStartup(wVer,&wsaData) != NO_ERROR)
-		throw ECSmtp(ECSmtp::WSA_STARTUP);
-	if (LOBYTE( wsaData.wVersion ) != 2 || HIBYTE( wsaData.wVersion ) != 2 ) 
-	{
-		WSACleanup();
-		throw ECSmtp(ECSmtp::WSA_VER);
-	}
+    // Initialize WinSock
+    WSADATA wsaData;
+    WORD wVer = MAKEWORD(2,2);    
+    if (WSAStartup(wVer,&wsaData) != NO_ERROR)
+        throw ECSmtp(ECSmtp::WSA_STARTUP);
+    if (LOBYTE( wsaData.wVersion ) != 2 || HIBYTE( wsaData.wVersion ) != 2 ) 
+    {
+        WSACleanup();
+        throw ECSmtp(ECSmtp::WSA_VER);
+    }
 #endif
 
-	char hostname[255];
-	if(gethostname((char *) &hostname, 255) == SOCKET_ERROR) throw ECSmtp(ECSmtp::WSA_HOSTNAME);
-	m_sLocalHostName = hostname;
-	
-	if((RecvBuf = new char[BUFFER_SIZE]) == NULL)
-		throw ECSmtp(ECSmtp::LACK_OF_MEMORY);
-	
-	if((SendBuf = new char[BUFFER_SIZE]) == NULL)
-		throw ECSmtp(ECSmtp::LACK_OF_MEMORY);
+    char hostname[255];
+    if(gethostname((char *) &hostname, 255) == SOCKET_ERROR) throw ECSmtp(ECSmtp::WSA_HOSTNAME);
+    m_sLocalHostName = hostname;
+    
+    if((RecvBuf = new char[BUFFER_SIZE]) == NULL)
+        throw ECSmtp(ECSmtp::LACK_OF_MEMORY);
+    
+    if((SendBuf = new char[BUFFER_SIZE]) == NULL)
+        throw ECSmtp(ECSmtp::LACK_OF_MEMORY);
 
-	m_type = NO_SECURITY;
-	m_ctx = NULL;
-	m_ssl = NULL;
-	m_bHTML = false;
-	m_bReadReceipt = false;
+    m_type = NO_SECURITY;
+    m_ctx = NULL;
+    m_ssl = NULL;
+    m_bHTML = false;
+    m_bReadReceipt = false;
 
-	m_sCharSet = "US-ASCII";
+    m_sCharSet = "US-ASCII";
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -266,23 +266,23 @@ CSmtp::CSmtp()
 ////////////////////////////////////////////////////////////////////////////////
 CSmtp::~CSmtp()
 {
-	if(m_bConnected) DisconnectRemoteServer();
+    if(m_bConnected) DisconnectRemoteServer();
 
-	if(SendBuf)
-	{
-		delete[] SendBuf;
-		SendBuf = NULL;
-	}
-	if(RecvBuf)
-	{
-		delete[] RecvBuf;
-		RecvBuf = NULL;
-	}
+    if(SendBuf)
+    {
+        delete[] SendBuf;
+        SendBuf = NULL;
+    }
+    if(RecvBuf)
+    {
+        delete[] RecvBuf;
+        RecvBuf = NULL;
+    }
 
-	CleanupOpenSSL();
+    CleanupOpenSSL();
 
 #ifndef LINUX
-	WSACleanup();
+    WSACleanup();
 #endif
 }
 
@@ -299,8 +299,8 @@ CSmtp::~CSmtp()
 ////////////////////////////////////////////////////////////////////////////////
 void CSmtp::AddAttachment(const char *Path)
 {
-	assert(Path);
-	Attachments.insert(Attachments.end(), Path);
+    assert(Path);
+    Attachments.insert(Attachments.end(), Path);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -317,15 +317,15 @@ void CSmtp::AddAttachment(const char *Path)
 ////////////////////////////////////////////////////////////////////////////////
 void CSmtp::AddRecipient(const char *email, const char *name)
 {	
-	if(!email)
-		throw ECSmtp(ECSmtp::UNDEF_RECIPIENT_MAIL);
+    if(!email)
+        throw ECSmtp(ECSmtp::UNDEF_RECIPIENT_MAIL);
 
-	Recipient recipient;
-	recipient.Mail = email;
-	if(name!=NULL) recipient.Name = name;
-	else recipient.Name.empty();
+    Recipient recipient;
+    recipient.Mail = email;
+    if(name!=NULL) recipient.Name = name;
+    else recipient.Name.empty();
 
-	Recipients.insert(Recipients.end(), recipient);   
+    Recipients.insert(Recipients.end(), recipient);   
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -342,15 +342,15 @@ void CSmtp::AddRecipient(const char *email, const char *name)
 ////////////////////////////////////////////////////////////////////////////////
 void CSmtp::AddCCRecipient(const char *email, const char *name)
 {	
-	if(!email)
-		throw ECSmtp(ECSmtp::UNDEF_RECIPIENT_MAIL);
+    if(!email)
+        throw ECSmtp(ECSmtp::UNDEF_RECIPIENT_MAIL);
 
-	Recipient recipient;
-	recipient.Mail = email;
-	if(name!=NULL) recipient.Name = name;
-	else recipient.Name.empty();
+    Recipient recipient;
+    recipient.Mail = email;
+    if(name!=NULL) recipient.Name = name;
+    else recipient.Name.empty();
 
-	CCRecipients.insert(CCRecipients.end(), recipient);
+    CCRecipients.insert(CCRecipients.end(), recipient);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -367,15 +367,15 @@ void CSmtp::AddCCRecipient(const char *email, const char *name)
 ////////////////////////////////////////////////////////////////////////////////
 void CSmtp::AddBCCRecipient(const char *email, const char *name)
 {	
-	if(!email)
-		throw ECSmtp(ECSmtp::UNDEF_RECIPIENT_MAIL);
+    if(!email)
+        throw ECSmtp(ECSmtp::UNDEF_RECIPIENT_MAIL);
 
-	Recipient recipient;
-	recipient.Mail = email;
-	if(name!=NULL) recipient.Name = name;
-	else recipient.Name.empty();
+    Recipient recipient;
+    recipient.Mail = email;
+    if(name!=NULL) recipient.Name = name;
+    else recipient.Name.empty();
 
-	BCCRecipients.insert(BCCRecipients.end(), recipient);
+    BCCRecipients.insert(BCCRecipients.end(), recipient);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -391,7 +391,7 @@ void CSmtp::AddBCCRecipient(const char *email, const char *name)
 ////////////////////////////////////////////////////////////////////////////////
 void CSmtp::AddMsgLine(const char* Text)
 {
-	MsgBody.insert(MsgBody.end(), Text);
+    MsgBody.insert(MsgBody.end(), Text);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -407,9 +407,9 @@ void CSmtp::AddMsgLine(const char* Text)
 ////////////////////////////////////////////////////////////////////////////////
 void CSmtp::DelMsgLine(unsigned int Line)
 {
-	if(Line >= MsgBody.size())
-		throw ECSmtp(ECSmtp::OUT_OF_MSG_RANGE);
-	MsgBody.erase(MsgBody.begin()+Line);
+    if(Line >= MsgBody.size())
+        throw ECSmtp(ECSmtp::OUT_OF_MSG_RANGE);
+    MsgBody.erase(MsgBody.begin()+Line);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -425,7 +425,7 @@ void CSmtp::DelMsgLine(unsigned int Line)
 ////////////////////////////////////////////////////////////////////////////////
 void CSmtp::DelRecipients()
 {
-	Recipients.clear();
+    Recipients.clear();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -441,7 +441,7 @@ void CSmtp::DelRecipients()
 ////////////////////////////////////////////////////////////////////////////////
 void CSmtp::DelBCCRecipients()
 {
-	BCCRecipients.clear();
+    BCCRecipients.clear();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -457,7 +457,7 @@ void CSmtp::DelBCCRecipients()
 ////////////////////////////////////////////////////////////////////////////////
 void CSmtp::DelCCRecipients()
 {
-	CCRecipients.clear();
+    CCRecipients.clear();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -472,7 +472,7 @@ void CSmtp::DelCCRecipients()
 ////////////////////////////////////////////////////////////////////////////////
 void CSmtp::DelMsgLines()
 {
-	MsgBody.clear();
+    MsgBody.clear();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -488,7 +488,7 @@ void CSmtp::DelMsgLines()
 ////////////////////////////////////////////////////////////////////////////////
 void CSmtp::DelAttachments()
 {
-	Attachments.clear();
+    Attachments.clear();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -504,12 +504,12 @@ void CSmtp::DelAttachments()
 ////////////////////////////////////////////////////////////////////////////////
 void CSmtp::ModMsgLine(unsigned int Line,const char* Text)
 {
-	if(Text)
-	{
-		if(Line >= MsgBody.size())
-			throw ECSmtp(ECSmtp::OUT_OF_MSG_RANGE);
-		MsgBody.at(Line) = std::string(Text);
-	}
+    if(Text)
+    {
+        if(Line >= MsgBody.size())
+            throw ECSmtp(ECSmtp::OUT_OF_MSG_RANGE);
+        MsgBody.at(Line) = std::string(Text);
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -522,11 +522,11 @@ void CSmtp::ModMsgLine(unsigned int Line,const char* Text)
 ////////////////////////////////////////////////////////////////////////////////
 void CSmtp::ClearMessage()
 {
-	DelRecipients();
-	DelBCCRecipients();
-	DelCCRecipients();
-	DelAttachments();
-	DelMsgLines();
+    DelRecipients();
+    DelBCCRecipients();
+    DelCCRecipients();
+    DelAttachments();
+    DelMsgLines();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -544,192 +544,192 @@ void CSmtp::ClearMessage()
 ////////////////////////////////////////////////////////////////////////////////
 void CSmtp::Send()
 {
-	unsigned int i,rcpt_count,res,FileId;
-	char *FileBuf = NULL;
-	FILE* hFile = NULL;
-	unsigned long int FileSize,TotalSize,MsgPart;
-	string FileName,EncodedFileName;
-	string::size_type pos;
+    unsigned int i,rcpt_count,res,FileId;
+    char *FileBuf = NULL;
+    FILE* hFile = NULL;
+    unsigned long int FileSize,TotalSize,MsgPart;
+    string FileName,EncodedFileName;
+    string::size_type pos;
 
-	// ***** CONNECTING TO SMTP SERVER *****
+    // ***** CONNECTING TO SMTP SERVER *****
 
-	// connecting to remote host if not already connected:
-	if(hSocket==INVALID_SOCKET)
-	{
-		if(!ConnectRemoteServer(m_sSMTPSrvName.c_str(), m_iSMTPSrvPort, m_type, m_bAuthenticate))
-			throw ECSmtp(ECSmtp::WSA_INVALID_SOCKET);
-	}
+    // connecting to remote host if not already connected:
+    if(hSocket==INVALID_SOCKET)
+    {
+        if(!ConnectRemoteServer(m_sSMTPSrvName.c_str(), m_iSMTPSrvPort, m_type, m_bAuthenticate))
+            throw ECSmtp(ECSmtp::WSA_INVALID_SOCKET);
+    }
 
-	try{
-		//Allocate memory
-		if((FileBuf = new char[55]) == NULL)
-			throw ECSmtp(ECSmtp::LACK_OF_MEMORY);
+    try{
+        //Allocate memory
+        if((FileBuf = new char[55]) == NULL)
+            throw ECSmtp(ECSmtp::LACK_OF_MEMORY);
 
-		//Check that any attachments specified can be opened
-		TotalSize = 0;
-		for(FileId=0;FileId<Attachments.size();FileId++)
-		{
-			// opening the file:
-			hFile = fopen(Attachments[FileId].c_str(), "rb");
-			if(hFile == NULL)
-				throw ECSmtp(ECSmtp::FILE_NOT_EXIST);
-			
-			// checking file size:
-			fseek(hFile, 0, SEEK_END);
-			FileSize = ftell(hFile);
-			TotalSize += FileSize;
+        //Check that any attachments specified can be opened
+        TotalSize = 0;
+        for(FileId=0;FileId<Attachments.size();FileId++)
+        {
+            // opening the file:
+            hFile = fopen(Attachments[FileId].c_str(), "rb");
+            if(hFile == NULL)
+                throw ECSmtp(ECSmtp::FILE_NOT_EXIST);
+            
+            // checking file size:
+            fseek(hFile, 0, SEEK_END);
+            FileSize = ftell(hFile);
+            TotalSize += FileSize;
 
-			// sending the file:
-			if(TotalSize/1024 > MSG_SIZE_IN_MB*1024)
-				throw ECSmtp(ECSmtp::MSG_TOO_BIG);
+            // sending the file:
+            if(TotalSize/1024 > MSG_SIZE_IN_MB*1024)
+                throw ECSmtp(ECSmtp::MSG_TOO_BIG);
 
-			fclose(hFile);
-			hFile=NULL;
-		}
+            fclose(hFile);
+            hFile=NULL;
+        }
 
-		// ***** SENDING E-MAIL *****
-		
-		// MAIL <SP> FROM:<reverse-path> <CRLF>
-		if(!m_sMailFrom.size())
-			throw ECSmtp(ECSmtp::UNDEF_MAIL_FROM);
-		Command_Entry* pEntry = FindCommandEntry(command_MAILFROM);
-		snprintf(SendBuf, BUFFER_SIZE, "MAIL FROM:<%s>\r\n", m_sMailFrom.c_str());
-		SendData(pEntry);
-		ReceiveResponse(pEntry);
+        // ***** SENDING E-MAIL *****
+        
+        // MAIL <SP> FROM:<reverse-path> <CRLF>
+        if(!m_sMailFrom.size())
+            throw ECSmtp(ECSmtp::UNDEF_MAIL_FROM);
+        Command_Entry* pEntry = FindCommandEntry(command_MAILFROM);
+        snprintf(SendBuf, BUFFER_SIZE, "MAIL FROM:<%s>\r\n", m_sMailFrom.c_str());
+        SendData(pEntry);
+        ReceiveResponse(pEntry);
 
-		// RCPT <SP> TO:<forward-path> <CRLF>
-		if(!(rcpt_count = Recipients.size()))
-			throw ECSmtp(ECSmtp::UNDEF_RECIPIENTS);
-		pEntry = FindCommandEntry(command_RCPTTO);
-		for(i=0;i<Recipients.size();i++)
-		{
-			snprintf(SendBuf, BUFFER_SIZE, "RCPT TO:<%s>\r\n", (Recipients.at(i).Mail).c_str());
-			SendData(pEntry);
-			ReceiveResponse(pEntry);
-		}
+        // RCPT <SP> TO:<forward-path> <CRLF>
+        if(!(rcpt_count = Recipients.size()))
+            throw ECSmtp(ECSmtp::UNDEF_RECIPIENTS);
+        pEntry = FindCommandEntry(command_RCPTTO);
+        for(i=0;i<Recipients.size();i++)
+        {
+            snprintf(SendBuf, BUFFER_SIZE, "RCPT TO:<%s>\r\n", (Recipients.at(i).Mail).c_str());
+            SendData(pEntry);
+            ReceiveResponse(pEntry);
+        }
 
-		for(i=0;i<CCRecipients.size();i++)
-		{
-			snprintf(SendBuf, BUFFER_SIZE, "RCPT TO:<%s>\r\n", (CCRecipients.at(i).Mail).c_str());
-			SendData(pEntry);
-			ReceiveResponse(pEntry);
-		}
+        for(i=0;i<CCRecipients.size();i++)
+        {
+            snprintf(SendBuf, BUFFER_SIZE, "RCPT TO:<%s>\r\n", (CCRecipients.at(i).Mail).c_str());
+            SendData(pEntry);
+            ReceiveResponse(pEntry);
+        }
 
-		for(i=0;i<BCCRecipients.size();i++)
-		{
-			snprintf(SendBuf, BUFFER_SIZE, "RCPT TO:<%s>\r\n", (BCCRecipients.at(i).Mail).c_str());
-			SendData(pEntry);
-			ReceiveResponse(pEntry);
-		}
-		
-		pEntry = FindCommandEntry(command_DATA);
-		// DATA <CRLF>
-		snprintf(SendBuf, BUFFER_SIZE, "DATA\r\n");
-		SendData(pEntry);
-		ReceiveResponse(pEntry);
-		
-		pEntry = FindCommandEntry(command_DATABLOCK);
-		// send header(s)
-		FormatHeader(SendBuf);
-		SendData(pEntry);
+        for(i=0;i<BCCRecipients.size();i++)
+        {
+            snprintf(SendBuf, BUFFER_SIZE, "RCPT TO:<%s>\r\n", (BCCRecipients.at(i).Mail).c_str());
+            SendData(pEntry);
+            ReceiveResponse(pEntry);
+        }
+        
+        pEntry = FindCommandEntry(command_DATA);
+        // DATA <CRLF>
+        snprintf(SendBuf, BUFFER_SIZE, "DATA\r\n");
+        SendData(pEntry);
+        ReceiveResponse(pEntry);
+        
+        pEntry = FindCommandEntry(command_DATABLOCK);
+        // send header(s)
+        FormatHeader(SendBuf);
+        SendData(pEntry);
 
-		// send text message
-		if(GetMsgLines())
-		{
-			for(i=0;i<GetMsgLines();i++)
-			{
-				snprintf(SendBuf, BUFFER_SIZE, "%s\r\n",GetMsgLineText(i));
-				SendData(pEntry);
-			}
-		}
-		else
-		{
-			snprintf(SendBuf, BUFFER_SIZE, "%s\r\n"," ");
-			SendData(pEntry);
-		}
+        // send text message
+        if(GetMsgLines())
+        {
+            for(i=0;i<GetMsgLines();i++)
+            {
+                snprintf(SendBuf, BUFFER_SIZE, "%s\r\n",GetMsgLineText(i));
+                SendData(pEntry);
+            }
+        }
+        else
+        {
+            snprintf(SendBuf, BUFFER_SIZE, "%s\r\n"," ");
+            SendData(pEntry);
+        }
 
-		// next goes attachments (if they are)
-		for(FileId=0;FileId<Attachments.size();FileId++)
-		{
+        // next goes attachments (if they are)
+        for(FileId=0;FileId<Attachments.size();FileId++)
+        {
 #ifndef LINUX
-			pos = Attachments[FileId].find_last_of("\\");
+            pos = Attachments[FileId].find_last_of("\\");
 #else
-			pos = Attachments[FileId].find_last_of("/");
+            pos = Attachments[FileId].find_last_of("/");
 #endif
-			if(pos == string::npos) FileName = Attachments[FileId];
-			else FileName = Attachments[FileId].substr(pos+1);
+            if(pos == string::npos) FileName = Attachments[FileId];
+            else FileName = Attachments[FileId].substr(pos+1);
 
             //RFC 2047 - Use UTF-8 charset,base64 encode.
             EncodedFileName = "=?UTF-8?B?";
             EncodedFileName += base64_encode((unsigned char *) FileName.c_str(), FileName.size());
             EncodedFileName += "?=";
 
-			snprintf(SendBuf, BUFFER_SIZE, "--%s\r\n", BOUNDARY_TEXT);
-			strcat(SendBuf, "Content-Type: application/x-msdownload; name=\"");
-			strcat(SendBuf, EncodedFileName.c_str());
-			strcat(SendBuf, "\"\r\n");
-			strcat(SendBuf, "Content-Transfer-Encoding: base64\r\n");
-			strcat(SendBuf, "Content-Disposition: attachment; filename=\"");
-			strcat(SendBuf, EncodedFileName.c_str());
-			strcat(SendBuf, "\"\r\n");
-			strcat(SendBuf, "\r\n");
+            snprintf(SendBuf, BUFFER_SIZE, "--%s\r\n", BOUNDARY_TEXT);
+            strcat(SendBuf, "Content-Type: application/x-msdownload; name=\"");
+            strcat(SendBuf, EncodedFileName.c_str());
+            strcat(SendBuf, "\"\r\n");
+            strcat(SendBuf, "Content-Transfer-Encoding: base64\r\n");
+            strcat(SendBuf, "Content-Disposition: attachment; filename=\"");
+            strcat(SendBuf, EncodedFileName.c_str());
+            strcat(SendBuf, "\"\r\n");
+            strcat(SendBuf, "\r\n");
 
-			SendData(pEntry);
+            SendData(pEntry);
 
-			// opening the file:
-			hFile = fopen(Attachments[FileId].c_str(), "rb");
-			if(hFile == NULL)
-				throw ECSmtp(ECSmtp::FILE_NOT_EXIST);
-			
-			// get file size:
-			fseek(hFile, 0, SEEK_END);
-			FileSize = ftell(hFile);
-			fseek (hFile,0,SEEK_SET);
+            // opening the file:
+            hFile = fopen(Attachments[FileId].c_str(), "rb");
+            if(hFile == NULL)
+                throw ECSmtp(ECSmtp::FILE_NOT_EXIST);
+            
+            // get file size:
+            fseek(hFile, 0, SEEK_END);
+            FileSize = ftell(hFile);
+            fseek (hFile,0,SEEK_SET);
 
-			MsgPart = 0;
-			for(i=0;i<FileSize/54+1;i++)
-			{
-				res = fread(FileBuf,sizeof(char),54,hFile);
-				MsgPart ? strcat(SendBuf,base64_encode(reinterpret_cast<const unsigned char*>(FileBuf),res).c_str())
-							: strcpy(SendBuf,base64_encode(reinterpret_cast<const unsigned char*>(FileBuf),res).c_str());
-				strcat(SendBuf,"\r\n");
-				MsgPart += res + 2;
-				if(MsgPart >= BUFFER_SIZE/2)
-				{ // sending part of the message
-					MsgPart = 0;
-					SendData(pEntry); // FileBuf, FileName, fclose(hFile);
-				}
-			}
-			if(MsgPart)
-			{
-				SendData(pEntry); // FileBuf, FileName, fclose(hFile);
-			}
-			fclose(hFile);
-			hFile=NULL;
-		}
-		delete[] FileBuf;
-		FileBuf=NULL;
-		
-		// sending last message block (if there is one or more attachments)
-		if(Attachments.size())
-		{
-			snprintf(SendBuf, BUFFER_SIZE, "\r\n--%s--\r\n",BOUNDARY_TEXT);
-			SendData(pEntry);
-		}
-		
-		pEntry = FindCommandEntry(command_DATAEND);
-		// <CRLF> . <CRLF>
-		snprintf(SendBuf, BUFFER_SIZE, "\r\n.\r\n");
-		SendData(pEntry);
-		ReceiveResponse(pEntry);
-	}
-	catch(const ECSmtp&)
-	{
-		if(hFile) fclose(hFile);
-		if(FileBuf) delete[] FileBuf;
-		DisconnectRemoteServer();
-		throw;
-	}
+            MsgPart = 0;
+            for(i=0;i<FileSize/54+1;i++)
+            {
+                res = fread(FileBuf,sizeof(char),54,hFile);
+                MsgPart ? strcat(SendBuf,base64_encode(reinterpret_cast<const unsigned char*>(FileBuf),res).c_str())
+                            : strcpy(SendBuf,base64_encode(reinterpret_cast<const unsigned char*>(FileBuf),res).c_str());
+                strcat(SendBuf,"\r\n");
+                MsgPart += res + 2;
+                if(MsgPart >= BUFFER_SIZE/2)
+                { // sending part of the message
+                    MsgPart = 0;
+                    SendData(pEntry); // FileBuf, FileName, fclose(hFile);
+                }
+            }
+            if(MsgPart)
+            {
+                SendData(pEntry); // FileBuf, FileName, fclose(hFile);
+            }
+            fclose(hFile);
+            hFile=NULL;
+        }
+        delete[] FileBuf;
+        FileBuf=NULL;
+        
+        // sending last message block (if there is one or more attachments)
+        if(Attachments.size())
+        {
+            snprintf(SendBuf, BUFFER_SIZE, "\r\n--%s--\r\n",BOUNDARY_TEXT);
+            SendData(pEntry);
+        }
+        
+        pEntry = FindCommandEntry(command_DATAEND);
+        // <CRLF> . <CRLF>
+        snprintf(SendBuf, BUFFER_SIZE, "\r\n.\r\n");
+        SendData(pEntry);
+        ReceiveResponse(pEntry);
+    }
+    catch(const ECSmtp&)
+    {
+        if(hFile) fclose(hFile);
+        if(FileBuf) delete[] FileBuf;
+        DisconnectRemoteServer();
+        throw;
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -746,478 +746,478 @@ void CSmtp::Send()
 // AUTHOR/DATE: JP 2010-01-28
 ////////////////////////////////////////////////////////////////////////////////
 bool CSmtp::ConnectRemoteServer(const char* szServer, const unsigned short nPort_/*=0*/, 
-								SMTP_SECURITY_TYPE securityType/*=DO_NOT_SET*/,
-								bool authenticate/*=true*/, const char* login/*=NULL*/,
-								const char* password/*=NULL*/)
+                                SMTP_SECURITY_TYPE securityType/*=DO_NOT_SET*/,
+                                bool authenticate/*=true*/, const char* login/*=NULL*/,
+                                const char* password/*=NULL*/)
 {
-	unsigned short nPort = 0;
-	LPSERVENT lpServEnt;
-	SOCKADDR_IN sockAddr;
-	unsigned long ul = 1;
-	fd_set fdwrite,fdexcept;
-	timeval timeout;
-	int res = 0;
+    unsigned short nPort = 0;
+    LPSERVENT lpServEnt;
+    SOCKADDR_IN sockAddr;
+    unsigned long ul = 1;
+    fd_set fdwrite,fdexcept;
+    timeval timeout;
+    int res = 0;
 
-	try
-	{
-		timeout.tv_sec = TIME_IN_SEC;
-		timeout.tv_usec = 0;
+    try
+    {
+        timeout.tv_sec = TIME_IN_SEC;
+        timeout.tv_usec = 0;
 
-		hSocket = INVALID_SOCKET;
+        hSocket = INVALID_SOCKET;
 
-		if((hSocket = socket(PF_INET, SOCK_STREAM,0)) == INVALID_SOCKET)
-			throw ECSmtp(ECSmtp::WSA_INVALID_SOCKET);
+        if((hSocket = socket(PF_INET, SOCK_STREAM,0)) == INVALID_SOCKET)
+            throw ECSmtp(ECSmtp::WSA_INVALID_SOCKET);
 
-		if(nPort_ != 0)
-			nPort = htons(nPort_);
-		else
-		{
-			lpServEnt = getservbyname("mail", 0);
-			if (lpServEnt == NULL)
-				nPort = htons(25);
-			else 
-				nPort = lpServEnt->s_port;
-		}
-				
-		sockAddr.sin_family = AF_INET;
-		sockAddr.sin_port = nPort;
-		if((sockAddr.sin_addr.s_addr = inet_addr(szServer)) == INADDR_NONE)
-		{
-			LPHOSTENT host;
-				
-			host = gethostbyname(szServer);
-			if (host)
-				memcpy(&sockAddr.sin_addr,host->h_addr_list[0],host->h_length);
-			else
-			{
+        if(nPort_ != 0)
+            nPort = htons(nPort_);
+        else
+        {
+            lpServEnt = getservbyname("mail", 0);
+            if (lpServEnt == NULL)
+                nPort = htons(25);
+            else 
+                nPort = lpServEnt->s_port;
+        }
+                
+        sockAddr.sin_family = AF_INET;
+        sockAddr.sin_port = nPort;
+        if((sockAddr.sin_addr.s_addr = inet_addr(szServer)) == INADDR_NONE)
+        {
+            LPHOSTENT host;
+                
+            host = gethostbyname(szServer);
+            if (host)
+                memcpy(&sockAddr.sin_addr,host->h_addr_list[0],host->h_length);
+            else
+            {
 #ifdef LINUX
-				close(hSocket);
+                close(hSocket);
 #else
-				closesocket(hSocket);
+                closesocket(hSocket);
 #endif
-				throw ECSmtp(ECSmtp::WSA_GETHOSTBY_NAME_ADDR);
-			}				
-		}
+                throw ECSmtp(ECSmtp::WSA_GETHOSTBY_NAME_ADDR);
+            }				
+        }
 
-		// start non-blocking mode for socket:
+        // start non-blocking mode for socket:
 #ifdef LINUX
-		if(ioctl(hSocket,FIONBIO, (unsigned long*)&ul) == SOCKET_ERROR)
+        if(ioctl(hSocket,FIONBIO, (unsigned long*)&ul) == SOCKET_ERROR)
 #else
-		if(ioctlsocket(hSocket,FIONBIO, (unsigned long*)&ul) == SOCKET_ERROR)
+        if(ioctlsocket(hSocket,FIONBIO, (unsigned long*)&ul) == SOCKET_ERROR)
 #endif
-		{
+        {
 #ifdef LINUX
-			close(hSocket);
+            close(hSocket);
 #else
-			closesocket(hSocket);
+            closesocket(hSocket);
 #endif
-			throw ECSmtp(ECSmtp::WSA_IOCTLSOCKET);
-		}
+            throw ECSmtp(ECSmtp::WSA_IOCTLSOCKET);
+        }
 
-		if(connect(hSocket,(LPSOCKADDR)&sockAddr,sizeof(sockAddr)) == SOCKET_ERROR)
-		{
+        if(connect(hSocket,(LPSOCKADDR)&sockAddr,sizeof(sockAddr)) == SOCKET_ERROR)
+        {
 #ifdef LINUX
-			if(errno != EINPROGRESS)
+            if(errno != EINPROGRESS)
 #else
-			if(WSAGetLastError() != WSAEWOULDBLOCK)
+            if(WSAGetLastError() != WSAEWOULDBLOCK)
 #endif
-			{
+            {
 #ifdef LINUX
-				close(hSocket);
+                close(hSocket);
 #else
-				closesocket(hSocket);
+                closesocket(hSocket);
 #endif
-				throw ECSmtp(ECSmtp::WSA_CONNECT);
-			}
-		}
-		else
-			return true;
+                throw ECSmtp(ECSmtp::WSA_CONNECT);
+            }
+        }
+        else
+            return true;
 
-		while(true)
-		{
-			FD_ZERO(&fdwrite);
-			FD_ZERO(&fdexcept);
+        while(true)
+        {
+            FD_ZERO(&fdwrite);
+            FD_ZERO(&fdexcept);
 
-			FD_SET(hSocket,&fdwrite);
-			FD_SET(hSocket,&fdexcept);
+            FD_SET(hSocket,&fdwrite);
+            FD_SET(hSocket,&fdexcept);
 
-			if((res = select(hSocket+1,NULL,&fdwrite,&fdexcept,&timeout)) == SOCKET_ERROR)
-			{
+            if((res = select(hSocket+1,NULL,&fdwrite,&fdexcept,&timeout)) == SOCKET_ERROR)
+            {
 #ifdef LINUX
-				close(hSocket);
+                close(hSocket);
 #else
-				closesocket(hSocket);
+                closesocket(hSocket);
 #endif
-				throw ECSmtp(ECSmtp::WSA_SELECT);
-			}
+                throw ECSmtp(ECSmtp::WSA_SELECT);
+            }
 
-			if(!res)
-			{
+            if(!res)
+            {
 #ifdef LINUX
-				close(hSocket);
+                close(hSocket);
 #else
-				closesocket(hSocket);
+                closesocket(hSocket);
 #endif
-				throw ECSmtp(ECSmtp::SELECT_TIMEOUT);
-			}
-			if(res && FD_ISSET(hSocket,&fdwrite))
-				break;
-			if(res && FD_ISSET(hSocket,&fdexcept))
-			{
+                throw ECSmtp(ECSmtp::SELECT_TIMEOUT);
+            }
+            if(res && FD_ISSET(hSocket,&fdwrite))
+                break;
+            if(res && FD_ISSET(hSocket,&fdexcept))
+            {
 #ifdef LINUX
-				close(hSocket);
+                close(hSocket);
 #else
-				closesocket(hSocket);
+                closesocket(hSocket);
 #endif
-				throw ECSmtp(ECSmtp::WSA_SELECT);
-			}
-		} // while
+                throw ECSmtp(ECSmtp::WSA_SELECT);
+            }
+        } // while
 
-		FD_CLR(hSocket,&fdwrite);
-		FD_CLR(hSocket,&fdexcept);
+        FD_CLR(hSocket,&fdwrite);
+        FD_CLR(hSocket,&fdexcept);
 
-		if(securityType!=DO_NOT_SET) SetSecurityType(securityType);
-		if(GetSecurityType() == USE_TLS || GetSecurityType() == USE_SSL)
-		{
-			InitOpenSSL();
-			if(GetSecurityType() == USE_SSL)
-			{
-				OpenSSLConnect();
-			}
-		}
+        if(securityType!=DO_NOT_SET) SetSecurityType(securityType);
+        if(GetSecurityType() == USE_TLS || GetSecurityType() == USE_SSL)
+        {
+            InitOpenSSL();
+            if(GetSecurityType() == USE_SSL)
+            {
+                OpenSSLConnect();
+            }
+        }
 
-		Command_Entry* pEntry = FindCommandEntry(command_INIT);
-		ReceiveResponse(pEntry);
+        Command_Entry* pEntry = FindCommandEntry(command_INIT);
+        ReceiveResponse(pEntry);
 
-		SayHello();
+        SayHello();
 
-		if(GetSecurityType() == USE_TLS)
-		{
-			StartTls();
-			SayHello();
-		}
+        if(GetSecurityType() == USE_TLS)
+        {
+            StartTls();
+            SayHello();
+        }
 
-		if(authenticate && IsKeywordSupported(RecvBuf, "AUTH") == true)
-		{
-			if(login) SetLogin(login);
-			if(!m_sLogin.size())
-				throw ECSmtp(ECSmtp::UNDEF_LOGIN);
+        if(authenticate && IsKeywordSupported(RecvBuf, "AUTH") == true)
+        {
+            if(login) SetLogin(login);
+            if(!m_sLogin.size())
+                throw ECSmtp(ECSmtp::UNDEF_LOGIN);
 
-			if(password) SetPassword(password);
-			if(!m_sPassword.size())
-				throw ECSmtp(ECSmtp::UNDEF_PASSWORD);
+            if(password) SetPassword(password);
+            if(!m_sPassword.size())
+                throw ECSmtp(ECSmtp::UNDEF_PASSWORD);
 
-			if(IsKeywordSupported(RecvBuf, "LOGIN") == true)
-			{
-				pEntry = FindCommandEntry(command_AUTHLOGIN);
-				snprintf(SendBuf, BUFFER_SIZE, "AUTH LOGIN\r\n");
-				SendData(pEntry);
-				ReceiveResponse(pEntry);
+            if(IsKeywordSupported(RecvBuf, "LOGIN") == true)
+            {
+                pEntry = FindCommandEntry(command_AUTHLOGIN);
+                snprintf(SendBuf, BUFFER_SIZE, "AUTH LOGIN\r\n");
+                SendData(pEntry);
+                ReceiveResponse(pEntry);
 
-				// send login:
-				std::string encoded_login = base64_encode(reinterpret_cast<const unsigned char*>(m_sLogin.c_str()),m_sLogin.size());
-				pEntry = FindCommandEntry(command_USER);
-				snprintf(SendBuf, BUFFER_SIZE, "%s\r\n",encoded_login.c_str());
-				SendData(pEntry);
-				ReceiveResponse(pEntry);
-				
-				// send password:
-				std::string encoded_password = base64_encode(reinterpret_cast<const unsigned char*>(m_sPassword.c_str()),m_sPassword.size());
-				pEntry = FindCommandEntry(command_PASSWORD);
-				snprintf(SendBuf, BUFFER_SIZE, "%s\r\n",encoded_password.c_str());
-				SendData(pEntry);
-				ReceiveResponse(pEntry);
-			}
-			else if(IsKeywordSupported(RecvBuf, "PLAIN") == true)
-			{
-				pEntry = FindCommandEntry(command_AUTHPLAIN);
-				snprintf(SendBuf, BUFFER_SIZE, "%s^%s^%s", m_sLogin.c_str(), m_sLogin.c_str(), m_sPassword.c_str());
-				unsigned int length = strlen(SendBuf);
-				unsigned char *ustrLogin = CharToUnsignedChar(SendBuf);
-				for(unsigned int i=0; i<length; i++)
-				{
-					if(ustrLogin[i]==94) ustrLogin[i]=0;
-				}
-				std::string encoded_login = base64_encode(ustrLogin, length);
-				delete[] ustrLogin;
-				snprintf(SendBuf, BUFFER_SIZE, "AUTH PLAIN %s\r\n", encoded_login.c_str());
-				SendData(pEntry);
-				ReceiveResponse(pEntry);
-			}
-			else if(IsKeywordSupported(RecvBuf, "CRAM-MD5") == true)
-			{
-				pEntry = FindCommandEntry(command_AUTHCRAMMD5);
-				snprintf(SendBuf, BUFFER_SIZE, "AUTH CRAM-MD5\r\n");
-				SendData(pEntry);
-				ReceiveResponse(pEntry);
+                // send login:
+                std::string encoded_login = base64_encode(reinterpret_cast<const unsigned char*>(m_sLogin.c_str()),m_sLogin.size());
+                pEntry = FindCommandEntry(command_USER);
+                snprintf(SendBuf, BUFFER_SIZE, "%s\r\n",encoded_login.c_str());
+                SendData(pEntry);
+                ReceiveResponse(pEntry);
+                
+                // send password:
+                std::string encoded_password = base64_encode(reinterpret_cast<const unsigned char*>(m_sPassword.c_str()),m_sPassword.size());
+                pEntry = FindCommandEntry(command_PASSWORD);
+                snprintf(SendBuf, BUFFER_SIZE, "%s\r\n",encoded_password.c_str());
+                SendData(pEntry);
+                ReceiveResponse(pEntry);
+            }
+            else if(IsKeywordSupported(RecvBuf, "PLAIN") == true)
+            {
+                pEntry = FindCommandEntry(command_AUTHPLAIN);
+                snprintf(SendBuf, BUFFER_SIZE, "%s^%s^%s", m_sLogin.c_str(), m_sLogin.c_str(), m_sPassword.c_str());
+                unsigned int length = strlen(SendBuf);
+                unsigned char *ustrLogin = CharToUnsignedChar(SendBuf);
+                for(unsigned int i=0; i<length; i++)
+                {
+                    if(ustrLogin[i]==94) ustrLogin[i]=0;
+                }
+                std::string encoded_login = base64_encode(ustrLogin, length);
+                delete[] ustrLogin;
+                snprintf(SendBuf, BUFFER_SIZE, "AUTH PLAIN %s\r\n", encoded_login.c_str());
+                SendData(pEntry);
+                ReceiveResponse(pEntry);
+            }
+            else if(IsKeywordSupported(RecvBuf, "CRAM-MD5") == true)
+            {
+                pEntry = FindCommandEntry(command_AUTHCRAMMD5);
+                snprintf(SendBuf, BUFFER_SIZE, "AUTH CRAM-MD5\r\n");
+                SendData(pEntry);
+                ReceiveResponse(pEntry);
 
-				std::string encoded_challenge = RecvBuf;
-				encoded_challenge = encoded_challenge.substr(4);
-				std::string decoded_challenge = base64_decode(encoded_challenge);
-				
-				/////////////////////////////////////////////////////////////////////
-				//test data from RFC 2195
-				//decoded_challenge = "<1896.697170952@postoffice.reston.mci.net>";
-				//m_sLogin = "tim";
-				//m_sPassword = "tanstaaftanstaaf";
-				//MD5 should produce b913a602c7eda7a495b4e6e7334d3890
-				//should encode as dGltIGI5MTNhNjAyYzdlZGE3YTQ5NWI0ZTZlNzMzNGQzODkw
-				/////////////////////////////////////////////////////////////////////
+                std::string encoded_challenge = RecvBuf;
+                encoded_challenge = encoded_challenge.substr(4);
+                std::string decoded_challenge = base64_decode(encoded_challenge);
+                
+                /////////////////////////////////////////////////////////////////////
+                //test data from RFC 2195
+                //decoded_challenge = "<1896.697170952@postoffice.reston.mci.net>";
+                //m_sLogin = "tim";
+                //m_sPassword = "tanstaaftanstaaf";
+                //MD5 should produce b913a602c7eda7a495b4e6e7334d3890
+                //should encode as dGltIGI5MTNhNjAyYzdlZGE3YTQ5NWI0ZTZlNzMzNGQzODkw
+                /////////////////////////////////////////////////////////////////////
 
-				unsigned char *ustrChallenge = CharToUnsignedChar(decoded_challenge.c_str());
-				unsigned char *ustrPassword = CharToUnsignedChar(m_sPassword.c_str());
-				if(!ustrChallenge || !ustrPassword)
-					throw ECSmtp(ECSmtp::BAD_LOGIN_PASSWORD);
+                unsigned char *ustrChallenge = CharToUnsignedChar(decoded_challenge.c_str());
+                unsigned char *ustrPassword = CharToUnsignedChar(m_sPassword.c_str());
+                if(!ustrChallenge || !ustrPassword)
+                    throw ECSmtp(ECSmtp::BAD_LOGIN_PASSWORD);
 
-				// if ustrPassword is longer than 64 bytes reset it to ustrPassword=MD5(ustrPassword)
-				int passwordLength=m_sPassword.size();
-				if(passwordLength > 64){
-					MD5 md5password;
-					md5password.update(ustrPassword, passwordLength);
-					md5password.finalize();
-					ustrPassword = md5password.raw_digest();
-					passwordLength = 16;
-				}
+                // if ustrPassword is longer than 64 bytes reset it to ustrPassword=MD5(ustrPassword)
+                int passwordLength=m_sPassword.size();
+                if(passwordLength > 64){
+                    MD5 md5password;
+                    md5password.update(ustrPassword, passwordLength);
+                    md5password.finalize();
+                    ustrPassword = md5password.raw_digest();
+                    passwordLength = 16;
+                }
 
-				//Storing ustrPassword in pads
-				unsigned char ipad[65], opad[65];
-				memset(ipad, 0, 64);
-				memset(opad, 0, 64);
-				memcpy(ipad, ustrPassword, passwordLength);
-				memcpy(opad, ustrPassword, passwordLength);
+                //Storing ustrPassword in pads
+                unsigned char ipad[65], opad[65];
+                memset(ipad, 0, 64);
+                memset(opad, 0, 64);
+                memcpy(ipad, ustrPassword, passwordLength);
+                memcpy(opad, ustrPassword, passwordLength);
 
-				// XOR ustrPassword with ipad and opad values
-				for(int i=0; i<64; i++){
-					ipad[i] ^= 0x36;
-					opad[i] ^= 0x5c;
-				}
+                // XOR ustrPassword with ipad and opad values
+                for(int i=0; i<64; i++){
+                    ipad[i] ^= 0x36;
+                    opad[i] ^= 0x5c;
+                }
 
-				//perform inner MD5
-				MD5 md5pass1;
-				md5pass1.update(ipad, 64);
-				md5pass1.update(ustrChallenge, decoded_challenge.size());
-				md5pass1.finalize();
-				unsigned char *ustrResult = md5pass1.raw_digest();
+                //perform inner MD5
+                MD5 md5pass1;
+                md5pass1.update(ipad, 64);
+                md5pass1.update(ustrChallenge, decoded_challenge.size());
+                md5pass1.finalize();
+                unsigned char *ustrResult = md5pass1.raw_digest();
 
-				//perform outer MD5
-				MD5 md5pass2;
-				md5pass2.update(opad, 64);
-				md5pass2.update(ustrResult, 16);
-				md5pass2.finalize();
-				decoded_challenge = md5pass2.hex_digest();
+                //perform outer MD5
+                MD5 md5pass2;
+                md5pass2.update(opad, 64);
+                md5pass2.update(ustrResult, 16);
+                md5pass2.finalize();
+                decoded_challenge = md5pass2.hex_digest();
 
-				delete[] ustrChallenge;
-				delete[] ustrPassword;
-				delete[] ustrResult;
+                delete[] ustrChallenge;
+                delete[] ustrPassword;
+                delete[] ustrResult;
 
-				decoded_challenge = m_sLogin + " " + decoded_challenge;
-				encoded_challenge = base64_encode(reinterpret_cast<const unsigned char*>(decoded_challenge.c_str()),decoded_challenge.size());
+                decoded_challenge = m_sLogin + " " + decoded_challenge;
+                encoded_challenge = base64_encode(reinterpret_cast<const unsigned char*>(decoded_challenge.c_str()),decoded_challenge.size());
 
-				snprintf(SendBuf, BUFFER_SIZE, "%s\r\n", encoded_challenge.c_str());
-				pEntry = FindCommandEntry(command_PASSWORD);
-				SendData(pEntry);
-				ReceiveResponse(pEntry);
-			}
-			else if(IsKeywordSupported(RecvBuf, "DIGEST-MD5") == true)
-			{
-				pEntry = FindCommandEntry(command_DIGESTMD5);
-				snprintf(SendBuf, BUFFER_SIZE, "AUTH DIGEST-MD5\r\n");
-				SendData(pEntry);
-				ReceiveResponse(pEntry);
+                snprintf(SendBuf, BUFFER_SIZE, "%s\r\n", encoded_challenge.c_str());
+                pEntry = FindCommandEntry(command_PASSWORD);
+                SendData(pEntry);
+                ReceiveResponse(pEntry);
+            }
+            else if(IsKeywordSupported(RecvBuf, "DIGEST-MD5") == true)
+            {
+                pEntry = FindCommandEntry(command_DIGESTMD5);
+                snprintf(SendBuf, BUFFER_SIZE, "AUTH DIGEST-MD5\r\n");
+                SendData(pEntry);
+                ReceiveResponse(pEntry);
 
-				std::string encoded_challenge = RecvBuf;
-				encoded_challenge = encoded_challenge.substr(4);
-				std::string decoded_challenge = base64_decode(encoded_challenge);
+                std::string encoded_challenge = RecvBuf;
+                encoded_challenge = encoded_challenge.substr(4);
+                std::string decoded_challenge = base64_decode(encoded_challenge);
 
-				/////////////////////////////////////////////////////////////////////
-				//Test data from RFC 2831
-				//To test jump into authenticate and read this line and the ones down to next test data section
-				//decoded_challenge = "realm=\"elwood.innosoft.com\",nonce=\"OA6MG9tEQGm2hh\",qop=\"auth\",algorithm=md5-sess,charset=utf-8";
-				/////////////////////////////////////////////////////////////////////
-				
-				//Get the nonce (manditory)
-				int find = decoded_challenge.find("nonce");
-				if(find<0)
-					throw ECSmtp(ECSmtp::BAD_DIGEST_RESPONSE);
-				std::string nonce = decoded_challenge.substr(find+7);
-				find = nonce.find("\"");
-				if(find<0)
-					throw ECSmtp(ECSmtp::BAD_DIGEST_RESPONSE);
-				nonce = nonce.substr(0, find);
+                /////////////////////////////////////////////////////////////////////
+                //Test data from RFC 2831
+                //To test jump into authenticate and read this line and the ones down to next test data section
+                //decoded_challenge = "realm=\"elwood.innosoft.com\",nonce=\"OA6MG9tEQGm2hh\",qop=\"auth\",algorithm=md5-sess,charset=utf-8";
+                /////////////////////////////////////////////////////////////////////
+                
+                //Get the nonce (manditory)
+                int find = decoded_challenge.find("nonce");
+                if(find<0)
+                    throw ECSmtp(ECSmtp::BAD_DIGEST_RESPONSE);
+                std::string nonce = decoded_challenge.substr(find+7);
+                find = nonce.find("\"");
+                if(find<0)
+                    throw ECSmtp(ECSmtp::BAD_DIGEST_RESPONSE);
+                nonce = nonce.substr(0, find);
 
-				//Get the realm (optional)
-				std::string realm;
-				find = decoded_challenge.find("realm");
-				if(find>=0){
-					realm = decoded_challenge.substr(find+7);
-					find = realm.find("\"");
-					if(find<0)
-						throw ECSmtp(ECSmtp::BAD_DIGEST_RESPONSE);
-					realm = realm.substr(0, find);
-				}
+                //Get the realm (optional)
+                std::string realm;
+                find = decoded_challenge.find("realm");
+                if(find>=0){
+                    realm = decoded_challenge.substr(find+7);
+                    find = realm.find("\"");
+                    if(find<0)
+                        throw ECSmtp(ECSmtp::BAD_DIGEST_RESPONSE);
+                    realm = realm.substr(0, find);
+                }
 
-				//Create a cnonce
-				char cnonce[17], nc[9];
-				snprintf(cnonce, 17, "%x", (unsigned int) time(NULL));
+                //Create a cnonce
+                char cnonce[17], nc[9];
+                snprintf(cnonce, 17, "%x", (unsigned int) time(NULL));
 
-				//Set nonce count
-				snprintf(nc, 9, "%08d", 1);
+                //Set nonce count
+                snprintf(nc, 9, "%08d", 1);
 
-				//Set QOP
-				std::string qop = "auth";
+                //Set QOP
+                std::string qop = "auth";
 
-				//Get server address and set uri
-				//Skip this step during test
+                //Get server address and set uri
+                //Skip this step during test
 #ifdef __linux__
-				socklen_t len;
+                socklen_t len;
 #else
-				int len;
+                int len;
 #endif
-				struct sockaddr_storage addr;
-				len = sizeof addr;
-				if(!getpeername(hSocket, (struct sockaddr*)&addr, &len))
-					throw ECSmtp(ECSmtp::BAD_SERVER_NAME);
+                struct sockaddr_storage addr;
+                len = sizeof addr;
+                if(!getpeername(hSocket, (struct sockaddr*)&addr, &len))
+                    throw ECSmtp(ECSmtp::BAD_SERVER_NAME);
 
-				struct sockaddr_in *s = (struct sockaddr_in *)&addr;
-				std::string uri =inet_ntoa(s->sin_addr);
-				uri = "smtp/" + uri;
+                struct sockaddr_in *s = (struct sockaddr_in *)&addr;
+                std::string uri =inet_ntoa(s->sin_addr);
+                uri = "smtp/" + uri;
 
-				/////////////////////////////////////////////////////////////////////
-				//test data from RFC 2831
-				//m_sLogin = "chris";
-				//m_sPassword = "secret";
-				//snprintf(cnonce, 17, "OA6MHXh6VqTrRk");
-				//uri = "imap/elwood.innosoft.com";
-				//Should form the response:
-				//    charset=utf-8,username="chris",
-				//    realm="elwood.innosoft.com",nonce="OA6MG9tEQGm2hh",nc=00000001,
-				//    cnonce="OA6MHXh6VqTrRk",digest-uri="imap/elwood.innosoft.com",
-				//    response=d388dad90d4bbd760a152321f2143af7,qop=auth
-				//This encodes to:
-				//    Y2hhcnNldD11dGYtOCx1c2VybmFtZT0iY2hyaXMiLHJlYWxtPSJlbHdvb2
-				//    QuaW5ub3NvZnQuY29tIixub25jZT0iT0E2TUc5dEVRR20yaGgiLG5jPTAw
-				//    MDAwMDAxLGNub25jZT0iT0E2TUhYaDZWcVRyUmsiLGRpZ2VzdC11cmk9Im
-				//    ltYXAvZWx3b29kLmlubm9zb2Z0LmNvbSIscmVzcG9uc2U9ZDM4OGRhZDkw
-				//    ZDRiYmQ3NjBhMTUyMzIxZjIxNDNhZjcscW9wPWF1dGg=
-				/////////////////////////////////////////////////////////////////////
+                /////////////////////////////////////////////////////////////////////
+                //test data from RFC 2831
+                //m_sLogin = "chris";
+                //m_sPassword = "secret";
+                //snprintf(cnonce, 17, "OA6MHXh6VqTrRk");
+                //uri = "imap/elwood.innosoft.com";
+                //Should form the response:
+                //    charset=utf-8,username="chris",
+                //    realm="elwood.innosoft.com",nonce="OA6MG9tEQGm2hh",nc=00000001,
+                //    cnonce="OA6MHXh6VqTrRk",digest-uri="imap/elwood.innosoft.com",
+                //    response=d388dad90d4bbd760a152321f2143af7,qop=auth
+                //This encodes to:
+                //    Y2hhcnNldD11dGYtOCx1c2VybmFtZT0iY2hyaXMiLHJlYWxtPSJlbHdvb2
+                //    QuaW5ub3NvZnQuY29tIixub25jZT0iT0E2TUc5dEVRR20yaGgiLG5jPTAw
+                //    MDAwMDAxLGNub25jZT0iT0E2TUhYaDZWcVRyUmsiLGRpZ2VzdC11cmk9Im
+                //    ltYXAvZWx3b29kLmlubm9zb2Z0LmNvbSIscmVzcG9uc2U9ZDM4OGRhZDkw
+                //    ZDRiYmQ3NjBhMTUyMzIxZjIxNDNhZjcscW9wPWF1dGg=
+                /////////////////////////////////////////////////////////////////////
 
-				//Calculate digest response
-				unsigned char *ustrRealm = CharToUnsignedChar(realm.c_str());
-				unsigned char *ustrUsername = CharToUnsignedChar(m_sLogin.c_str());
-				unsigned char *ustrPassword = CharToUnsignedChar(m_sPassword.c_str());
-				unsigned char *ustrNonce = CharToUnsignedChar(nonce.c_str());
-				unsigned char *ustrCNonce = CharToUnsignedChar(cnonce);
-				unsigned char *ustrUri = CharToUnsignedChar(uri.c_str());
-				unsigned char *ustrNc = CharToUnsignedChar(nc);
-				unsigned char *ustrQop = CharToUnsignedChar(qop.c_str());
-				if(!ustrRealm || !ustrUsername || !ustrPassword || !ustrNonce || !ustrCNonce || !ustrUri || !ustrNc || !ustrQop)
-					throw ECSmtp(ECSmtp::BAD_LOGIN_PASSWORD);
+                //Calculate digest response
+                unsigned char *ustrRealm = CharToUnsignedChar(realm.c_str());
+                unsigned char *ustrUsername = CharToUnsignedChar(m_sLogin.c_str());
+                unsigned char *ustrPassword = CharToUnsignedChar(m_sPassword.c_str());
+                unsigned char *ustrNonce = CharToUnsignedChar(nonce.c_str());
+                unsigned char *ustrCNonce = CharToUnsignedChar(cnonce);
+                unsigned char *ustrUri = CharToUnsignedChar(uri.c_str());
+                unsigned char *ustrNc = CharToUnsignedChar(nc);
+                unsigned char *ustrQop = CharToUnsignedChar(qop.c_str());
+                if(!ustrRealm || !ustrUsername || !ustrPassword || !ustrNonce || !ustrCNonce || !ustrUri || !ustrNc || !ustrQop)
+                    throw ECSmtp(ECSmtp::BAD_LOGIN_PASSWORD);
 
-				MD5 md5a1a;
-				md5a1a.update(ustrUsername, m_sLogin.size());
-				md5a1a.update((unsigned char*)":", 1);
-				md5a1a.update(ustrRealm, realm.size());
-				md5a1a.update((unsigned char*)":", 1);
-				md5a1a.update(ustrPassword, m_sPassword.size());
-				md5a1a.finalize();
-				unsigned char *ua1 = md5a1a.raw_digest();
+                MD5 md5a1a;
+                md5a1a.update(ustrUsername, m_sLogin.size());
+                md5a1a.update((unsigned char*)":", 1);
+                md5a1a.update(ustrRealm, realm.size());
+                md5a1a.update((unsigned char*)":", 1);
+                md5a1a.update(ustrPassword, m_sPassword.size());
+                md5a1a.finalize();
+                unsigned char *ua1 = md5a1a.raw_digest();
 
-				MD5 md5a1b;
-				md5a1b.update(ua1, 16);
-				md5a1b.update((unsigned char*)":", 1);
-				md5a1b.update(ustrNonce, nonce.size());
-				md5a1b.update((unsigned char*)":", 1);
-				md5a1b.update(ustrCNonce, strlen(cnonce));
-				//authzid could be added here
-				md5a1b.finalize();
-				char *a1 = md5a1b.hex_digest();
-				
-				MD5 md5a2;
-				md5a2.update((unsigned char*) "AUTHENTICATE:", 13);
-				md5a2.update(ustrUri, uri.size());
-				//authint and authconf add an additional line here	
-				md5a2.finalize();
-				char *a2 = md5a2.hex_digest();
+                MD5 md5a1b;
+                md5a1b.update(ua1, 16);
+                md5a1b.update((unsigned char*)":", 1);
+                md5a1b.update(ustrNonce, nonce.size());
+                md5a1b.update((unsigned char*)":", 1);
+                md5a1b.update(ustrCNonce, strlen(cnonce));
+                //authzid could be added here
+                md5a1b.finalize();
+                char *a1 = md5a1b.hex_digest();
+                
+                MD5 md5a2;
+                md5a2.update((unsigned char*) "AUTHENTICATE:", 13);
+                md5a2.update(ustrUri, uri.size());
+                //authint and authconf add an additional line here	
+                md5a2.finalize();
+                char *a2 = md5a2.hex_digest();
 
-				delete[] ua1;
-				ua1 = CharToUnsignedChar(a1);
-				unsigned char *ua2 = CharToUnsignedChar(a2);
-				
-				//compute KD
-				MD5 md5;
-				md5.update(ua1, 32);
-				md5.update((unsigned char*)":", 1);
-				md5.update(ustrNonce, nonce.size());
-				md5.update((unsigned char*)":", 1);
-				md5.update(ustrNc, strlen(nc));
-				md5.update((unsigned char*)":", 1);
-				md5.update(ustrCNonce, strlen(cnonce));
-				md5.update((unsigned char*)":", 1);
-				md5.update(ustrQop, qop.size());
-				md5.update((unsigned char*)":", 1);
-				md5.update(ua2, 32);
-				md5.finalize();
-				decoded_challenge = md5.hex_digest();
+                delete[] ua1;
+                ua1 = CharToUnsignedChar(a1);
+                unsigned char *ua2 = CharToUnsignedChar(a2);
+                
+                //compute KD
+                MD5 md5;
+                md5.update(ua1, 32);
+                md5.update((unsigned char*)":", 1);
+                md5.update(ustrNonce, nonce.size());
+                md5.update((unsigned char*)":", 1);
+                md5.update(ustrNc, strlen(nc));
+                md5.update((unsigned char*)":", 1);
+                md5.update(ustrCNonce, strlen(cnonce));
+                md5.update((unsigned char*)":", 1);
+                md5.update(ustrQop, qop.size());
+                md5.update((unsigned char*)":", 1);
+                md5.update(ua2, 32);
+                md5.finalize();
+                decoded_challenge = md5.hex_digest();
 
-				delete[] ustrRealm;
-				delete[] ustrUsername;
-				delete[] ustrPassword;
-				delete[] ustrNonce;
-				delete[] ustrCNonce;
-				delete[] ustrUri;
-				delete[] ustrNc;
-				delete[] ustrQop;
-				delete[] ua1;
-				delete[] ua2;
-				delete[] a1;
-				delete[] a2;
+                delete[] ustrRealm;
+                delete[] ustrUsername;
+                delete[] ustrPassword;
+                delete[] ustrNonce;
+                delete[] ustrCNonce;
+                delete[] ustrUri;
+                delete[] ustrNc;
+                delete[] ustrQop;
+                delete[] ua1;
+                delete[] ua2;
+                delete[] a1;
+                delete[] a2;
 
-				//send the response
-				if(strstr(RecvBuf, "charset")>=0) snprintf(SendBuf, BUFFER_SIZE, "charset=utf-8,username=\"%s\"", m_sLogin.c_str());
-				else snprintf(SendBuf, BUFFER_SIZE, "username=\"%s\"", m_sLogin.c_str());
-				if(!realm.empty()){
-					snprintf(RecvBuf, BUFFER_SIZE, ",realm=\"%s\"", realm.c_str());
-					strcat(SendBuf, RecvBuf);
-				}
-				snprintf(RecvBuf, BUFFER_SIZE, ",nonce=\"%s\"", nonce.c_str());
-				strcat(SendBuf, RecvBuf);
-				snprintf(RecvBuf, BUFFER_SIZE, ",nc=%s", nc);
-				strcat(SendBuf, RecvBuf);
-				snprintf(RecvBuf, BUFFER_SIZE, ",cnonce=\"%s\"", cnonce);
-				strcat(SendBuf, RecvBuf);
-				snprintf(RecvBuf, BUFFER_SIZE, ",digest-uri=\"%s\"", uri.c_str());
-				strcat(SendBuf, RecvBuf);
-				snprintf(RecvBuf, BUFFER_SIZE, ",response=%s", decoded_challenge.c_str());
-				strcat(SendBuf, RecvBuf);
-				snprintf(RecvBuf, BUFFER_SIZE, ",qop=%s", qop.c_str());
-				strcat(SendBuf, RecvBuf);
-				unsigned char *ustrDigest = CharToUnsignedChar(SendBuf);
-				encoded_challenge = base64_encode(ustrDigest, strlen(SendBuf));
-				delete[] ustrDigest;
-				snprintf(SendBuf, BUFFER_SIZE, "%s\r\n", encoded_challenge.c_str());
-				pEntry = FindCommandEntry(command_DIGESTMD5);
-				SendData(pEntry);
-				ReceiveResponse(pEntry);
+                //send the response
+                if(strstr(RecvBuf, "charset")>=0) snprintf(SendBuf, BUFFER_SIZE, "charset=utf-8,username=\"%s\"", m_sLogin.c_str());
+                else snprintf(SendBuf, BUFFER_SIZE, "username=\"%s\"", m_sLogin.c_str());
+                if(!realm.empty()){
+                    snprintf(RecvBuf, BUFFER_SIZE, ",realm=\"%s\"", realm.c_str());
+                    strcat(SendBuf, RecvBuf);
+                }
+                snprintf(RecvBuf, BUFFER_SIZE, ",nonce=\"%s\"", nonce.c_str());
+                strcat(SendBuf, RecvBuf);
+                snprintf(RecvBuf, BUFFER_SIZE, ",nc=%s", nc);
+                strcat(SendBuf, RecvBuf);
+                snprintf(RecvBuf, BUFFER_SIZE, ",cnonce=\"%s\"", cnonce);
+                strcat(SendBuf, RecvBuf);
+                snprintf(RecvBuf, BUFFER_SIZE, ",digest-uri=\"%s\"", uri.c_str());
+                strcat(SendBuf, RecvBuf);
+                snprintf(RecvBuf, BUFFER_SIZE, ",response=%s", decoded_challenge.c_str());
+                strcat(SendBuf, RecvBuf);
+                snprintf(RecvBuf, BUFFER_SIZE, ",qop=%s", qop.c_str());
+                strcat(SendBuf, RecvBuf);
+                unsigned char *ustrDigest = CharToUnsignedChar(SendBuf);
+                encoded_challenge = base64_encode(ustrDigest, strlen(SendBuf));
+                delete[] ustrDigest;
+                snprintf(SendBuf, BUFFER_SIZE, "%s\r\n", encoded_challenge.c_str());
+                pEntry = FindCommandEntry(command_DIGESTMD5);
+                SendData(pEntry);
+                ReceiveResponse(pEntry);
 
-				//Send completion carraige return
-				snprintf(SendBuf, BUFFER_SIZE, "\r\n");				
-				pEntry = FindCommandEntry(command_PASSWORD);
-				SendData(pEntry);
-				ReceiveResponse(pEntry);
-			}
-			else throw ECSmtp(ECSmtp::LOGIN_NOT_SUPPORTED);
-		}
-	}
-	catch(const ECSmtp&)
-	{
-		if(RecvBuf[0]=='5' && RecvBuf[1]=='3' && RecvBuf[2]=='0')
-			m_bConnected=false;
-		DisconnectRemoteServer();
-		throw;
-		return false;
-	}
+                //Send completion carraige return
+                snprintf(SendBuf, BUFFER_SIZE, "\r\n");				
+                pEntry = FindCommandEntry(command_PASSWORD);
+                SendData(pEntry);
+                ReceiveResponse(pEntry);
+            }
+            else throw ECSmtp(ECSmtp::LOGIN_NOT_SUPPORTED);
+        }
+    }
+    catch(const ECSmtp&)
+    {
+        if(RecvBuf[0]=='5' && RecvBuf[1]=='3' && RecvBuf[2]=='0')
+            m_bConnected=false;
+        DisconnectRemoteServer();
+        throw;
+        return false;
+    }
 
-	return true;
+    return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1232,16 +1232,16 @@ bool CSmtp::ConnectRemoteServer(const char* szServer, const unsigned short nPort
 ////////////////////////////////////////////////////////////////////////////////
 void CSmtp::DisconnectRemoteServer()
 {
-	if(m_bConnected) SayQuit();
-	if(hSocket)
-	{
+    if(m_bConnected) SayQuit();
+    if(hSocket)
+    {
 #ifdef LINUX
-		close(hSocket);
+        close(hSocket);
 #else
-		closesocket(hSocket);
+        closesocket(hSocket);
 #endif
-	}
-	hSocket = INVALID_SOCKET;
+    }
+    hSocket = INVALID_SOCKET;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1256,10 +1256,10 @@ void CSmtp::DisconnectRemoteServer()
 ////////////////////////////////////////////////////////////////////////////////
 int CSmtp::SmtpXYZdigits()
 {
-	assert(RecvBuf);
-	if(RecvBuf == NULL)
-		return 0;
-	return (RecvBuf[0]-'0')*100 + (RecvBuf[1]-'0')*10 + RecvBuf[2]-'0';
+    assert(RecvBuf);
+    if(RecvBuf == NULL)
+        return 0;
+    return (RecvBuf[0]-'0')*100 + (RecvBuf[1]-'0')*10 + RecvBuf[2]-'0';
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1275,165 +1275,165 @@ int CSmtp::SmtpXYZdigits()
 ////////////////////////////////////////////////////////////////////////////////
 void CSmtp::FormatHeader(char* header)
 {
-	char month[][4] = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
-	size_t i;
-	std::string to;
-	std::string cc;
-	std::string bcc;
-	time_t rawtime;
-	struct tm* timeinfo;
+    char month[][4] = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
+    size_t i;
+    std::string to;
+    std::string cc;
+    std::string bcc;
+    time_t rawtime;
+    struct tm* timeinfo;
 
-	// date/time check
-	if(time(&rawtime) > 0)
-		timeinfo = localtime(&rawtime);
-	else
-		throw ECSmtp(ECSmtp::TIME_ERROR);
+    // date/time check
+    if(time(&rawtime) > 0)
+        timeinfo = localtime(&rawtime);
+    else
+        throw ECSmtp(ECSmtp::TIME_ERROR);
 
-	// check for at least one recipient
-	if(Recipients.size())
-	{
-		for (i=0;i<Recipients.size();i++)
-		{
-			if(i > 0)
-				to.append(",");
-			to += Recipients[i].Name;
-			to.append("<");
-			to += Recipients[i].Mail;
-			to.append(">");
-		}
-	}
-	else
-		throw ECSmtp(ECSmtp::UNDEF_RECIPIENTS);
+    // check for at least one recipient
+    if(Recipients.size())
+    {
+        for (i=0;i<Recipients.size();i++)
+        {
+            if(i > 0)
+                to.append(",");
+            to += Recipients[i].Name;
+            to.append("<");
+            to += Recipients[i].Mail;
+            to.append(">");
+        }
+    }
+    else
+        throw ECSmtp(ECSmtp::UNDEF_RECIPIENTS);
 
-	if(CCRecipients.size())
-	{
-		for (i=0;i<CCRecipients.size();i++)
-		{
-			if(i > 0)
-				cc. append(",");
-			cc += CCRecipients[i].Name;
-			cc.append("<");
-			cc += CCRecipients[i].Mail;
-			cc.append(">");
-		}
-	}
-	
-	// Date: <SP> <dd> <SP> <mon> <SP> <yy> <SP> <hh> ":" <mm> ":" <ss> <SP> <zone> <CRLF>
-	snprintf(header, BUFFER_SIZE, "Date: %d %s %d %d:%d:%d\r\n", timeinfo->tm_mday,
-	         month[timeinfo->tm_mon], timeinfo->tm_year+1900, timeinfo->tm_hour,
+    if(CCRecipients.size())
+    {
+        for (i=0;i<CCRecipients.size();i++)
+        {
+            if(i > 0)
+                cc. append(",");
+            cc += CCRecipients[i].Name;
+            cc.append("<");
+            cc += CCRecipients[i].Mail;
+            cc.append(">");
+        }
+    }
+    
+    // Date: <SP> <dd> <SP> <mon> <SP> <yy> <SP> <hh> ":" <mm> ":" <ss> <SP> <zone> <CRLF>
+    snprintf(header, BUFFER_SIZE, "Date: %d %s %d %d:%d:%d\r\n", timeinfo->tm_mday,
+             month[timeinfo->tm_mon], timeinfo->tm_year+1900, timeinfo->tm_hour,
              timeinfo->tm_min, timeinfo->tm_sec); 
-	
-	// From: <SP> <sender>  <SP> "<" <sender-email> ">" <CRLF>
-	if(!m_sMailFrom.size()) throw ECSmtp(ECSmtp::UNDEF_MAIL_FROM);
-	 
-	strcat(header,"From: ");
-	if(m_sNameFrom.size()) strcat(header, m_sNameFrom.c_str());
-	 
-	strcat(header," <");
-	strcat(header,m_sMailFrom.c_str());
-	strcat(header, ">\r\n");
+    
+    // From: <SP> <sender>  <SP> "<" <sender-email> ">" <CRLF>
+    if(!m_sMailFrom.size()) throw ECSmtp(ECSmtp::UNDEF_MAIL_FROM);
+     
+    strcat(header,"From: ");
+    if(m_sNameFrom.size()) strcat(header, m_sNameFrom.c_str());
+     
+    strcat(header," <");
+    strcat(header,m_sMailFrom.c_str());
+    strcat(header, ">\r\n");
 
-	// X-Mailer: <SP> <xmailer-app> <CRLF>
-	if(m_sXMailer.size())
-	{
-		strcat(header,"X-Mailer: ");
-		strcat(header, m_sXMailer.c_str());
-		strcat(header, "\r\n");
-	}
+    // X-Mailer: <SP> <xmailer-app> <CRLF>
+    if(m_sXMailer.size())
+    {
+        strcat(header,"X-Mailer: ");
+        strcat(header, m_sXMailer.c_str());
+        strcat(header, "\r\n");
+    }
 
-	// Reply-To: <SP> <reverse-path> <CRLF>
-	if(m_sReplyTo.size())
-	{
-		strcat(header, "Reply-To: ");
-		strcat(header, m_sReplyTo.c_str());
-		strcat(header, "\r\n");
-	}
+    // Reply-To: <SP> <reverse-path> <CRLF>
+    if(m_sReplyTo.size())
+    {
+        strcat(header, "Reply-To: ");
+        strcat(header, m_sReplyTo.c_str());
+        strcat(header, "\r\n");
+    }
 
-	// Disposition-Notification-To: <SP> <reverse-path or sender-email> <CRLF>
-	if(m_bReadReceipt)
-	{
-		strcat(header, "Disposition-Notification-To: ");
-		if(m_sReplyTo.size()) strcat(header, m_sReplyTo.c_str());
-		else strcat(header, m_sNameFrom.c_str());
-		strcat(header, "\r\n");
-	}
+    // Disposition-Notification-To: <SP> <reverse-path or sender-email> <CRLF>
+    if(m_bReadReceipt)
+    {
+        strcat(header, "Disposition-Notification-To: ");
+        if(m_sReplyTo.size()) strcat(header, m_sReplyTo.c_str());
+        else strcat(header, m_sNameFrom.c_str());
+        strcat(header, "\r\n");
+    }
 
-	// X-Priority: <SP> <number> <CRLF>
-	switch(m_iXPriority)
-	{
-		case XPRIORITY_HIGH:
-			strcat(header,"X-Priority: 2 (High)\r\n");
-			break;
-		case XPRIORITY_NORMAL:
-			strcat(header,"X-Priority: 3 (Normal)\r\n");
-			break;
-		case XPRIORITY_LOW:
-			strcat(header,"X-Priority: 4 (Low)\r\n");
-			break;
-		default:
-			strcat(header,"X-Priority: 3 (Normal)\r\n");
-	}
+    // X-Priority: <SP> <number> <CRLF>
+    switch(m_iXPriority)
+    {
+        case XPRIORITY_HIGH:
+            strcat(header,"X-Priority: 2 (High)\r\n");
+            break;
+        case XPRIORITY_NORMAL:
+            strcat(header,"X-Priority: 3 (Normal)\r\n");
+            break;
+        case XPRIORITY_LOW:
+            strcat(header,"X-Priority: 4 (Low)\r\n");
+            break;
+        default:
+            strcat(header,"X-Priority: 3 (Normal)\r\n");
+    }
 
-	// To: <SP> <remote-user-mail> <CRLF>
-	strcat(header,"To: ");
-	strcat(header, to.c_str());
-	strcat(header, "\r\n");
+    // To: <SP> <remote-user-mail> <CRLF>
+    strcat(header,"To: ");
+    strcat(header, to.c_str());
+    strcat(header, "\r\n");
 
-	// Cc: <SP> <remote-user-mail> <CRLF>
-	if(CCRecipients.size())
-	{
-		strcat(header,"Cc: ");
-		strcat(header, cc.c_str());
-		strcat(header, "\r\n");
-	}
+    // Cc: <SP> <remote-user-mail> <CRLF>
+    if(CCRecipients.size())
+    {
+        strcat(header,"Cc: ");
+        strcat(header, cc.c_str());
+        strcat(header, "\r\n");
+    }
 
-	if(BCCRecipients.size())
-	{
-		strcat(header,"Bcc: ");
-		strcat(header, bcc.c_str());
-		strcat(header, "\r\n");
-	}
+    if(BCCRecipients.size())
+    {
+        strcat(header,"Bcc: ");
+        strcat(header, bcc.c_str());
+        strcat(header, "\r\n");
+    }
 
-	// Subject: <SP> <subject-text> <CRLF>
-	if(!m_sSubject.size()) 
-		strcat(header, "Subject:  ");
-	else
-	{
-	  strcat(header, "Subject: ");
-	  strcat(header, m_sSubject.c_str());
-	}
-	strcat(header, "\r\n");
-	
-	// MIME-Version: <SP> 1.0 <CRLF>
-	strcat(header,"MIME-Version: 1.0\r\n");
-	if(!Attachments.size())
-	{ // no attachments
-		if(m_bHTML) strcat(header, "Content-Type: text/html; charset=\"");
-		else strcat(header, "Content-type: text/plain; charset=\"");
-		strcat(header, m_sCharSet.c_str());
-		strcat(header, "\"\r\n");
-		strcat(header,"Content-Transfer-Encoding: 7bit\r\n");
-		strcat(SendBuf,"\r\n");
-	}
-	else
-	{ // there is one or more attachments
-		strcat(header,"Content-Type: multipart/mixed; boundary=\"");
-		strcat(header,BOUNDARY_TEXT);
-		strcat(header,"\"\r\n");
-		strcat(header,"\r\n");
-		// first goes text message
-		strcat(SendBuf,"--");
-		strcat(SendBuf,BOUNDARY_TEXT);
-		strcat(SendBuf,"\r\n");
-		if(m_bHTML) strcat(SendBuf,"Content-type: text/html; charset=");
-		else strcat(SendBuf,"Content-type: text/plain; charset=");
-		strcat(header, m_sCharSet.c_str());
-		strcat(header, "\r\n");
-		strcat(SendBuf,"Content-Transfer-Encoding: 7bit\r\n");
-		strcat(SendBuf,"\r\n");
-	}
+    // Subject: <SP> <subject-text> <CRLF>
+    if(!m_sSubject.size()) 
+        strcat(header, "Subject:  ");
+    else
+    {
+      strcat(header, "Subject: ");
+      strcat(header, m_sSubject.c_str());
+    }
+    strcat(header, "\r\n");
+    
+    // MIME-Version: <SP> 1.0 <CRLF>
+    strcat(header,"MIME-Version: 1.0\r\n");
+    if(!Attachments.size())
+    { // no attachments
+        if(m_bHTML) strcat(header, "Content-Type: text/html; charset=\"");
+        else strcat(header, "Content-type: text/plain; charset=\"");
+        strcat(header, m_sCharSet.c_str());
+        strcat(header, "\"\r\n");
+        strcat(header,"Content-Transfer-Encoding: 7bit\r\n");
+        strcat(SendBuf,"\r\n");
+    }
+    else
+    { // there is one or more attachments
+        strcat(header,"Content-Type: multipart/mixed; boundary=\"");
+        strcat(header,BOUNDARY_TEXT);
+        strcat(header,"\"\r\n");
+        strcat(header,"\r\n");
+        // first goes text message
+        strcat(SendBuf,"--");
+        strcat(SendBuf,BOUNDARY_TEXT);
+        strcat(SendBuf,"\r\n");
+        if(m_bHTML) strcat(SendBuf,"Content-type: text/html; charset=");
+        else strcat(SendBuf,"Content-type: text/plain; charset=");
+        strcat(header, m_sCharSet.c_str());
+        strcat(header, "\r\n");
+        strcat(SendBuf,"Content-Transfer-Encoding: 7bit\r\n");
+        strcat(SendBuf,"\r\n");
+    }
 
-	// done
+    // done
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1454,56 +1454,56 @@ void CSmtp::FormatHeader(char* header)
 ////////////////////////////////////////////////////////////////////////////////
 void CSmtp::ReceiveData(Command_Entry* pEntry)
 {
-	if(m_ssl != NULL)
-	{
-		ReceiveData_SSL(m_ssl, pEntry);
-		return;
-	}
-	int res = 0;
-	fd_set fdread;
-	timeval time;
+    if(m_ssl != NULL)
+    {
+        ReceiveData_SSL(m_ssl, pEntry);
+        return;
+    }
+    int res = 0;
+    fd_set fdread;
+    timeval time;
 
-	time.tv_sec = pEntry->recv_timeout;
-	time.tv_usec = 0;
+    time.tv_sec = pEntry->recv_timeout;
+    time.tv_usec = 0;
 
-	assert(RecvBuf);
+    assert(RecvBuf);
 
-	if(RecvBuf == NULL)
-		throw ECSmtp(ECSmtp::RECVBUF_IS_EMPTY);
+    if(RecvBuf == NULL)
+        throw ECSmtp(ECSmtp::RECVBUF_IS_EMPTY);
 
-	FD_ZERO(&fdread);
+    FD_ZERO(&fdread);
 
-	FD_SET(hSocket,&fdread);
+    FD_SET(hSocket,&fdread);
 
-	if((res = select(hSocket+1, &fdread, NULL, NULL, &time)) == SOCKET_ERROR)
-	{
-		FD_CLR(hSocket,&fdread);
-		throw ECSmtp(ECSmtp::WSA_SELECT);
-	}
+    if((res = select(hSocket+1, &fdread, NULL, NULL, &time)) == SOCKET_ERROR)
+    {
+        FD_CLR(hSocket,&fdread);
+        throw ECSmtp(ECSmtp::WSA_SELECT);
+    }
 
-	if(!res)
-	{
-		//timeout
-		FD_CLR(hSocket,&fdread);
-		throw ECSmtp(ECSmtp::SERVER_NOT_RESPONDING);
-	}
+    if(!res)
+    {
+        //timeout
+        FD_CLR(hSocket,&fdread);
+        throw ECSmtp(ECSmtp::SERVER_NOT_RESPONDING);
+    }
 
-	if(FD_ISSET(hSocket,&fdread))
-	{
-		res = recv(hSocket,RecvBuf,BUFFER_SIZE,0);
-		if(res == SOCKET_ERROR)
-		{
-			FD_CLR(hSocket,&fdread);
-			throw ECSmtp(ECSmtp::WSA_RECV);
-		}
-	}
+    if(FD_ISSET(hSocket,&fdread))
+    {
+        res = recv(hSocket,RecvBuf,BUFFER_SIZE,0);
+        if(res == SOCKET_ERROR)
+        {
+            FD_CLR(hSocket,&fdread);
+            throw ECSmtp(ECSmtp::WSA_RECV);
+        }
+    }
 
-	FD_CLR(hSocket,&fdread);
-	RecvBuf[res] = 0;
-	if(res == 0)
-	{
-		throw ECSmtp(ECSmtp::CONNECTION_CLOSED);
-	}
+    FD_CLR(hSocket,&fdread);
+    RecvBuf[res] = 0;
+    if(res == 0)
+    {
+        throw ECSmtp(ECSmtp::CONNECTION_CLOSED);
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1518,57 +1518,57 @@ void CSmtp::ReceiveData(Command_Entry* pEntry)
 ////////////////////////////////////////////////////////////////////////////////
 void CSmtp::SendData(Command_Entry* pEntry)
 {
-	if(m_ssl != NULL)
-	{
-		SendData_SSL(m_ssl, pEntry);
-		return;
-	}
-	int idx = 0,res,nLeft = strlen(SendBuf);
-	fd_set fdwrite;
-	timeval time;
+    if(m_ssl != NULL)
+    {
+        SendData_SSL(m_ssl, pEntry);
+        return;
+    }
+    int idx = 0,res,nLeft = strlen(SendBuf);
+    fd_set fdwrite;
+    timeval time;
 
-	time.tv_sec = pEntry->send_timeout;
-	time.tv_usec = 0;
+    time.tv_sec = pEntry->send_timeout;
+    time.tv_usec = 0;
 
-	assert(SendBuf);
+    assert(SendBuf);
 
-	if(SendBuf == NULL)
-		throw ECSmtp(ECSmtp::SENDBUF_IS_EMPTY);
+    if(SendBuf == NULL)
+        throw ECSmtp(ECSmtp::SENDBUF_IS_EMPTY);
 
-	while(nLeft > 0)
-	{
-		FD_ZERO(&fdwrite);
+    while(nLeft > 0)
+    {
+        FD_ZERO(&fdwrite);
 
-		FD_SET(hSocket,&fdwrite);
+        FD_SET(hSocket,&fdwrite);
 
-		if((res = select(hSocket+1,NULL,&fdwrite,NULL,&time)) == SOCKET_ERROR)
-		{
-			FD_CLR(hSocket,&fdwrite);
-			throw ECSmtp(ECSmtp::WSA_SELECT);
-		}
+        if((res = select(hSocket+1,NULL,&fdwrite,NULL,&time)) == SOCKET_ERROR)
+        {
+            FD_CLR(hSocket,&fdwrite);
+            throw ECSmtp(ECSmtp::WSA_SELECT);
+        }
 
-		if(!res)
-		{
-			//timeout
-			FD_CLR(hSocket,&fdwrite);
-			throw ECSmtp(ECSmtp::SERVER_NOT_RESPONDING);
-		}
+        if(!res)
+        {
+            //timeout
+            FD_CLR(hSocket,&fdwrite);
+            throw ECSmtp(ECSmtp::SERVER_NOT_RESPONDING);
+        }
 
-		if(res && FD_ISSET(hSocket,&fdwrite))
-		{
-			res = send(hSocket,&SendBuf[idx],nLeft,0);
-			if(res == SOCKET_ERROR || res == 0)
-			{
-				FD_CLR(hSocket,&fdwrite);
-				throw ECSmtp(ECSmtp::WSA_SEND);
-			}
-			nLeft -= res;
-			idx += res;
-		}
-	}
+        if(res && FD_ISSET(hSocket,&fdwrite))
+        {
+            res = send(hSocket,&SendBuf[idx],nLeft,0);
+            if(res == SOCKET_ERROR || res == 0)
+            {
+                FD_CLR(hSocket,&fdwrite);
+                throw ECSmtp(ECSmtp::WSA_SEND);
+            }
+            nLeft -= res;
+            idx += res;
+        }
+    }
 
-	OutputDebugStringA(SendBuf);
-	FD_CLR(hSocket,&fdwrite);
+    OutputDebugStringA(SendBuf);
+    FD_CLR(hSocket,&fdwrite);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1583,7 +1583,7 @@ void CSmtp::SendData(Command_Entry* pEntry)
 ////////////////////////////////////////////////////////////////////////////////
 const char* CSmtp::GetLocalHostName()
 {
-	return m_sLocalHostName.c_str();
+    return m_sLocalHostName.c_str();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1598,7 +1598,7 @@ const char* CSmtp::GetLocalHostName()
 ////////////////////////////////////////////////////////////////////////////////
 unsigned int CSmtp::GetRecipientCount() const
 {
-	return Recipients.size();
+    return Recipients.size();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1613,7 +1613,7 @@ unsigned int CSmtp::GetRecipientCount() const
 ////////////////////////////////////////////////////////////////////////////////
 unsigned int CSmtp::GetBCCRecipientCount() const
 {
-	return BCCRecipients.size();
+    return BCCRecipients.size();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1628,7 +1628,7 @@ unsigned int CSmtp::GetBCCRecipientCount() const
 ////////////////////////////////////////////////////////////////////////////////
 unsigned int CSmtp::GetCCRecipientCount() const
 {
-	return CCRecipients.size();
+    return CCRecipients.size();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1643,7 +1643,7 @@ unsigned int CSmtp::GetCCRecipientCount() const
 ////////////////////////////////////////////////////////////////////////////////
 const char* CSmtp::GetReplyTo() const
 {
-	return m_sReplyTo.c_str();
+    return m_sReplyTo.c_str();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1658,7 +1658,7 @@ const char* CSmtp::GetReplyTo() const
 ////////////////////////////////////////////////////////////////////////////////
 const char* CSmtp::GetMailFrom() const
 {
-	return m_sMailFrom.c_str();
+    return m_sMailFrom.c_str();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1673,7 +1673,7 @@ const char* CSmtp::GetMailFrom() const
 ////////////////////////////////////////////////////////////////////////////////
 const char* CSmtp::GetSenderName() const
 {
-	return m_sNameFrom.c_str();
+    return m_sNameFrom.c_str();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1688,7 +1688,7 @@ const char* CSmtp::GetSenderName() const
 ////////////////////////////////////////////////////////////////////////////////
 const char* CSmtp::GetSubject() const
 {
-	return m_sSubject.c_str();
+    return m_sSubject.c_str();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1703,7 +1703,7 @@ const char* CSmtp::GetSubject() const
 ////////////////////////////////////////////////////////////////////////////////
 const char* CSmtp::GetXMailer() const
 {
-	return m_sXMailer.c_str();
+    return m_sXMailer.c_str();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1718,19 +1718,19 @@ const char* CSmtp::GetXMailer() const
 ////////////////////////////////////////////////////////////////////////////////
 CSmptXPriority CSmtp::GetXPriority() const
 {
-	return m_iXPriority;
+    return m_iXPriority;
 }
 
 const char* CSmtp::GetMsgLineText(unsigned int Line) const
 {
-	if(Line >= MsgBody.size())
-		throw ECSmtp(ECSmtp::OUT_OF_MSG_RANGE);
-	return MsgBody.at(Line).c_str();
+    if(Line >= MsgBody.size())
+        throw ECSmtp(ECSmtp::OUT_OF_MSG_RANGE);
+    return MsgBody.at(Line).c_str();
 }
 
 unsigned int CSmtp::GetMsgLines() const
 {
-	return MsgBody.size();
+    return MsgBody.size();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1776,7 +1776,7 @@ void CSmtp::SetLocalHostName(const char *sLocalHostName)
 ////////////////////////////////////////////////////////////////////////////////
 void CSmtp::SetXPriority(CSmptXPriority priority)
 {
-	m_iXPriority = priority;
+    m_iXPriority = priority;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1792,7 +1792,7 @@ void CSmtp::SetXPriority(CSmptXPriority priority)
 ////////////////////////////////////////////////////////////////////////////////
 void CSmtp::SetReplyTo(const char *ReplyTo)
 {
-	m_sReplyTo = ReplyTo;
+    m_sReplyTo = ReplyTo;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1807,7 +1807,7 @@ void CSmtp::SetReplyTo(const char *ReplyTo)
 ////////////////////////////////////////////////////////////////////////////////
 void CSmtp::SetReadReceipt(bool requestReceipt/*=true*/)
 {
-	m_bReadReceipt = requestReceipt;
+    m_bReadReceipt = requestReceipt;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1823,7 +1823,7 @@ void CSmtp::SetReadReceipt(bool requestReceipt/*=true*/)
 ////////////////////////////////////////////////////////////////////////////////
 void CSmtp::SetSenderMail(const char *EMail)
 {
-	m_sMailFrom = EMail;
+    m_sMailFrom = EMail;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1839,7 +1839,7 @@ void CSmtp::SetSenderMail(const char *EMail)
 ////////////////////////////////////////////////////////////////////////////////
 void CSmtp::SetSenderName(const char *Name)
 {
-	m_sNameFrom = Name;
+    m_sNameFrom = Name;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1855,7 +1855,7 @@ void CSmtp::SetSenderName(const char *Name)
 ////////////////////////////////////////////////////////////////////////////////
 void CSmtp::SetSubject(const char *Subject)
 {
-	m_sSubject = Subject;
+    m_sSubject = Subject;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1871,7 +1871,7 @@ void CSmtp::SetSubject(const char *Subject)
 ////////////////////////////////////////////////////////////////////////////////
 void CSmtp::SetXMailer(const char *XMailer)
 {
-	m_sXMailer = XMailer;
+    m_sXMailer = XMailer;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1887,7 +1887,7 @@ void CSmtp::SetXMailer(const char *XMailer)
 ////////////////////////////////////////////////////////////////////////////////
 void CSmtp::SetLogin(const char *Login)
 {
-	m_sLogin = Login;
+    m_sLogin = Login;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1903,7 +1903,7 @@ void CSmtp::SetLogin(const char *Login)
 ////////////////////////////////////////////////////////////////////////////////
 void CSmtp::SetPassword(const char *Password)
 {
-	m_sPassword = Password;
+    m_sPassword = Password;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1920,9 +1920,9 @@ void CSmtp::SetPassword(const char *Password)
 ////////////////////////////////////////////////////////////////////////////////
 void CSmtp::SetSMTPServer(const char* SrvName, const unsigned short SrvPort, bool authenticate)
 {
-	m_iSMTPSrvPort = SrvPort;
-	m_sSMTPSrvName = SrvName;
-	m_bAuthenticate = authenticate;
+    m_iSMTPSrvPort = SrvPort;
+    m_sSMTPSrvName = SrvName;
+    m_bAuthenticate = authenticate;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1937,505 +1937,505 @@ void CSmtp::SetSMTPServer(const char* SrvName, const unsigned short SrvPort, boo
 ////////////////////////////////////////////////////////////////////////////////
 std::string ECSmtp::GetErrorText() const
 {
-	switch(ErrorCode)
-	{
-		case ECSmtp::CSMTP_NO_ERROR:
-			return "";
-		case ECSmtp::WSA_STARTUP:
-			return "Unable to initialise winsock2";
-		case ECSmtp::WSA_VER:
-			return "Wrong version of the winsock2";
-		case ECSmtp::WSA_SEND:
-			return "Function send() failed";
-		case ECSmtp::WSA_RECV:
-			return "Function recv() failed";
-		case ECSmtp::WSA_CONNECT:
-			return "Function connect failed";
-		case ECSmtp::WSA_GETHOSTBY_NAME_ADDR:
-			return "Unable to determine remote server";
-		case ECSmtp::WSA_INVALID_SOCKET:
-			return "Invalid winsock2 socket";
-		case ECSmtp::WSA_HOSTNAME:
-			return "Function hostname() failed";
-		case ECSmtp::WSA_IOCTLSOCKET:
-			return "Function ioctlsocket() failed";
-		case ECSmtp::BAD_IPV4_ADDR:
-			return "Improper IPv4 address";
-		case ECSmtp::UNDEF_MSG_HEADER:
-			return "Undefined message header";
-		case ECSmtp::UNDEF_MAIL_FROM:
-			return "Undefined mail sender";
-		case ECSmtp::UNDEF_SUBJECT:
-			return "Undefined message subject";
-		case ECSmtp::UNDEF_RECIPIENTS:
-			return "Undefined at least one reciepent";
-		case ECSmtp::UNDEF_RECIPIENT_MAIL:
-			return "Undefined recipent mail";
-		case ECSmtp::UNDEF_LOGIN:
-			return "Undefined user login";
-		case ECSmtp::UNDEF_PASSWORD:
-			return "Undefined user password";
-		case ECSmtp::BAD_LOGIN_PASSWORD:
-			return "Invalid user login or password";
-		case ECSmtp::BAD_DIGEST_RESPONSE:
-			return "Server returned a bad digest MD5 response";
-		case ECSmtp::BAD_SERVER_NAME:
-			return "Unable to determine server name for digest MD5 response";
-		case ECSmtp::COMMAND_MAIL_FROM:
-			return "Server returned error after sending MAIL FROM";
-		case ECSmtp::COMMAND_EHLO:
-			return "Server returned error after sending EHLO";
-		case ECSmtp::COMMAND_AUTH_PLAIN:
-			return "Server returned error after sending AUTH PLAIN";
-		case ECSmtp::COMMAND_AUTH_LOGIN:
-			return "Server returned error after sending AUTH LOGIN";
-		case ECSmtp::COMMAND_AUTH_CRAMMD5:
-			return "Server returned error after sending AUTH CRAM-MD5";
-		case ECSmtp::COMMAND_AUTH_DIGESTMD5:
-			return "Server returned error after sending AUTH DIGEST-MD5";
-		case ECSmtp::COMMAND_DIGESTMD5:
-			return "Server returned error after sending MD5 DIGEST";
-		case ECSmtp::COMMAND_DATA:
-			return "Server returned error after sending DATA";
-		case ECSmtp::COMMAND_QUIT:
-			return "Server returned error after sending QUIT";
-		case ECSmtp::COMMAND_RCPT_TO:
-			return "Server returned error after sending RCPT TO";
-		case ECSmtp::MSG_BODY_ERROR:
-			return "Error in message body";
-		case ECSmtp::CONNECTION_CLOSED:
-			return "Server has closed the connection";
-		case ECSmtp::SERVER_NOT_READY:
-			return "Server is not ready";
-		case ECSmtp::SERVER_NOT_RESPONDING:
-			return "Server not responding";
-		case ECSmtp::FILE_NOT_EXIST:
-			return "Attachment file does not exist";
-		case ECSmtp::MSG_TOO_BIG:
-			return "Message is too big";
-		case ECSmtp::BAD_LOGIN_PASS:
-			return "Bad login or password";
-		case ECSmtp::UNDEF_XYZ_RESPONSE:
-			return "Undefined xyz SMTP response";
-		case ECSmtp::LACK_OF_MEMORY:
-			return "Lack of memory";
-		case ECSmtp::TIME_ERROR:
-			return "time() error";
-		case ECSmtp::RECVBUF_IS_EMPTY:
-			return "RecvBuf is empty";
-		case ECSmtp::SENDBUF_IS_EMPTY:
-			return "SendBuf is empty";
-		case ECSmtp::OUT_OF_MSG_RANGE:
-			return "Specified line number is out of message size";
-		case ECSmtp::COMMAND_EHLO_STARTTLS:
-			return "Server returned error after sending STARTTLS";
-		case ECSmtp::SSL_PROBLEM:
-			return "SSL problem";
-		case ECSmtp::COMMAND_DATABLOCK:
-			return "Failed to send data block";
-		case ECSmtp::STARTTLS_NOT_SUPPORTED:
-			return "The STARTTLS command is not supported by the server";
-		case ECSmtp::LOGIN_NOT_SUPPORTED:
-			return "AUTH LOGIN is not supported by the server";
-		default:
-			return "Undefined error id";
-	}
+    switch(ErrorCode)
+    {
+        case ECSmtp::CSMTP_NO_ERROR:
+            return "";
+        case ECSmtp::WSA_STARTUP:
+            return "Unable to initialise winsock2";
+        case ECSmtp::WSA_VER:
+            return "Wrong version of the winsock2";
+        case ECSmtp::WSA_SEND:
+            return "Function send() failed";
+        case ECSmtp::WSA_RECV:
+            return "Function recv() failed";
+        case ECSmtp::WSA_CONNECT:
+            return "Function connect failed";
+        case ECSmtp::WSA_GETHOSTBY_NAME_ADDR:
+            return "Unable to determine remote server";
+        case ECSmtp::WSA_INVALID_SOCKET:
+            return "Invalid winsock2 socket";
+        case ECSmtp::WSA_HOSTNAME:
+            return "Function hostname() failed";
+        case ECSmtp::WSA_IOCTLSOCKET:
+            return "Function ioctlsocket() failed";
+        case ECSmtp::BAD_IPV4_ADDR:
+            return "Improper IPv4 address";
+        case ECSmtp::UNDEF_MSG_HEADER:
+            return "Undefined message header";
+        case ECSmtp::UNDEF_MAIL_FROM:
+            return "Undefined mail sender";
+        case ECSmtp::UNDEF_SUBJECT:
+            return "Undefined message subject";
+        case ECSmtp::UNDEF_RECIPIENTS:
+            return "Undefined at least one reciepent";
+        case ECSmtp::UNDEF_RECIPIENT_MAIL:
+            return "Undefined recipent mail";
+        case ECSmtp::UNDEF_LOGIN:
+            return "Undefined user login";
+        case ECSmtp::UNDEF_PASSWORD:
+            return "Undefined user password";
+        case ECSmtp::BAD_LOGIN_PASSWORD:
+            return "Invalid user login or password";
+        case ECSmtp::BAD_DIGEST_RESPONSE:
+            return "Server returned a bad digest MD5 response";
+        case ECSmtp::BAD_SERVER_NAME:
+            return "Unable to determine server name for digest MD5 response";
+        case ECSmtp::COMMAND_MAIL_FROM:
+            return "Server returned error after sending MAIL FROM";
+        case ECSmtp::COMMAND_EHLO:
+            return "Server returned error after sending EHLO";
+        case ECSmtp::COMMAND_AUTH_PLAIN:
+            return "Server returned error after sending AUTH PLAIN";
+        case ECSmtp::COMMAND_AUTH_LOGIN:
+            return "Server returned error after sending AUTH LOGIN";
+        case ECSmtp::COMMAND_AUTH_CRAMMD5:
+            return "Server returned error after sending AUTH CRAM-MD5";
+        case ECSmtp::COMMAND_AUTH_DIGESTMD5:
+            return "Server returned error after sending AUTH DIGEST-MD5";
+        case ECSmtp::COMMAND_DIGESTMD5:
+            return "Server returned error after sending MD5 DIGEST";
+        case ECSmtp::COMMAND_DATA:
+            return "Server returned error after sending DATA";
+        case ECSmtp::COMMAND_QUIT:
+            return "Server returned error after sending QUIT";
+        case ECSmtp::COMMAND_RCPT_TO:
+            return "Server returned error after sending RCPT TO";
+        case ECSmtp::MSG_BODY_ERROR:
+            return "Error in message body";
+        case ECSmtp::CONNECTION_CLOSED:
+            return "Server has closed the connection";
+        case ECSmtp::SERVER_NOT_READY:
+            return "Server is not ready";
+        case ECSmtp::SERVER_NOT_RESPONDING:
+            return "Server not responding";
+        case ECSmtp::FILE_NOT_EXIST:
+            return "Attachment file does not exist";
+        case ECSmtp::MSG_TOO_BIG:
+            return "Message is too big";
+        case ECSmtp::BAD_LOGIN_PASS:
+            return "Bad login or password";
+        case ECSmtp::UNDEF_XYZ_RESPONSE:
+            return "Undefined xyz SMTP response";
+        case ECSmtp::LACK_OF_MEMORY:
+            return "Lack of memory";
+        case ECSmtp::TIME_ERROR:
+            return "time() error";
+        case ECSmtp::RECVBUF_IS_EMPTY:
+            return "RecvBuf is empty";
+        case ECSmtp::SENDBUF_IS_EMPTY:
+            return "SendBuf is empty";
+        case ECSmtp::OUT_OF_MSG_RANGE:
+            return "Specified line number is out of message size";
+        case ECSmtp::COMMAND_EHLO_STARTTLS:
+            return "Server returned error after sending STARTTLS";
+        case ECSmtp::SSL_PROBLEM:
+            return "SSL problem";
+        case ECSmtp::COMMAND_DATABLOCK:
+            return "Failed to send data block";
+        case ECSmtp::STARTTLS_NOT_SUPPORTED:
+            return "The STARTTLS command is not supported by the server";
+        case ECSmtp::LOGIN_NOT_SUPPORTED:
+            return "AUTH LOGIN is not supported by the server";
+        default:
+            return "Undefined error id";
+    }
 }
 
 void CSmtp::SayHello()
 {
-	Command_Entry* pEntry = FindCommandEntry(command_EHLO);
-	snprintf(SendBuf, BUFFER_SIZE, "EHLO %s\r\n", GetLocalHostName()!=NULL ? m_sLocalHostName.c_str() : "domain");
-	SendData(pEntry);
-	ReceiveResponse(pEntry);
-	m_bConnected=true;
+    Command_Entry* pEntry = FindCommandEntry(command_EHLO);
+    snprintf(SendBuf, BUFFER_SIZE, "EHLO %s\r\n", GetLocalHostName()!=NULL ? m_sLocalHostName.c_str() : "domain");
+    SendData(pEntry);
+    ReceiveResponse(pEntry);
+    m_bConnected=true;
 }
 
 void CSmtp::SayQuit()
 {
-	// ***** CLOSING CONNECTION *****
-	
-	Command_Entry* pEntry = FindCommandEntry(command_QUIT);
-	// QUIT <CRLF>
-	snprintf(SendBuf, BUFFER_SIZE, "QUIT\r\n");
-	m_bConnected=false;
-	SendData(pEntry);
-	ReceiveResponse(pEntry);
+    // ***** CLOSING CONNECTION *****
+    
+    Command_Entry* pEntry = FindCommandEntry(command_QUIT);
+    // QUIT <CRLF>
+    snprintf(SendBuf, BUFFER_SIZE, "QUIT\r\n");
+    m_bConnected=false;
+    SendData(pEntry);
+    ReceiveResponse(pEntry);
 }
 
 void CSmtp::StartTls()
 {
-	if(IsKeywordSupported(RecvBuf, "STARTTLS") == false)
-	{
-		throw ECSmtp(ECSmtp::STARTTLS_NOT_SUPPORTED);
-	}
-	Command_Entry* pEntry = FindCommandEntry(command_STARTTLS);
-	snprintf(SendBuf, BUFFER_SIZE, "STARTTLS\r\n");
-	SendData(pEntry);
-	ReceiveResponse(pEntry);
+    if(IsKeywordSupported(RecvBuf, "STARTTLS") == false)
+    {
+        throw ECSmtp(ECSmtp::STARTTLS_NOT_SUPPORTED);
+    }
+    Command_Entry* pEntry = FindCommandEntry(command_STARTTLS);
+    snprintf(SendBuf, BUFFER_SIZE, "STARTTLS\r\n");
+    SendData(pEntry);
+    ReceiveResponse(pEntry);
 
-	OpenSSLConnect();
+    OpenSSLConnect();
 }
 
 void CSmtp::ReceiveData_SSL(SSL* ssl, Command_Entry* pEntry)
 {
-	int res = 0;
-	int offset = 0;
-	fd_set fdread;
-	fd_set fdwrite;
-	timeval time;
+    int res = 0;
+    int offset = 0;
+    fd_set fdread;
+    fd_set fdwrite;
+    timeval time;
 
-	int read_blocked_on_write = 0;
+    int read_blocked_on_write = 0;
 
-	time.tv_sec = pEntry->recv_timeout;
-	time.tv_usec = 0;
+    time.tv_sec = pEntry->recv_timeout;
+    time.tv_usec = 0;
 
-	assert(RecvBuf);
+    assert(RecvBuf);
 
-	if(RecvBuf == NULL)
-		throw ECSmtp(ECSmtp::RECVBUF_IS_EMPTY);
+    if(RecvBuf == NULL)
+        throw ECSmtp(ECSmtp::RECVBUF_IS_EMPTY);
 
-	bool bFinish = false;
+    bool bFinish = false;
 
-	while(!bFinish)
-	{
-		FD_ZERO(&fdread);
-		FD_ZERO(&fdwrite);
+    while(!bFinish)
+    {
+        FD_ZERO(&fdread);
+        FD_ZERO(&fdwrite);
 
-		FD_SET(hSocket,&fdread);
+        FD_SET(hSocket,&fdread);
 
-		if(read_blocked_on_write)
-		{
-			FD_SET(hSocket, &fdwrite);
-		}
+        if(read_blocked_on_write)
+        {
+            FD_SET(hSocket, &fdwrite);
+        }
 
-		if((res = select(hSocket+1, &fdread, &fdwrite, NULL, &time)) == SOCKET_ERROR)
-		{
-			FD_ZERO(&fdread);
-			FD_ZERO(&fdwrite);
-			throw ECSmtp(ECSmtp::WSA_SELECT);
-		}
+        if((res = select(hSocket+1, &fdread, &fdwrite, NULL, &time)) == SOCKET_ERROR)
+        {
+            FD_ZERO(&fdread);
+            FD_ZERO(&fdwrite);
+            throw ECSmtp(ECSmtp::WSA_SELECT);
+        }
 
-		if(!res)
-		{
-			//timeout
-			FD_ZERO(&fdread);
-			FD_ZERO(&fdwrite);
-			throw ECSmtp(ECSmtp::SERVER_NOT_RESPONDING);
-		}
+        if(!res)
+        {
+            //timeout
+            FD_ZERO(&fdread);
+            FD_ZERO(&fdwrite);
+            throw ECSmtp(ECSmtp::SERVER_NOT_RESPONDING);
+        }
 
-		if(FD_ISSET(hSocket,&fdread) || (read_blocked_on_write && FD_ISSET(hSocket,&fdwrite)) )
-		{
-			while(1)
-			{
-				read_blocked_on_write=0;
+        if(FD_ISSET(hSocket,&fdread) || (read_blocked_on_write && FD_ISSET(hSocket,&fdwrite)) )
+        {
+            while(1)
+            {
+                read_blocked_on_write=0;
 
-				const int buff_len = 1024;
-				char buff[buff_len];
+                const int buff_len = 1024;
+                char buff[buff_len];
 
-				res = SSL_read(ssl, buff, buff_len);
+                res = SSL_read(ssl, buff, buff_len);
 
-				int ssl_err = SSL_get_error(ssl, res);
-				if(ssl_err == SSL_ERROR_NONE)
-				{
-					if(offset + res > BUFFER_SIZE - 1)
-					{
-						FD_ZERO(&fdread);
-						FD_ZERO(&fdwrite);
-						throw ECSmtp(ECSmtp::LACK_OF_MEMORY);
-					}
-					memcpy(RecvBuf + offset, buff, res);
-					offset += res;
-					if(SSL_pending(ssl))
-					{
-						continue;
-					}
-					else
-					{
-						bFinish = true;
-						break;
-					}
-				}
-				else if(ssl_err == SSL_ERROR_ZERO_RETURN)
-				{
-					bFinish = true;
-					break;
-				}
-				else if(ssl_err == SSL_ERROR_WANT_READ)
-				{
-					break;
-				}
-				else if(ssl_err == SSL_ERROR_WANT_WRITE)
-				{
-					/* We get a WANT_WRITE if we're
-					trying to rehandshake and we block on
-					a write during that rehandshake.
+                int ssl_err = SSL_get_error(ssl, res);
+                if(ssl_err == SSL_ERROR_NONE)
+                {
+                    if(offset + res > BUFFER_SIZE - 1)
+                    {
+                        FD_ZERO(&fdread);
+                        FD_ZERO(&fdwrite);
+                        throw ECSmtp(ECSmtp::LACK_OF_MEMORY);
+                    }
+                    memcpy(RecvBuf + offset, buff, res);
+                    offset += res;
+                    if(SSL_pending(ssl))
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        bFinish = true;
+                        break;
+                    }
+                }
+                else if(ssl_err == SSL_ERROR_ZERO_RETURN)
+                {
+                    bFinish = true;
+                    break;
+                }
+                else if(ssl_err == SSL_ERROR_WANT_READ)
+                {
+                    break;
+                }
+                else if(ssl_err == SSL_ERROR_WANT_WRITE)
+                {
+                    /* We get a WANT_WRITE if we're
+                    trying to rehandshake and we block on
+                    a write during that rehandshake.
 
-					We need to wait on the socket to be 
-					writeable but reinitiate the read
-					when it is */
-					read_blocked_on_write=1;
-					break;
-				}
-				else
-				{
-					FD_ZERO(&fdread);
-					FD_ZERO(&fdwrite);
-					throw ECSmtp(ECSmtp::SSL_PROBLEM);
-				}
-			}
-		}
-	}
+                    We need to wait on the socket to be 
+                    writeable but reinitiate the read
+                    when it is */
+                    read_blocked_on_write=1;
+                    break;
+                }
+                else
+                {
+                    FD_ZERO(&fdread);
+                    FD_ZERO(&fdwrite);
+                    throw ECSmtp(ECSmtp::SSL_PROBLEM);
+                }
+            }
+        }
+    }
 
-	FD_ZERO(&fdread);
-	FD_ZERO(&fdwrite);
-	RecvBuf[offset] = 0;
-	if(offset == 0)
-	{
-		throw ECSmtp(ECSmtp::CONNECTION_CLOSED);
-	}
+    FD_ZERO(&fdread);
+    FD_ZERO(&fdwrite);
+    RecvBuf[offset] = 0;
+    if(offset == 0)
+    {
+        throw ECSmtp(ECSmtp::CONNECTION_CLOSED);
+    }
 }
 
 void CSmtp::ReceiveResponse(Command_Entry* pEntry)
 {
-	std::string line;
-	int reply_code = 0;
-	bool bFinish = false;
-	while(!bFinish)
-	{
-		ReceiveData(pEntry);
-		line.append(RecvBuf);
-		size_t len = line.length();
-		size_t begin = 0;
-		size_t offset = 0;
+    std::string line;
+    int reply_code = 0;
+    bool bFinish = false;
+    while(!bFinish)
+    {
+        ReceiveData(pEntry);
+        line.append(RecvBuf);
+        size_t len = line.length();
+        size_t begin = 0;
+        size_t offset = 0;
 
-		while(1) // loop for all lines
-		{
-			while(offset + 1 < len)
-			{
-				if(line[offset] == '\r' && line[offset+1] == '\n')
-					break;
-				++offset;
-			}
-			if(offset + 1 < len) // we found a line
-			{
-				// see if this is the last line
-				// the last line must match the pattern: XYZ<SP>*<CRLF> or XYZ<CRLF> where XYZ is a string of 3 digits 
-				offset += 2; // skip <CRLF>
-				if(offset - begin >= 5)
-				{
-					if(isdigit(line[begin]) && isdigit(line[begin+1]) && isdigit(line[begin+2]))
-					{
-						// this is the last line
-						if(offset - begin == 5 || line[begin+3] == ' ')
-						{
-							reply_code = (line[begin]-'0')*100 + (line[begin+1]-'0')*10 + line[begin+2]-'0';
-							bFinish = true;
-							break;
-						}
-					}
-				}
-				begin = offset;	// try to find next line
-			}
-			else // we haven't received the last line, so we need to receive more data 
-			{
-				break;
-			}
-		}
-	}
-	snprintf(RecvBuf, BUFFER_SIZE, line.c_str());
-	OutputDebugStringA(RecvBuf);
-	if(reply_code != pEntry->valid_reply_code)
-	{
-		throw ECSmtp(pEntry->error);
-	}
+        while(1) // loop for all lines
+        {
+            while(offset + 1 < len)
+            {
+                if(line[offset] == '\r' && line[offset+1] == '\n')
+                    break;
+                ++offset;
+            }
+            if(offset + 1 < len) // we found a line
+            {
+                // see if this is the last line
+                // the last line must match the pattern: XYZ<SP>*<CRLF> or XYZ<CRLF> where XYZ is a string of 3 digits 
+                offset += 2; // skip <CRLF>
+                if(offset - begin >= 5)
+                {
+                    if(isdigit(line[begin]) && isdigit(line[begin+1]) && isdigit(line[begin+2]))
+                    {
+                        // this is the last line
+                        if(offset - begin == 5 || line[begin+3] == ' ')
+                        {
+                            reply_code = (line[begin]-'0')*100 + (line[begin+1]-'0')*10 + line[begin+2]-'0';
+                            bFinish = true;
+                            break;
+                        }
+                    }
+                }
+                begin = offset;	// try to find next line
+            }
+            else // we haven't received the last line, so we need to receive more data 
+            {
+                break;
+            }
+        }
+    }
+    snprintf(RecvBuf, BUFFER_SIZE, line.c_str());
+    OutputDebugStringA(RecvBuf);
+    if(reply_code != pEntry->valid_reply_code)
+    {
+        throw ECSmtp(pEntry->error);
+    }
 }
 
 void CSmtp::SendData_SSL(SSL* ssl, Command_Entry* pEntry)
 {
-	int offset = 0,res,nLeft = strlen(SendBuf);
-	fd_set fdwrite;
-	fd_set fdread;
-	timeval time;
+    int offset = 0,res,nLeft = strlen(SendBuf);
+    fd_set fdwrite;
+    fd_set fdread;
+    timeval time;
 
-	int write_blocked_on_read = 0;
+    int write_blocked_on_read = 0;
 
-	time.tv_sec = pEntry->send_timeout;
-	time.tv_usec = 0;
+    time.tv_sec = pEntry->send_timeout;
+    time.tv_usec = 0;
 
-	assert(SendBuf);
+    assert(SendBuf);
 
-	if(SendBuf == NULL)
-		throw ECSmtp(ECSmtp::SENDBUF_IS_EMPTY);
+    if(SendBuf == NULL)
+        throw ECSmtp(ECSmtp::SENDBUF_IS_EMPTY);
 
-	while(nLeft > 0)
-	{
-		FD_ZERO(&fdwrite);
-		FD_ZERO(&fdread);
+    while(nLeft > 0)
+    {
+        FD_ZERO(&fdwrite);
+        FD_ZERO(&fdread);
 
-		FD_SET(hSocket,&fdwrite);
+        FD_SET(hSocket,&fdwrite);
 
-		if(write_blocked_on_read)
-		{
-			FD_SET(hSocket, &fdread);
-		}
+        if(write_blocked_on_read)
+        {
+            FD_SET(hSocket, &fdread);
+        }
 
-		if((res = select(hSocket+1,&fdread,&fdwrite,NULL,&time)) == SOCKET_ERROR)
-		{
-			FD_ZERO(&fdwrite);
-			FD_ZERO(&fdread);
-			throw ECSmtp(ECSmtp::WSA_SELECT);
-		}
+        if((res = select(hSocket+1,&fdread,&fdwrite,NULL,&time)) == SOCKET_ERROR)
+        {
+            FD_ZERO(&fdwrite);
+            FD_ZERO(&fdread);
+            throw ECSmtp(ECSmtp::WSA_SELECT);
+        }
 
-		if(!res)
-		{
-			//timeout
-			FD_ZERO(&fdwrite);
-			FD_ZERO(&fdread);
-			throw ECSmtp(ECSmtp::SERVER_NOT_RESPONDING);
-		}
+        if(!res)
+        {
+            //timeout
+            FD_ZERO(&fdwrite);
+            FD_ZERO(&fdread);
+            throw ECSmtp(ECSmtp::SERVER_NOT_RESPONDING);
+        }
 
-		if(FD_ISSET(hSocket,&fdwrite) || (write_blocked_on_read && FD_ISSET(hSocket, &fdread)) )
-		{
-			write_blocked_on_read=0;
+        if(FD_ISSET(hSocket,&fdwrite) || (write_blocked_on_read && FD_ISSET(hSocket, &fdread)) )
+        {
+            write_blocked_on_read=0;
 
-			/* Try to write */
-			res = SSL_write(ssl, SendBuf+offset, nLeft);
-	          
-			switch(SSL_get_error(ssl,res))
-			{
-			  /* We wrote something*/
-			  case SSL_ERROR_NONE:
-				nLeft -= res;
-				offset += res;
-				break;
-	              
-				/* We would have blocked */
-			  case SSL_ERROR_WANT_WRITE:
-				break;
+            /* Try to write */
+            res = SSL_write(ssl, SendBuf+offset, nLeft);
+              
+            switch(SSL_get_error(ssl,res))
+            {
+              /* We wrote something*/
+              case SSL_ERROR_NONE:
+                nLeft -= res;
+                offset += res;
+                break;
+                  
+                /* We would have blocked */
+              case SSL_ERROR_WANT_WRITE:
+                break;
 
-				/* We get a WANT_READ if we're
-				   trying to rehandshake and we block on
-				   write during the current connection.
-	               
-				   We need to wait on the socket to be readable
-				   but reinitiate our write when it is */
-			  case SSL_ERROR_WANT_READ:
-				write_blocked_on_read=1;
-				break;
-	              
-				  /* Some other error */
-			  default:	      
-				FD_ZERO(&fdread);
-				FD_ZERO(&fdwrite);
-				throw ECSmtp(ECSmtp::SSL_PROBLEM);
-			}
+                /* We get a WANT_READ if we're
+                   trying to rehandshake and we block on
+                   write during the current connection.
+                   
+                   We need to wait on the socket to be readable
+                   but reinitiate our write when it is */
+              case SSL_ERROR_WANT_READ:
+                write_blocked_on_read=1;
+                break;
+                  
+                  /* Some other error */
+              default:	      
+                FD_ZERO(&fdread);
+                FD_ZERO(&fdwrite);
+                throw ECSmtp(ECSmtp::SSL_PROBLEM);
+            }
 
-		}
-	}
+        }
+    }
 
-	OutputDebugStringA(SendBuf);
-	FD_ZERO(&fdwrite);
-	FD_ZERO(&fdread);
+    OutputDebugStringA(SendBuf);
+    FD_ZERO(&fdwrite);
+    FD_ZERO(&fdread);
 }
 
 void CSmtp::InitOpenSSL()
 {
-	SSL_library_init();
-	SSL_load_error_strings();
-	m_ctx = SSL_CTX_new (SSLv23_client_method());
-	if(m_ctx == NULL)
-		throw ECSmtp(ECSmtp::SSL_PROBLEM);
+    SSL_library_init();
+    SSL_load_error_strings();
+    m_ctx = SSL_CTX_new (SSLv23_client_method());
+    if(m_ctx == NULL)
+        throw ECSmtp(ECSmtp::SSL_PROBLEM);
 }
 
 void CSmtp::OpenSSLConnect()
 {
-	if(m_ctx == NULL)
-		throw ECSmtp(ECSmtp::SSL_PROBLEM);
-	m_ssl = SSL_new (m_ctx);   
-	if(m_ssl == NULL)
-		throw ECSmtp(ECSmtp::SSL_PROBLEM);
-	SSL_set_fd (m_ssl, (int)hSocket);
+    if(m_ctx == NULL)
+        throw ECSmtp(ECSmtp::SSL_PROBLEM);
+    m_ssl = SSL_new (m_ctx);   
+    if(m_ssl == NULL)
+        throw ECSmtp(ECSmtp::SSL_PROBLEM);
+    SSL_set_fd (m_ssl, (int)hSocket);
     SSL_set_mode(m_ssl, SSL_MODE_AUTO_RETRY);
 
-	int res = 0;
-	fd_set fdwrite;
-	fd_set fdread;
-	int write_blocked = 0;
-	int read_blocked = 0;
+    int res = 0;
+    fd_set fdwrite;
+    fd_set fdread;
+    int write_blocked = 0;
+    int read_blocked = 0;
 
-	timeval time;
-	time.tv_sec = TIME_IN_SEC;
-	time.tv_usec = 0;
+    timeval time;
+    time.tv_sec = TIME_IN_SEC;
+    time.tv_usec = 0;
 
-	while(1)
-	{
-		FD_ZERO(&fdwrite);
-		FD_ZERO(&fdread);
+    while(1)
+    {
+        FD_ZERO(&fdwrite);
+        FD_ZERO(&fdread);
 
-		if(write_blocked)
-			FD_SET(hSocket, &fdwrite);
-		if(read_blocked)
-			FD_SET(hSocket, &fdread);
+        if(write_blocked)
+            FD_SET(hSocket, &fdwrite);
+        if(read_blocked)
+            FD_SET(hSocket, &fdread);
 
-		if(write_blocked || read_blocked)
-		{
-			write_blocked = 0;
-			read_blocked = 0;
-			if((res = select(hSocket+1,&fdread,&fdwrite,NULL,&time)) == SOCKET_ERROR)
-			{
-				FD_ZERO(&fdwrite);
-				FD_ZERO(&fdread);
-				throw ECSmtp(ECSmtp::WSA_SELECT);
-			}
-			if(!res)
-			{
-				//timeout
-				FD_ZERO(&fdwrite);
-				FD_ZERO(&fdread);
-				throw ECSmtp(ECSmtp::SERVER_NOT_RESPONDING);
-			}
-		}
-		res = SSL_connect(m_ssl);
-		switch(SSL_get_error(m_ssl, res))
-		{
-		  case SSL_ERROR_NONE:
-			FD_ZERO(&fdwrite);
-			FD_ZERO(&fdread);
-			return;
-			break;
+        if(write_blocked || read_blocked)
+        {
+            write_blocked = 0;
+            read_blocked = 0;
+            if((res = select(hSocket+1,&fdread,&fdwrite,NULL,&time)) == SOCKET_ERROR)
+            {
+                FD_ZERO(&fdwrite);
+                FD_ZERO(&fdread);
+                throw ECSmtp(ECSmtp::WSA_SELECT);
+            }
+            if(!res)
+            {
+                //timeout
+                FD_ZERO(&fdwrite);
+                FD_ZERO(&fdread);
+                throw ECSmtp(ECSmtp::SERVER_NOT_RESPONDING);
+            }
+        }
+        res = SSL_connect(m_ssl);
+        switch(SSL_get_error(m_ssl, res))
+        {
+          case SSL_ERROR_NONE:
+            FD_ZERO(&fdwrite);
+            FD_ZERO(&fdread);
+            return;
+            break;
               
-		  case SSL_ERROR_WANT_WRITE:
-			write_blocked = 1;
-			break;
+          case SSL_ERROR_WANT_WRITE:
+            write_blocked = 1;
+            break;
 
-		  case SSL_ERROR_WANT_READ:
-			read_blocked = 1;
-			break;
+          case SSL_ERROR_WANT_READ:
+            read_blocked = 1;
+            break;
               
-		  default:	      
-			FD_ZERO(&fdwrite);
-			FD_ZERO(&fdread);
-			throw ECSmtp(ECSmtp::SSL_PROBLEM);
-		}
-	}
+          default:	      
+            FD_ZERO(&fdwrite);
+            FD_ZERO(&fdread);
+            throw ECSmtp(ECSmtp::SSL_PROBLEM);
+        }
+    }
 }
 
 void CSmtp::CleanupOpenSSL()
 {
-	if(m_ssl != NULL)
-	{
-		SSL_shutdown (m_ssl);  /* send SSL/TLS close_notify */
-		SSL_free (m_ssl);
-		m_ssl = NULL;
-	}
-	if(m_ctx != NULL)
-	{
-		SSL_CTX_free (m_ctx);	
-		m_ctx = NULL;
-		ERR_remove_state(0);
-		ERR_free_strings();
-		EVP_cleanup();
-		CRYPTO_cleanup_all_ex_data();
-	}
+    if(m_ssl != NULL)
+    {
+        SSL_shutdown (m_ssl);  /* send SSL/TLS close_notify */
+        SSL_free (m_ssl);
+        m_ssl = NULL;
+    }
+    if(m_ctx != NULL)
+    {
+        SSL_CTX_free (m_ctx);	
+        m_ctx = NULL;
+        ERR_remove_state(0);
+        ERR_free_strings();
+        EVP_cleanup();
+        CRYPTO_cleanup_all_ex_data();
+    }
 }

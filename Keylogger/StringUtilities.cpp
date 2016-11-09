@@ -32,9 +32,18 @@ std::wstring StringUtilities::wcharToStr(const wchar_t* str) {
 	return std::wstring(str);
 }
 
-const char* StringUtilities::wstrToChars(std::wstring str) {
-	auto res = (std::string((const char*)&str[0], sizeof(wchar_t) / sizeof(char)*str.size()));
-	return res.c_str();
+std::string StringUtilities::ws2s(std::wstring& wstr) {
+	using convert_typeX = std::codecvt_utf8<wchar_t>;
+	std::wstring_convert<convert_typeX, wchar_t> converterX;
+
+	return converterX.to_bytes(wstr);
+}
+
+std::wstring StringUtilities::s2ws(const std::string& str) {
+	using convert_typeX = std::codecvt_utf8<wchar_t>;
+	std::wstring_convert<convert_typeX, wchar_t> converterX;
+
+	return converterX.from_bytes(str);
 }
 
 std::wstring StringUtilities::toLower(std::wstring str) {

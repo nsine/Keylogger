@@ -10,19 +10,25 @@
 #include <iterator>
 #include <regex>
 #include <vector>
+#include <fcntl.h>
+#include <io.h>
+#include <codecvt>
+#include <locale>
 
 #pragma comment(lib, "Ws2_32.lib")
 
 #define BUFFER_SIZE 100000
 
 struct connectionParams {
-	std::string address;
-	std::string port;
+	std::wstring address;
+	std::wstring port;
 };
 
-connectionParams* parseConnectionParams(std::string connectString);
+connectionParams* parseConnectionParams(std::wstring connectString);
 void connectToServer(connectionParams params);
 void disconnectFromServer();
+std::string ws2s(const std::wstring& wstr);
+std::wstring s2ws(const std::string& str);
 
 SOCKET serverSocket;
 connectionParams* params;
@@ -31,34 +37,35 @@ connectionParams* params;
 // argv[2] - port
 int main(int argc, char *argv[])
 {
+	_setmode(_fileno(stdout), _O_U8TEXT);
 	serverSocket = INVALID_SOCKET;
 
 	// Specify input welcome header
-	std::string computerName = "";
+	std::wstring computerName = L"";
 
 	while (true) {
-		std::cout << computerName << " $ ";
-		std::string userInput;
-		char userInputBuffer[BUFFER_SIZE];
-		std::cin.getline(userInputBuffer, BUFFER_SIZE);
-		userInput = std::string(userInputBuffer);
+		std::wcout << computerName << " $ ";
+		std::wstring userInput;
+		wchar_t userInputBuffer[BUFFER_SIZE];
+		std::wcin.getline(userInputBuffer, BUFFER_SIZE);
+		userInput = std::wstring(userInputBuffer);
 
 		if (serverSocket == INVALID_SOCKET) {
-			if (userInput.substr(0, 7).compare("connect") != 0) {
-				std::cout << "You should connect to server" << std::endl <<
-					"Use connect <server_address> <port>" << std::endl;
+			if (userInput.substr(0, 7).compare(L"connect") != 0) {
+				std::wcout << L"You should connect to server" << std::endl <<
+					L"Use connect <server_address> <port>" << std::endl;
 				continue;
 			}
 
 			params = parseConnectionParams(userInput);
 			if (params == nullptr) {
-				std::cout << "Use connect <server_address> <port>" << std::endl;
+				std::wcout << L"Use connect <server_address> <port>" << std::endl;
 				continue;
 			}
 
 			connectToServer(*params);
 			if (serverSocket != INVALID_SOCKET) {
-				computerName = params->address + ":" + params->port;
+				computerName = params->address + L":" + params->port;
 			}
 			continue;
 		}
@@ -67,14 +74,14 @@ int main(int argc, char *argv[])
 		int tries = 0;
 		// Try to send data 2 times
 		do {
-			sendResult = send(serverSocket, userInput.c_str(), userInput.size(), 0);
+			sendResult = send(serverSocket, (char*)userInput.c_str(), sizeof(wchar_t) * userInput.size(), 0);
 			if (sendResult == SOCKET_ERROR) {
 				tries++;
-				std::cout << "Reconnecting..." << std::endl;
+				std::wcout << L"Reconnecting..." << std::endl;
 				disconnectFromServer();
 				connectToServer(*params);
 				if (serverSocket == INVALID_SOCKET) {
-					computerName = "";
+					computerName = L"";
 				}
 			} else {
 				break;
@@ -82,36 +89,36 @@ int main(int argc, char *argv[])
 		} while (tries < 2);
 		
 		if (sendResult == SOCKET_ERROR) {
-			std::cout << "Disconnected." << std::endl;
+			std::wcout << L"Disconnected." << std::endl;
 			continue;
 		}
 
-		char responseBuffer[BUFFER_SIZE];
+		wchar_t responseBuffer[BUFFER_SIZE];
 
-		int receivedSize = recv(serverSocket, responseBuffer, BUFFER_SIZE, 0);
+		int receivedSize = recv(serverSocket, (char*)responseBuffer, sizeof(wchar_t) * BUFFER_SIZE, 0);
 		if (receivedSize == -1) {
 			std::cerr << "Error receiving" << std::endl;
 		}
 
-		responseBuffer[receivedSize] = '\0';
+		responseBuffer[receivedSize / 2] = '\0';
 
-		std::cout << responseBuffer << std::endl;
+		std::wcout << responseBuffer << std::endl;
 
-		if (userInput == "exit" && receivedSize != -1) {
+		if (userInput == L"exit" && receivedSize != -1) {
 			disconnectFromServer();
-			computerName = "";
+			computerName = L"";
 		}
 	}
 
 	return 0;
 }
 
-connectionParams* parseConnectionParams(std::string connectString) {
-	std::vector<std::string> tokens;
-	std::regex separator(" ");
+connectionParams* parseConnectionParams(std::wstring connectString) {
+	std::vector<std::wstring> tokens;
+	std::wregex separator(L" ");
 
 	//start/end points of tokens in str
-	std::sregex_token_iterator
+	std::wsregex_token_iterator
 		begin(connectString.begin(), connectString.end(), separator, -1),
 		end;
 
@@ -145,7 +152,10 @@ void connectToServer(connectionParams params) {
 
 	hints.ai_flags = AI_PASSIVE;
 
-	result = getaddrinfo(params.address.c_str(), params.port.c_str(), &hints, &addr);
+	const char* ad = ws2s(params.address).c_str();
+
+	//result = getaddrinfo("127.0.0.1", "8123", &hints, &addr);
+	result = getaddrinfo(ws2s(params.address).c_str(), ws2s(params.port).c_str(), &hints, &addr);
 
 	if (result != 0) {
 		std::cerr << "Can't find this address. Error code: " << result << "\n";
@@ -182,4 +192,18 @@ void disconnectFromServer() {
 	closesocket(serverSocket);
 	serverSocket = INVALID_SOCKET;
 	WSACleanup();
+}
+
+std::wstring s2ws(const std::string& str) {
+	using convert_typeX = std::codecvt_utf8<wchar_t>;
+	std::wstring_convert<convert_typeX, wchar_t> converterX;
+
+	return converterX.from_bytes(str);
+}
+
+std::string ws2s(const std::wstring& wstr) {
+	using convert_typeX = std::codecvt_utf8<wchar_t>;
+	std::wstring_convert<convert_typeX, wchar_t> converterX;
+
+	return converterX.to_bytes(wstr);
 }

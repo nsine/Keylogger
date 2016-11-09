@@ -20,8 +20,6 @@
 #include <stdio.h>
 #include <chrono>
 #include <ctime>
-#include <fcntl.h>
-#include <io.h>
 
 #include "Keylogger.h"
 #include "SocketServer.h"

