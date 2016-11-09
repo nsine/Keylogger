@@ -44,7 +44,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	// Add console for debug
 	AllocConsole();
 	freopen("CONOUT$", "w", stdout);
-	_setmode(_fileno(stdout), _O_U8TEXT);
+	//_setmode(_fileno(stdout), _O_U8TEXT);
 	freopen("CONOUT$", "w", stderr);
 
 	MSG msg;

