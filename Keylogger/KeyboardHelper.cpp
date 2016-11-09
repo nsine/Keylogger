@@ -24,16 +24,6 @@ KeyboardHelper::KeyboardHelper() {
 		{ VK_F11, L"<F11>" },
 		{ VK_F12, L"<F12>" },
 	};
-
-	for (int scanCode = 0x30; scanCode <= 0x39; scanCode++) {
-		wchar_t c = scanCode;
-		this->keys.insert(std::pair<int, std::wstring>(scanCode, std::wstring(1, c)));
-	}
-
-	for (int scanCode = 0x41; scanCode <= 0x5A; scanCode++) {
-		wchar_t c = scanCode;
-		this->keys.insert(std::pair<int, std::wstring>(scanCode, std::wstring(1, c)));
-	}
 }
 
 KeyboardHelper* KeyboardHelper::getInstance() {
@@ -43,24 +33,15 @@ KeyboardHelper* KeyboardHelper::getInstance() {
 	return instance;
 }
 
-std::wstring KeyboardHelper::getKeyByCode(int keyCode) {
-	auto result = this->keys.find(keyCode);
+std::wstring KeyboardHelper::getKeyByCode(int vkCode, int scanCode, const BYTE* keyState) {
+	auto result = this->keys.find(vkCode);
 	if (result == this->keys.end()) {
-		return L"";
-	}
-	return result->second;
-}
-
-std::wstring KeyboardHelper::getNameOrUnicode(int vkCode, int scanCode, const BYTE* keyState) {
-	// if letter or digit
-	if (vkCode >= 0x41 && vkCode <= 0x5A || vkCode >= 0x30 && vkCode <= 0x39) {
 		wchar_t buffer[5];
 		ToUnicodeEx(vkCode, scanCode, keyState,
 			buffer, _countof(buffer), 0, nullptr);
 		return std::wstring(buffer);
-	} else {
-		return this->getKeyByCode(vkCode);
 	}
+	return result->second;
 }
 
 int KeyboardHelper::getCodeByName(std::wstring keyName) {

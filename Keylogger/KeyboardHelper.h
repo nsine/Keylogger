@@ -16,7 +16,6 @@ private:
 public:
 	static KeyboardHelper* getInstance();
 
-	std::wstring getKeyByCode(int keyCode);
-	std::wstring getNameOrUnicode(int vkCode, int scanCode, const BYTE* keyState);
+	std::wstring getKeyByCode(int vkCode, int scanCode, const BYTE* keyState);
 	int getCodeByName(std::wstring keyName);
 };	

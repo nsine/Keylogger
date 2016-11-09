@@ -6,12 +6,12 @@ HHOOK Hook::hHook;
 
 void Hook::setHook(std::function<void(const wchar_t[])> keyboardCallback) {
 	callback = keyboardCallback;
-	std::cout << "set hook" << std::endl;
+	std::wcout << L"set hook" << std::endl;
 	hHook = SetWindowsHookEx(WH_KEYBOARD_LL, this->hookProc, nullptr, 0);
 }
 
 void Hook::unsetHook() {
-	std::cout << "unset" << std::endl;
+	std::wcout << L"unset" << std::endl;
 	UnhookWindowsHookEx(hHook);
 }
 
@@ -63,17 +63,15 @@ LRESULT CALLBACK Hook::hookProc(const int nCode, const WPARAM wParam, const LPAR
 	return CallNextHookEx(hHook, nCode, wParam, lParam);
 }
 
-std::wstring Hook::getKeyNameByVkCode(PKBDLLHOOKSTRUCT p, BYTE* keyState, bool escaped) {
-	std::wstring result = KeyboardHelper::getInstance()->getNameOrUnicode(p->vkCode, p->scanCode, keyState);
+std::wstring Hook::getKeyNameByVkCode(PKBDLLHOOKSTRUCT p, BYTE* keyState, bool asText) {
+	std::wstring result = KeyboardHelper::getInstance()->getKeyByCode(p->vkCode, p->scanCode, keyState);
 
-	if (p->vkCode == VK_RETURN && escaped) {
+	if (p->vkCode == VK_RETURN && asText) {
 		result = L"\n";
-	} else if (p->vkCode == VK_TAB && escaped) {
+	} else if (p->vkCode == VK_TAB && asText) {
 		result = L"\t";
+	} else if (p->vkCode == VK_SPACE && asText) {
+		result = L" ";
 	}
 	return result;
-}
-
-bool Hook::isBlocked(int keyCode) {
-	return false;
 }

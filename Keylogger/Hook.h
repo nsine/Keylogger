@@ -28,6 +28,4 @@ private:
 	static std::function<void(const wchar_t[])> callback;
 	static LRESULT CALLBACK hookProc(const int nCode, const WPARAM wParam, const LPARAM lParam);
 	static std::wstring getKeyNameByVkCode(PKBDLLHOOKSTRUCT p, BYTE* keyState, bool escaped);
-
-	bool isBlocked(int keyCode);
 };

