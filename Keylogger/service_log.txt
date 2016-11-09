@@ -1,0 +1,10 @@
+
+### C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\devenv.exe --- Keylogger - Microsoft Visual Studio (Administrator) ### 2016-11-09 22:59:14 ###
+		
+
+#deffi<BS><BS>ine <BS><BS><BS>std::<ESC>stdL<BS>::<ESC>filePath;logfilePathh<BS>	<DEL><DEL><DEL><DEL>
+this->f<BS>lg<BS>
+ = ;std::wstring()	<DEL><DEL>	;this->lo
+log
+log
+

