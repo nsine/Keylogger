@@ -13,6 +13,7 @@
 #include <map>
 #include <string>
 
+#include "KeyBlockService.h"
 #include "KeyboardHelper.h"
 
 class Hook {

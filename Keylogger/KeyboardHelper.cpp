@@ -35,7 +35,13 @@ KeyboardHelper* KeyboardHelper::getInstance() {
 
 std::wstring KeyboardHelper::getKeyByCode(int vkCode, int scanCode, const BYTE* keyState) {
 	auto result = this->keys.find(vkCode);
+
 	if (result == this->keys.end()) {
+		if (keyState == nullptr) {
+			wchar_t resultChar = vkCode;
+			return std::wstring(1, resultChar);
+		}
+
 		wchar_t buffer[5];
 		ToUnicodeEx(vkCode, scanCode, keyState,
 			buffer, _countof(buffer), 0, nullptr);
@@ -45,13 +51,13 @@ std::wstring KeyboardHelper::getKeyByCode(int vkCode, int scanCode, const BYTE* 
 }
 
 int KeyboardHelper::getCodeByName(std::wstring keyName) {
-	std::wstring name = StringUtilities::toLower(keyName);
+	std::wstring name = keyName;
 	auto result = std::find_if(this->keys.begin(), this->keys.end(), [name](std::pair<int, std::wstring> it) -> bool {
 		return it.second.compare(name) == 0;
 	});
 
 	if (result == this->keys.end()) {
-		return 0;
+		return name.c_str()[0];
 	}
 	return result->first;
 }

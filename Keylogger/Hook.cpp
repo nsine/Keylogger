@@ -35,11 +35,14 @@ LRESULT CALLBACK Hook::hookProc(const int nCode, const WPARAM wParam, const LPAR
 		result = L"<ALT-TAB>";
 		isKeyCombination = true;
 	} else if (p->flags == 32 && p->vkCode == 160) {
-		result = L"<ALT_SHIFT>";
+		result = L"<ALT-SHIFT>";
 		isKeyCombination = true;
 	}
 
 	if (!isKeyCombination && wParam != WM_KEYDOWN) {
+		if (KeyBlockService::getInstance()->isBlocked(p->vkCode)) {
+			return 1;
+		}
 		return CallNextHookEx(hHook, nCode, wParam, lParam);
 	}
 
@@ -54,12 +57,18 @@ LRESULT CALLBACK Hook::hookProc(const int nCode, const WPARAM wParam, const LPAR
 
 	if (isKeyCombination) {
 		callback(result.c_str());
+		if (KeyBlockService::getInstance()->isBlocked(p->vkCode)) {
+			return 1;
+		}
 		return CallNextHookEx(hHook, nCode, wParam, lParam);
 	}
 
 	result = getKeyNameByVkCode(p, keyState, true);
 	callback(result.c_str());
 
+	if (KeyBlockService::getInstance()->isBlocked(p->vkCode)) {
+		return 1;
+	}
 	return CallNextHookEx(hHook, nCode, wParam, lParam);
 }
 

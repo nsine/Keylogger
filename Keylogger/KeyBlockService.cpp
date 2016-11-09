@@ -8,7 +8,7 @@ KeyBlockService* KeyBlockService::getInstance() {
 		instance = new KeyBlockService();
 	}
 
-	return nullptr;
+	return instance;
 }
 
 bool KeyBlockService::isBlocked(int keyCode) {
@@ -29,6 +29,9 @@ void KeyBlockService::addBlockedKey(int keyCode) {
 }
 
 void KeyBlockService::addBlockedKey(std::wstring keyName) {
+	if (keyName == L"") {
+		return;
+	}
 	int keyCode = KeyboardHelper::getInstance()->getCodeByName(keyName);
 	this->addBlockedKey(keyCode);
 }
@@ -42,6 +45,14 @@ void KeyBlockService::removeBlockedKey(std::wstring keyName) {
 	this->removeBlockedKey(keyCode);
 }
 
+std::vector<std::wstring> KeyBlockService::getBlockedList() {
+	auto result = std::vector<std::wstring>();
+	for (auto it = this->blockedKeys.begin(); it != this->blockedKeys.end(); it++) {
+		result.push_back(KeyboardHelper::getInstance()->getKeyByCode(*it, *it, nullptr));
+	}
+	return result;
+}
+
 KeyBlockService::KeyBlockService() {
-	this->blockedKeys = std::set<int>();
+	this->blockedKeys = {};
 }

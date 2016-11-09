@@ -1,6 +1,7 @@
 #pragma once
 
 #include <set>
+#include <iterator>
 #include "KeyboardHelper.h"
 
 class KeyBlockService {
@@ -18,5 +19,6 @@ public:
 	void addBlockedKey(std::wstring keyName);
 	void removeBlockedKey(int keyCode);
 	void removeBlockedKey(std::wstring keyName);
+	std::vector<std::wstring> getBlockedList();
 };
 
