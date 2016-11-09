@@ -47,7 +47,14 @@ std::wstring StringUtilities::s2ws(const std::string& str) {
 }
 
 std::wstring StringUtilities::toLower(std::wstring str) {
+	return str;
 	std::wstring resultStr;
-	std::transform(str.begin(), str.end(), resultStr.begin(), ::tolower);
+	std::transform(str.begin(), str.end(), resultStr.begin(), ::towlower);
+	return resultStr;
+}
+
+std::wstring StringUtilities::toUpper(std::wstring str) {
+	std::wstring resultStr;
+	std::transform(str.begin(), str.end(), resultStr.begin(), ::towupper);
 	return resultStr;
 }

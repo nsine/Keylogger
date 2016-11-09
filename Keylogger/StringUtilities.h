@@ -18,5 +18,6 @@ public:
 	static std::string ws2s(std::wstring& wstr);
 	static std::wstring s2ws(const std::string& str);
 	static std::wstring toLower(std::wstring str);
+	std::wstring toUpper(std::wstring str);
 };
 

