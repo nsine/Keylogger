@@ -5,7 +5,7 @@
 #include <WS2tcpip.h>
 #include <iostream>
 
-#include "StringUtilities.h"
+#include "StringHelper.h"
 
 #define PORT L"8123"
 

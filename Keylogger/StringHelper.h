@@ -8,7 +8,7 @@
 #include <locale>
 
 
-class StringUtilities {
+class StringHelper {
 private:
 	static char charBuffer[1024];
 public:

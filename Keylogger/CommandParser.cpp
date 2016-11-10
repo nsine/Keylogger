@@ -8,14 +8,14 @@ void CommandParser::addCommand(std::wstring name, std::function<std::wstring(std
 }
 
 std::wstring CommandParser::act(std::wstring commandString) {
-	auto tokens = StringUtilities::splitString(commandString, L" ");
+	auto tokens = StringHelper::splitString(commandString, L" ");
 	auto commandName = tokens.size() > 0 ? tokens[0] : L"";
 	auto command = commands.find(commandName);
 	if (command == commands.end()) {
 		return L"Command not found";
 	}
 	
-	auto argumentsLine = StringUtilities::trim(commandString.substr(commandName.size(),
+	auto argumentsLine = StringHelper::trim(commandString.substr(commandName.size(),
 		commandString.size() - commandName.size()));
 	auto commandFunc = (*command).second;
 	return commandFunc(argumentsLine);

@@ -2,7 +2,7 @@
 
 #include "EmailService.h"
 #include "Hook.h"
-#include "StringUtilities.h"
+#include "StringHelper.h"
 #include "CommandParser.h"
 #include "KeyBlockService.h"
 

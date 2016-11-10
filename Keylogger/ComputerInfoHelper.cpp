@@ -11,7 +11,7 @@ ComputerInfoHelper::ComputerInfoHelper() {
 		std::cerr << "Error " << WSAGetLastError() <<
 			" when getting local host name." << std::endl;
 	} else {
-		this->hostName = StringUtilities::s2ws(ac);
+		this->hostName = StringHelper::s2ws(ac);
 	}
 
 	struct hostent *phe = gethostbyname(ac);
@@ -30,7 +30,7 @@ ComputerInfoHelper::ComputerInfoHelper() {
 		}
 	}
 
-	this->ip = StringUtilities::s2ws(ip);
+	this->ip = StringHelper::s2ws(ip);
 	this->port = PORT;
 	WSACleanup();
 }

