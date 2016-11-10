@@ -5,7 +5,7 @@
 #include <windows.h>
 #include <algorithm>
 #include <string>
-#include "StringUtilities.h"
+#include "StringHelper.h"
 
 
 class KeyboardHelper {

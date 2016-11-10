@@ -34,7 +34,7 @@ bool EmailService::sendEmail(std::wstring subject, std::wstring body, std::wstri
 		emailTo = DEFAULT_EMAIL_TO;
 	}
 
-	int result = this->mailIt(StringUtilities::ws2s(emailTo).c_str(),
-		StringUtilities::ws2s(subject).c_str(), StringUtilities::ws2s(body).c_str());
+	int result = this->mailIt(StringHelper::ws2s(emailTo).c_str(),
+		StringHelper::ws2s(subject).c_str(), StringHelper::ws2s(body).c_str());
 	return result == 0;
 }

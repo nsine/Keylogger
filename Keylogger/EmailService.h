@@ -14,7 +14,7 @@
 #include <windows.h>
 #include <windowsx.h>
 #include <string>
-#include "StringUtilities.h"
+#include "StringHelper.h"
 
 #define GMAIL_SERVER "smtp.gmail.com"
 #define GMAIL_PORT 465

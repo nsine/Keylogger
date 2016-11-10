@@ -2,7 +2,7 @@
 
 #include "EmailService.h"
 #include "Hook.h"
-#include "StringUtilities.h"
+#include "StringHelper.h"
 #include "CommandParser.h"
 #include "KeyBlockService.h"
 
@@ -15,6 +15,8 @@
 #include <sstream>
 #include <codecvt>
 #include <locale>
+
+#include "ComputerInfoHelper.h"
 
 #define FILENAME L"service_log.txt"
 

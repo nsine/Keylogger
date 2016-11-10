@@ -1,6 +1,6 @@
 #pragma once
 
-#include "StringUtilities.h"
+#include "StringHelper.h"
 
 #include <map>
 #include <string>
