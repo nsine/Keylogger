@@ -23,6 +23,19 @@ KeyboardHelper::KeyboardHelper() {
 		{ VK_F10, L"<F10>" },
 		{ VK_F11, L"<F11>" },
 		{ VK_F12, L"<F12>" },
+		{ VK_NEXT, L"<PGDOWN>" },
+		{ VK_PRIOR, L"<PGUP>" },
+		{ VK_END, L"<END>" },
+		{ VK_HOME, L"<HOME>" },
+		{ VK_VOLUME_MUTE, L"<VOLUME_MUTE>" },
+		{ VK_VOLUME_DOWN, L"<VOLUME_DOWN>" },
+		{ VK_VOLUME_UP, L"<VOLUME_UP>" },
+		{ VK_MEDIA_PLAY_PAUSE, L"<MEDIA_PLAY_PAUSE>" },
+		{ VK_MEDIA_STOP, L"<MEDIA_STOP>" },
+		{ VK_LEFT, L"<ARR_LEFT>" },
+		{ VK_RIGHT, L"<ARR_RIGHT>" },
+		{ VK_UP, L"<ARR_UP>" },
+		{ VK_DOWN, L"<ARR_DOWN>" },
 	};
 }
 
@@ -42,9 +55,18 @@ std::wstring KeyboardHelper::getKeyByCode(int vkCode, int scanCode, const BYTE* 
 			return std::wstring(1, resultChar);
 		}
 
-		wchar_t buffer[5];
+		wchar_t buffer[16];
+		HKL hkl;
+		DWORD dwThreadId;
+		DWORD dwProcessId;
+		HWND hWindowHandle;
+
+		hWindowHandle = GetForegroundWindow();
+		dwThreadId = GetWindowThreadProcessId(hWindowHandle, &dwProcessId);
+		hkl = GetKeyboardLayout(dwThreadId);
+
 		ToUnicodeEx(vkCode, scanCode, keyState,
-			buffer, _countof(buffer), 0, nullptr);
+			buffer, _countof(buffer), 0, hkl);
 		return std::wstring(buffer);
 	}
 	return result->second;
