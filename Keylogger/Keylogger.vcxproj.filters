@@ -63,6 +63,9 @@
     <ClInclude Include="KeyBlockService.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ComputerInfoHelper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -102,6 +105,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="KeyBlockService.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ComputerInfoHelper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
