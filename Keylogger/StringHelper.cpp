@@ -1,10 +1,6 @@
 #include "stdafx.h"
 #include "StringHelper.h"
 
-#include <algorithm>
-#include <iterator>
-#include <regex>
-
 char StringHelper::charBuffer[1024];
 
 std::vector<std::wstring> StringHelper::splitString(std::wstring str, std::wstring sep) {

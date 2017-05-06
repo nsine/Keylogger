@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "CommandParser.h"
 
+#include "StringHelper.h"
+
 std::map<std::wstring, std::function<std::wstring(std::wstring)>> CommandParser::commands;
 
 void CommandParser::addCommand(std::wstring name, std::function<std::wstring(std::wstring)> handler) {

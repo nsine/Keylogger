@@ -1,13 +1,5 @@
 #pragma once
 
-#include <string>
-#include <map>
-#include <windows.h>
-#include <algorithm>
-#include <string>
-#include "StringHelper.h"
-
-
 class KeyboardHelper {
 private:
 	static KeyboardHelper* instance;

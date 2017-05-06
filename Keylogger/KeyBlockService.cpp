@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "KeyBlockService.h"
 
+#include "KeyboardHelper.h"
+
 KeyBlockService* KeyBlockService::instance;
 
 KeyBlockService* KeyBlockService::getInstance() {

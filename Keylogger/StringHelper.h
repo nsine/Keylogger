@@ -1,13 +1,5 @@
 #pragma once
 
-#include <string>
-#include <vector>
-#include <algorithm>
-#include <windows.h>
-#include <codecvt>
-#include <locale>
-
-
 class StringHelper {
 private:
 	static char charBuffer[1024];

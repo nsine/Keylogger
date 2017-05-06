@@ -1,12 +1,5 @@
 #pragma once
 
-#include <string>
-#include <winsock2.h>
-#include <WS2tcpip.h>
-#include <iostream>
-
-#include "StringHelper.h"
-
 #define PORT L"8123"
 
 class ComputerInfoHelper {

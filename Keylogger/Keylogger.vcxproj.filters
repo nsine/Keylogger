@@ -13,12 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\vendor">
-      <UniqueIdentifier>{c19f2d6b-e8d6-453a-a5a9-4629bd521c1b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\vendor">
-      <UniqueIdentifier>{56d65738-4bda-46ba-b3ca-ba48ddd94eb0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\helpers">
       <UniqueIdentifier>{72c4c4c5-6493-4b9e-abdc-e2a8a3e8b62b}</UniqueIdentifier>
     </Filter>
@@ -37,6 +31,12 @@
     <Filter Include="Source Files\modules">
       <UniqueIdentifier>{1861aefb-2ef3-4da2-b8a6-690a4b6c3e95}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Vendor Libraries">
+      <UniqueIdentifier>{f93936c1-a0f0-4d32-b035-8385bb8ccab7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Vendor Libraries\CSmtp">
+      <UniqueIdentifier>{47ec08b9-6451-4b7e-9a2e-4a31f8f6e8f8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -47,15 +47,6 @@
     </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="base64.h">
-      <Filter>Header Files\vendor</Filter>
-    </ClInclude>
-    <ClInclude Include="CSmtp.h">
-      <Filter>Header Files\vendor</Filter>
-    </ClInclude>
-    <ClInclude Include="md5.h">
-      <Filter>Header Files\vendor</Filter>
     </ClInclude>
     <ClInclude Include="ComputerInfoHelper.h">
       <Filter>Header Files\helpers</Filter>
@@ -84,6 +75,15 @@
     <ClInclude Include="StringHelper.h">
       <Filter>Header Files\helpers</Filter>
     </ClInclude>
+    <ClInclude Include="base64.h">
+      <Filter>Vendor Libraries\CSmtp</Filter>
+    </ClInclude>
+    <ClInclude Include="CSmtp.h">
+      <Filter>Vendor Libraries\CSmtp</Filter>
+    </ClInclude>
+    <ClInclude Include="md5.h">
+      <Filter>Vendor Libraries\CSmtp</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -91,15 +91,6 @@
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="base64.cpp">
-      <Filter>Source Files\vendor</Filter>
-    </ClCompile>
-    <ClCompile Include="CSmtp.cpp">
-      <Filter>Source Files\vendor</Filter>
-    </ClCompile>
-    <ClCompile Include="md5.cpp">
-      <Filter>Source Files\vendor</Filter>
     </ClCompile>
     <ClCompile Include="ComputerInfoHelper.cpp">
       <Filter>Source Files\helpers</Filter>
@@ -127,6 +118,15 @@
     </ClCompile>
     <ClCompile Include="StringHelper.cpp">
       <Filter>Source Files\helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="base64.cpp">
+      <Filter>Vendor Libraries\CSmtp</Filter>
+    </ClCompile>
+    <ClCompile Include="CSmtp.cpp">
+      <Filter>Vendor Libraries\CSmtp</Filter>
+    </ClCompile>
+    <ClCompile Include="md5.cpp">
+      <Filter>Vendor Libraries\CSmtp</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

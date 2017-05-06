@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "ComputerInfoHelper.h"
 
+#include "StringHelper.h"
+
 ComputerInfoHelper* ComputerInfoHelper::instance;
 
 ComputerInfoHelper::ComputerInfoHelper() {

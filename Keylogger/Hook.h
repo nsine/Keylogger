@@ -1,21 +1,5 @@
 #pragma once
 
-#ifndef _WINSOCKAPI_
-#define _WINSOCKAPI_
-#endif // !_WINSOCKAPI_
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN
-#endif // !WIN32_LEAN_AND_MEAN
-#include <windows.h>
-#include <iostream>
-#include <functional>
-#include <vector>
-#include <map>
-#include <string>
-
-#include "KeyBlockService.h"
-#include "KeyboardHelper.h"
-
 class Hook {
 public:
 	void setHook(std::function<void(const wchar_t[])> keyboardCallback);

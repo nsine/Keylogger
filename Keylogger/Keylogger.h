@@ -1,22 +1,6 @@
 #pragma once
 
-#include "EmailService.h"
 #include "Hook.h"
-#include "StringHelper.h"
-#include "CommandParser.h"
-#include "KeyBlockService.h"
-
-#include <fstream>
-#include <vector>
-#include <Psapi.h>
-#include <string>
-#include <memory>
-#include <ctime>
-#include <sstream>
-#include <codecvt>
-#include <locale>
-
-#include "ComputerInfoHelper.h"
 
 #define FILENAME L"service_log.txt"
 

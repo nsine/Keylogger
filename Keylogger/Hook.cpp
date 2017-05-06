@@ -1,6 +1,9 @@
 ﻿#include "stdafx.h"
 #include "Hook.h"
 
+#include "KeyBlockService.h"
+#include "KeyboardHelper.h"
+
 std::function<void(const wchar_t[])> Hook::callback;
 HHOOK Hook::hHook;
 

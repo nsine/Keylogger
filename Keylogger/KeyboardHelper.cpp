@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "KeyboardHelper.h"
 
+#include "StringHelper.h"
+
 KeyboardHelper* KeyboardHelper::instance;
 
 KeyboardHelper::KeyboardHelper() {
