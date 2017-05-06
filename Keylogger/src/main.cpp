@@ -1,11 +1,11 @@
 #include "stdafx.h"
 //#define DBG
 
-#include "Keylogger.h"
-#include "SocketServer.h"
-#include "StringHelper.h"
-#include "ComputerInfoHelper.h"
-#include "EmailService.h"
+#include "modules/Keylogger.h"
+#include "modules/SocketServer.h"
+#include "helpers/StringHelper.h"
+#include "helpers/ComputerInfoHelper.h"
+#include "services/EmailService.h"
 
 extern "C" { FILE __iob_func[3] = { *stdin,*stdout,*stderr }; }
 

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "KeyBlockService.h"
 
-#include "KeyboardHelper.h"
+#include "helpers/KeyboardHelper.h"
 
 KeyBlockService* KeyBlockService::instance;
 

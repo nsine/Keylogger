@@ -1,132 +1,35 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="Header Files\helpers">
-      <UniqueIdentifier>{72c4c4c5-6493-4b9e-abdc-e2a8a3e8b62b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\helpers">
-      <UniqueIdentifier>{92d4e0cd-e380-48ea-a229-4ca8b781c276}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\services">
-      <UniqueIdentifier>{00a33300-72f9-41f5-b836-f57121348630}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\services">
-      <UniqueIdentifier>{7ccfee55-7113-42b2-b010-ca13704a21d0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\modules">
-      <UniqueIdentifier>{7f7c2b7d-667c-4279-967f-e0d7162d73d1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\modules">
-      <UniqueIdentifier>{1861aefb-2ef3-4da2-b8a6-690a4b6c3e95}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Vendor Libraries">
-      <UniqueIdentifier>{f93936c1-a0f0-4d32-b035-8385bb8ccab7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Vendor Libraries\CSmtp">
-      <UniqueIdentifier>{47ec08b9-6451-4b7e-9a2e-4a31f8f6e8f8}</UniqueIdentifier>
-    </Filter>
+    <ClCompile Include="src\helpers\ComputerInfoHelper.cpp" />
+    <ClCompile Include="src\helpers\KeyboardHelper.cpp" />
+    <ClCompile Include="src\helpers\StringHelper.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\modules\Hook.cpp" />
+    <ClCompile Include="src\modules\Keylogger.cpp" />
+    <ClCompile Include="src\modules\SocketServer.cpp" />
+    <ClCompile Include="src\services\CommandParser.cpp" />
+    <ClCompile Include="src\services\EmailService.cpp" />
+    <ClCompile Include="src\services\KeyBlockService.cpp" />
+    <ClCompile Include="src\stdafx.cpp" />
+    <ClCompile Include="vendor\csmtp\base64.cpp" />
+    <ClCompile Include="vendor\csmtp\CSmtp.cpp" />
+    <ClCompile Include="vendor\csmtp\md5.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="stdafx.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ComputerInfoHelper.h">
-      <Filter>Header Files\helpers</Filter>
-    </ClInclude>
-    <ClInclude Include="KeyboardHelper.h">
-      <Filter>Header Files\helpers</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandParser.h">
-      <Filter>Header Files\services</Filter>
-    </ClInclude>
-    <ClInclude Include="EmailService.h">
-      <Filter>Header Files\services</Filter>
-    </ClInclude>
-    <ClInclude Include="KeyBlockService.h">
-      <Filter>Header Files\services</Filter>
-    </ClInclude>
-    <ClInclude Include="Hook.h">
-      <Filter>Header Files\modules</Filter>
-    </ClInclude>
-    <ClInclude Include="Keylogger.h">
-      <Filter>Header Files\modules</Filter>
-    </ClInclude>
-    <ClInclude Include="SocketServer.h">
-      <Filter>Header Files\modules</Filter>
-    </ClInclude>
-    <ClInclude Include="StringHelper.h">
-      <Filter>Header Files\helpers</Filter>
-    </ClInclude>
-    <ClInclude Include="base64.h">
-      <Filter>Vendor Libraries\CSmtp</Filter>
-    </ClInclude>
-    <ClInclude Include="CSmtp.h">
-      <Filter>Vendor Libraries\CSmtp</Filter>
-    </ClInclude>
-    <ClInclude Include="md5.h">
-      <Filter>Vendor Libraries\CSmtp</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ComputerInfoHelper.cpp">
-      <Filter>Source Files\helpers</Filter>
-    </ClCompile>
-    <ClCompile Include="KeyboardHelper.cpp">
-      <Filter>Source Files\helpers</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandParser.cpp">
-      <Filter>Source Files\services</Filter>
-    </ClCompile>
-    <ClCompile Include="EmailService.cpp">
-      <Filter>Source Files\services</Filter>
-    </ClCompile>
-    <ClCompile Include="KeyBlockService.cpp">
-      <Filter>Source Files\services</Filter>
-    </ClCompile>
-    <ClCompile Include="Keylogger.cpp">
-      <Filter>Source Files\modules</Filter>
-    </ClCompile>
-    <ClCompile Include="Hook.cpp">
-      <Filter>Source Files\modules</Filter>
-    </ClCompile>
-    <ClCompile Include="SocketServer.cpp">
-      <Filter>Source Files\modules</Filter>
-    </ClCompile>
-    <ClCompile Include="StringHelper.cpp">
-      <Filter>Source Files\helpers</Filter>
-    </ClCompile>
-    <ClCompile Include="base64.cpp">
-      <Filter>Vendor Libraries\CSmtp</Filter>
-    </ClCompile>
-    <ClCompile Include="CSmtp.cpp">
-      <Filter>Vendor Libraries\CSmtp</Filter>
-    </ClCompile>
-    <ClCompile Include="md5.cpp">
-      <Filter>Vendor Libraries\CSmtp</Filter>
-    </ClCompile>
+    <ClInclude Include="src\helpers\ComputerInfoHelper.h" />
+    <ClInclude Include="src\helpers\KeyboardHelper.h" />
+    <ClInclude Include="src\helpers\StringHelper.h" />
+    <ClInclude Include="src\modules\Hook.h" />
+    <ClInclude Include="src\modules\Keylogger.h" />
+    <ClInclude Include="src\modules\SocketServer.h" />
+    <ClInclude Include="src\services\CommandParser.h" />
+    <ClInclude Include="src\services\EmailService.h" />
+    <ClInclude Include="src\services\KeyBlockService.h" />
+    <ClInclude Include="src\stdafx.h" />
+    <ClInclude Include="src\targetver.h" />
+    <ClInclude Include="vendor\csmtp\base64.h" />
+    <ClInclude Include="vendor\csmtp\CSmtp.h" />
+    <ClInclude Include="vendor\csmtp\md5.h" />
   </ItemGroup>
 </Project>

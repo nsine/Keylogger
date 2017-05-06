@@ -1,21 +1,4 @@
-// Keylogger.Client.cpp : Defines the entry point for the console application.
-//
-
 #include "stdafx.h"
-#include <WinSock2.h>
-#include <WS2tcpip.h>
-#include <iostream>
-#include <string>
-#include <algorithm>
-#include <iterator>
-#include <regex>
-#include <vector>
-#include <fcntl.h>
-#include <io.h>
-#include <codecvt>
-#include <locale>
-
-#pragma comment(lib, "Ws2_32.lib")
 
 #define BUFFER_SIZE 100000
 

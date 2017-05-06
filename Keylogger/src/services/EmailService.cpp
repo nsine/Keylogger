@@ -1,7 +1,7 @@
 ﻿#include "stdafx.h"
 #include "EmailService.h"
 
-#include "StringHelper.h"
+#include "helpers/StringHelper.h"
 
 int EmailService::mailIt(const char *emailto, const char *emailsubject, const char *emailmessage) {
     CSmtp mail;

