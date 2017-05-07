@@ -159,6 +159,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\helpers\Configuration.cpp" />
     <ClCompile Include="src\helpers\ComputerInfoHelper.cpp" />
     <ClCompile Include="src\helpers\KeyboardHelper.cpp" />
     <ClCompile Include="src\helpers\StringHelper.cpp" />
@@ -187,6 +188,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\helpers\Configuration.h" />
     <ClInclude Include="src\helpers\ComputerInfoHelper.h" />
     <ClInclude Include="src\helpers\KeyboardHelper.h" />
     <ClInclude Include="src\helpers\StringHelper.h" />

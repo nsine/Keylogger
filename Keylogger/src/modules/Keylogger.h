@@ -2,8 +2,6 @@
 
 #include "Hook.h"
 
-#define FILENAME L"service_log.txt"
-
 class Keylogger {
 public:
 	Keylogger();

