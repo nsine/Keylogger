@@ -33,7 +33,7 @@
     <ProjectGuid>{431A8881-0ED2-4ABE-B113-813099485FB2}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>KeyloggerClient</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

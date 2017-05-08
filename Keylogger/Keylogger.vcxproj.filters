@@ -16,6 +16,7 @@
     <ClCompile Include="vendor\csmtp\CSmtp.cpp" />
     <ClCompile Include="vendor\csmtp\md5.cpp" />
     <ClCompile Include="src\helpers\Configuration.cpp" />
+    <ClCompile Include="src\helpers\DataParser\DataParser.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\helpers\ComputerInfoHelper.h" />
@@ -33,5 +34,6 @@
     <ClInclude Include="vendor\csmtp\CSmtp.h" />
     <ClInclude Include="vendor\csmtp\md5.h" />
     <ClInclude Include="src\helpers\Configuration.h" />
+    <ClInclude Include="src\helpers\DataParser\DataParser.h" />
   </ItemGroup>
 </Project>

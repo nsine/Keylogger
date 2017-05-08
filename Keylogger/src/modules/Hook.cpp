@@ -6,23 +6,38 @@
 
 std::function<void(const wchar_t[])> Hook::callback;
 HHOOK Hook::hHook;
+bool Hook::isEnabled;
 
 void Hook::setHook(std::function<void(const wchar_t[])> keyboardCallback) {
+	isEnabled = true;
     callback = keyboardCallback;
     std::wcout << L"set hook" << std::endl;
-    hHook = SetWindowsHookEx(WH_KEYBOARD_LL, this->hookProc, nullptr, 0);
+	hHook = SetWindowsHookEx(WH_KEYBOARD_LL, Hook::hookProc, nullptr, 0);
 }
 
 void Hook::unsetHook() {
+	isEnabled = false;
     std::wcout << L"unset" << std::endl;
     UnhookWindowsHookEx(hHook);
 }
 
-void Hook::blockKey(std::wstring keyName) {}
+void Hook::enable() {
+	Hook::isEnabled = true;
+}
 
-void Hook::unblockKey(std::wstring keyName) {}
+void Hook::disable() {
+	Hook::isEnabled = false;
+}
+
+bool Hook::checkEnabled() {
+	return Hook::isEnabled;
+}
 
 LRESULT CALLBACK Hook::hookProc(const int nCode, const WPARAM wParam, const LPARAM lParam) {
+	if (!Hook::isEnabled) {
+		return CallNextHookEx(hHook, nCode, wParam, lParam);
+	}
+
     PKBDLLHOOKSTRUCT p = (PKBDLLHOOKSTRUCT)lParam;
     BYTE keyState[256] = { 0 };
     std::wstring result;

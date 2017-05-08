@@ -22,7 +22,7 @@
     <ProjectGuid>{79ECD858-9022-4151-903E-F2558B249C70}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>Keylogger</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -161,6 +161,7 @@
   <ItemGroup>
     <ClCompile Include="src\helpers\Configuration.cpp" />
     <ClCompile Include="src\helpers\ComputerInfoHelper.cpp" />
+    <ClCompile Include="src\helpers\DataParser\DataParser.cpp" />
     <ClCompile Include="src\helpers\KeyboardHelper.cpp" />
     <ClCompile Include="src\helpers\StringHelper.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -190,6 +191,7 @@
   <ItemGroup>
     <ClInclude Include="src\helpers\Configuration.h" />
     <ClInclude Include="src\helpers\ComputerInfoHelper.h" />
+    <ClInclude Include="src\helpers\DataParser\DataParser.h" />
     <ClInclude Include="src\helpers\KeyboardHelper.h" />
     <ClInclude Include="src\helpers\StringHelper.h" />
     <ClInclude Include="src\modules\Hook.h" />

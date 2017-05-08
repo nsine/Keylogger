@@ -4,7 +4,7 @@
 #include "helpers/StringHelper.h"
 #include "helpers/Configuration.h"
 
-int EmailService::mailIt(const char *emailto, const char *emailsubject, const char *emailmessage) {
+int EmailService::mailIt(const char *emailto, const char *emailsubject, const char *emailmessage, bool isAttachmentPresent, const char* attachmentPath) {
     CSmtp mail;
 
     try {
@@ -19,7 +19,10 @@ int EmailService::mailIt(const char *emailto, const char *emailsubject, const ch
         mail.AddRecipient(emailto);
         mail.SetXPriority(XPRIORITY_NORMAL);
 		mail.m_bHTML = true;
-		mail.AddAttachment(StringHelper::ws2s(Configuration::GetLogFilePath()).c_str());
+		mail.AddMsgLine(emailmessage);
+		if (isAttachmentPresent) {
+			mail.AddAttachment(attachmentPath);
+		}
 		mail.Send();
         return 0;
     } catch (ECSmtp e) {
@@ -30,12 +33,18 @@ int EmailService::mailIt(const char *emailto, const char *emailsubject, const ch
 
 EmailService::EmailService() {}
 
-bool EmailService::sendEmail(std::wstring subject, std::wstring body, std::wstring emailTo) {
+bool EmailService::sendEmail(std::wstring subject, std::wstring body, std::wstring attachmentPath, std::wstring emailTo) {
     if (emailTo.compare(L"") == 0) {
         emailTo = DEFAULT_EMAIL_TO;
     }
 
+	bool isAttachmentPresent = true;
+	if (attachmentPath.compare(L"") == 0) {
+		isAttachmentPresent = false;
+	}
+
     int result = this->mailIt(StringHelper::ws2s(emailTo).c_str(),
-        StringHelper::ws2s(subject).c_str(), StringHelper::ws2s(body).c_str());
+        StringHelper::ws2s(subject).c_str(), StringHelper::ws2s(body).c_str(),
+		isAttachmentPresent, StringHelper::ws2s(attachmentPath).c_str());
     return result == 0;
 }

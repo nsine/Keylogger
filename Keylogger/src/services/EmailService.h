@@ -9,8 +9,8 @@
 class EmailService {
 public:
 	EmailService();
-	bool sendEmail(std::wstring subject, std::wstring body, std::wstring emailTo);
+	bool sendEmail(std::wstring subject, std::wstring body, std::wstring attachmentPath, std::wstring emailTo);
 private:
-	int mailIt(const char* emailto, const char* emailsubject, const char* emailmessage);
+	int mailIt(const char* emailto, const char* emailsubject, const char* emailmessage, bool isAttachmentPresent, const char* attachmentPath);
 };
 
