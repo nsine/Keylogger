@@ -1,15 +1,14 @@
 #pragma once
 
 class Configuration {
-private:
-	static std::wstring logFilename;
-	static std::wstring programFilename;
 public:
-	static std::wstring GetLogFilePath();
-	static std::wstring GetProgramPath();
-	static std::wstring GetProgramName();
+	static void InitConfiguration();
 
-	Configuration();
-	~Configuration();
+	static std::wstring ProgramFilename;
+	static std::wstring ConnectorAddress;
+	static std::wstring ConnectorPort;
+	static std::wstring AppDataPath;
+	static std::wstring LogFilePath;
+	static std::wstring ProgramPath;
 };
 

@@ -1,28 +1,25 @@
 #include "stdafx.h"
 #include "Configuration.h"
 
-std::wstring Configuration::logFilename = L"service_log.txt";
-std::wstring Configuration::programFilename = L"service.exe";
+void Configuration::InitConfiguration() {
+	// Init relative pathes
+	std::wstring logFilename = L"service_log.txt";
+	std::wstring configFilename = L"service_data.ini";
 
-std::wstring Configuration::GetLogFilePath() {
 	const int buffSize = 1024;
 	wchar_t buff[buffSize];
 	GetTempPath(buffSize, buff);
-	return std::wstring(buff) + L"\\" + logFilename;
-}
+	Configuration::LogFilePath = std::wstring(buff) + L"\\" + logFilename;
+	Configuration::AppDataPath = std::wstring(buff) + configFilename;
 
-std::wstring Configuration::GetProgramPath() {
-	const int buffSize = 1024;
-	wchar_t buff[buffSize];
 	GetWindowsDirectory(buff, buffSize);
-	return std::wstring(buff) + L"\\" + programFilename;
+	Configuration::ProgramPath =  std::wstring(buff) + L"\\" + Configuration::ProgramFilename;
 }
 
-std::wstring Configuration::GetProgramName() {
-	return programFilename;
-}
+std::wstring Configuration::LogFilePath;
+std::wstring Configuration::AppDataPath;
+std::wstring Configuration::ProgramPath;
 
-Configuration::Configuration() {}
-
-
-Configuration::~Configuration() {}
+std::wstring Configuration::ProgramFilename = L"service.exe";
+std::wstring Configuration::ConnectorAddress = L"127.0.0.1";
+std::wstring Configuration::ConnectorPort = L"5000";

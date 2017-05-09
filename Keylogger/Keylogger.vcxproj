@@ -102,6 +102,7 @@
       <AdditionalDependencies>libeay32.lib;ssleay32.lib;legacy_stdio_definitions.lib;ws2_32.lib;shell32.lib;advapi32.lib;gdi32.lib;User32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
       <UACUIAccess>false</UACUIAccess>
+      <AdditionalOptions>Rpcrt4.lib %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -140,6 +141,7 @@
       <AdditionalDependencies>libeay32.lib;ssleay32.lib;legacy_stdio_definitions.lib;ws2_32.lib;shell32.lib;advapi32.lib;gdi32.lib;User32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
       <UACUIAccess>false</UACUIAccess>
+      <AdditionalOptions>Rpcrt4.lib %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -159,6 +161,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\helpers\AppData.cpp" />
     <ClCompile Include="src\helpers\Configuration.cpp" />
     <ClCompile Include="src\helpers\ComputerInfoHelper.cpp" />
     <ClCompile Include="src\helpers\DataParser\DataParser.cpp" />
@@ -189,6 +192,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\helpers\AppData.h" />
     <ClInclude Include="src\helpers\Configuration.h" />
     <ClInclude Include="src\helpers\ComputerInfoHelper.h" />
     <ClInclude Include="src\helpers\DataParser\DataParser.h" />
