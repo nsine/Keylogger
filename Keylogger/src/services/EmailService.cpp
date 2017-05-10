@@ -18,7 +18,6 @@ int EmailService::mailIt(const char *emailto, const char *emailsubject, const ch
         mail.SetSubject(emailsubject);
         mail.AddRecipient(emailto);
         mail.SetXPriority(XPRIORITY_NORMAL);
-		mail.m_bHTML = true;
 		mail.AddMsgLine(emailmessage);
 		if (isAttachmentPresent) {
 			mail.AddAttachment(attachmentPath);

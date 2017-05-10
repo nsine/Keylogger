@@ -64,6 +64,18 @@ function handleCommand(command) {
             rl.setPrompt(defaultPrompt);
             resolve('Disconnected');
         });
+    } else if (command === 'list') {
+        return fetch(`${serverAddress}/list`).then(res => {
+            return res.json();
+        }).then(list => {
+            if (list && list.length > 0) {
+                return list.map(s => {
+                    return `${s.name}\t${s.id}\t${(s.online ? 'online' : 'offline')}`;
+                }).join('\n');
+            } else {
+                return 'No slaves connected';
+            }
+        })
     } else {
         if (!connection.isConnected) {
             return new Promise(resolve => {

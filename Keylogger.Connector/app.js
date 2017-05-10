@@ -4,8 +4,12 @@ const http = require('http');
 const app = express();
 
 const encoding = 'utf-16le';
+const portForSlaves = 5000;
+const portForMaster = 3000;
 
 let slaves = [];
+
+// Routes for master
 
 app.get('/', (req, res) => {
     let {id, command} = req.query;
@@ -50,10 +54,24 @@ app.get('/connect', (req, res) => {
     res.send(slave.computerName);
 });
 
+app.get('/list', (req, res) => {
+    let response = slaves.map(s => {
+        return {
+            id: s.id,
+            name: s.computerName,
+            online: s.online
+        }
+    });
+
+    res.send(JSON.stringify(response));
+});
+
 const server = http.createServer(app);
-server.listen(3000, () => {
+server.listen(portForMaster, () => {
     console.log('connector started');
 });
+
+// Socket server for slaves
 
 net.createServer(socket => {
     let address = socket.remoteAddress + ":" + socket.remotePort;
@@ -85,19 +103,16 @@ net.createServer(socket => {
         socket.removeAllListeners('data');
     });
 
-    // Remove the client from the list when it leaves
-    socket.on('error', () => {
-        console.log(`${address} force disconnect`);
-        let slave = slaves.find(s => s.address == address);
-        slave.online = false;
-    });
+    socket.on('error', onSlaveDisconnected);
+    socket.on('end', onSlaveDisconnected);
 
-    socket.on('end', function () {
+    function onSlaveDisconnected() {
         console.log(`${address} disconnected`);
         let slave = slaves.find(s => s.address == address);
         slave.online = false;
-    });
-}).listen(5000);
+    }
+}).listen(portForSlaves);
+
 
 function wrapToBuffer(str) {
     return Buffer.from(str, encoding);
